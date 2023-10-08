@@ -11,7 +11,7 @@ export default function GameCanvas({ gameId }: { gameId: string }) {
   useEffect(() => {
     if (init) return
 
-    const game = new Game(gameId, canvas.current!)
+    const game = new Game(gameId, canvas.current!, window)
     init = true
   }, [gameId])
 

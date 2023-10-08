@@ -10,7 +10,7 @@ export class Game {
   app: PIXI.Application
   boardApi: BoardApi
 
-  constructor(gameId: string, canvas: HTMLCanvasElement) {
+  constructor(gameId: string, canvas: HTMLCanvasElement, public readonly window: Window) {
     this.connection = new Connection(gameId)
 
     this.app = new PIXI.Application({
@@ -24,7 +24,7 @@ export class Game {
   }
 
   loadBoard(info: BoardInfo) {
-    const board = new Board(this.app, info)
+    const board = new Board(this.app, info, this.window)
 
     this.connection.on('player:new', (info) => board.addPlayer(info))
     this.connection.on('player:leave', (id) => board.removePlayer(id))

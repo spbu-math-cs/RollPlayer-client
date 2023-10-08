@@ -17,6 +17,7 @@ export class Board extends Viewport {
   constructor(
     public readonly app: PIXI.Application,
     public readonly info: BoardInfo,
+    public readonly window: Window,
   ) {
     super({
       events: app.renderer.events,
@@ -33,7 +34,7 @@ export class Board extends Viewport {
       .wheel({smooth: 5})
       .decelerate({ friction: 0.9 })
 
-    window.addEventListener('blur', this.deactivatePlayer.bind(this))
+    this.window.addEventListener('blur', this.deactivatePlayer.bind(this))
     this.on('pointerup', this.finishPlayerMove.bind(this))
     this.on('pointermove', this.dragPlayer.bind(this))
 

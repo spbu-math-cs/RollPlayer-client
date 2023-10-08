@@ -2,19 +2,25 @@ import EventEmitter from 'events'
 import { PlayerInfo } from '../entities/PlayerInfo'
 
 export class Connection extends EventEmitter {
-  // ws: WebSocket
+  ws: WebSocket
 
   private players: Map<number, PlayerInfo> = new Map()
 
   constructor(public readonly gameId: string) {
     super()
-    // this.ws = new WebSocket(`wss://${process.env.NEXT_PUBLIC_SOCKET_DOMAIN}/socket`)
-    // this.ws.onmessage = this.onMessage.bind(this)
+    if (!process.env.NEXT_PUBLIC_SOCKET_URL)
+      throw new Error('Could not find server url in env')
+
+    this.ws = new WebSocket(process.env.NEXT_PUBLIC_SOCKET_URL)
+    // this.ws.addEventListener('message', this.onMessage.bind(this))
 
     setInterval(this.generateMessage.bind(this), 1000)
   }
 
   private onMessage(data: any) {
+    // if (!e.data) return
+    // console.log(e.data)
+    // const data = JSON.parse(e.data)
     switch (data.type) {
       case 'player:move':
         this.emit('player:move', { ...data })
