@@ -103,7 +103,8 @@ export class Board extends PIXI.Container {
   addPlayer(info: PlayerInfo) {
     const player = new Player(this, info)
 
-    player.on('pointerdown', () => this.activatePlayer(player))
+    if (player.info.own)
+      player.on('pointerdown', () => this.activatePlayer(player))
 
     this.addChild(player)
     this.players.set(info.id, player)
