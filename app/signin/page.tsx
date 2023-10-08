@@ -1,10 +1,20 @@
-import Link from "next/link";
+"use client"
 
-export default function LoginPage() {
+import Link from "next/link";
+import {useState} from "react";
+
+function onSubmit() {
+
+}
+
+export default function SignInPage() {
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+
   return (
     <>
       <section className="container mx-auto h-screen flex items-center justify-center">
-        <form className="w-full max-w-sm">
+        <form className="w-full max-w-sm" onSubmit={onSubmit}>
           <div className="mb-3">
             <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="username">
               Username
@@ -14,6 +24,8 @@ export default function LoginPage() {
               id="username"
               type="text"
               placeholder="Username"
+              name={username}
+              onChange={e => setUsername(e.currentTarget.value)}
             />
           </div>
           <div className="mb-6">
@@ -25,6 +37,8 @@ export default function LoginPage() {
               id="password"
               type="password"
               placeholder="******************"
+              name={password}
+              onChange={e => setPassword(e.currentTarget.value)}
             />
           </div>
           <div className="md:items-center">
@@ -34,7 +48,7 @@ export default function LoginPage() {
                 type="submit"
                 value="Submit"
               >
-                Log in
+                Sign in
               </button>
             </div>
             <div className="mx-auto flex items-center justify-center">

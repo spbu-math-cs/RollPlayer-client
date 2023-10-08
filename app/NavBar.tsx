@@ -7,7 +7,7 @@ export default function NavBar() {
   const pages = {
     '/': 'Home',
     '/play': 'Play',
-    '/login': 'Log in'
+    '/signin': 'Sign in'
   }
 
   const pathname = usePathname()
