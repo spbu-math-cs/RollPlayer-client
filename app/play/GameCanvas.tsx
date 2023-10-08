@@ -1,13 +1,17 @@
-import { Field } from '@/engine/render/Field'
+import { Game } from '@/engine/entities/Game'
+import { Board } from '@/engine/render/Board'
 import { useEffect, useRef } from 'react'
 
+let init = false
 export default function GameCanvas({ gameId }: { gameId: string }) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const div = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    console.log(canvas.current)
-    const game = new Field(gameId, canvas.current!)
+    if (init) return
+
+    const game = new Game(gameId, canvas.current!)
+    init = true
   }, [gameId])
 
   return (
