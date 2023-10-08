@@ -1,14 +1,9 @@
 import { BoardInfo } from '../entities/BoardInfo'
 import { TileInfo } from '../entities/TileInfo'
 
-const CELL_SIZE = 16
-const SCALE = 4
-
 const BOARD_WIDTH = 16
 const BOARD_HEIGHT = 12
 
-const COMMON_TINT = 0xb0b0b0
-const HIGHLIGHT_TINT = 0xffffff
 
 function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min

@@ -1,5 +1,6 @@
+'use client'
+
 import { Game } from '@/engine/entities/Game'
-import { Board } from '@/engine/render/Board'
 import { useEffect, useRef } from 'react'
 
 let init = false

@@ -14,6 +14,9 @@ dependencies:
   next:
     specifier: latest
     version: 13.5.4(react-dom@18.2.0)(react@18.2.0)
+  pixi-viewport:
+    specifier: ^5.0.2
+    version: 5.0.2
   pixi.js:
     specifier: ^7.3.1
     version: 7.3.1(@pixi/utils@7.3.1)
@@ -2363,6 +2366,10 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
     dev: true
+
+  /pixi-viewport@5.0.2:
+    resolution: {integrity: sha512-U77KnCTl81xEgxEQRFEuI7MYVySWwCVkA41EnM8KiOYwgVOwdBUa7318O+u61IOnTwnoYLzaihy/kpoONKU13Q==}
+    dev: false
 
   /pixi.js@7.3.1(@pixi/utils@7.3.1):
     resolution: {integrity: sha512-BFuEOsNimxjLq/Bo16JiXBr/EKXp13z/NXdyMasRcZumCHDUdrKvTEFaUfrkFat6ZghgrWyHnREzK3b+F6OX0Q==}

@@ -1,11 +1,12 @@
 import { BoardApi } from '../api/BoardApi'
+import { Viewport } from 'pixi-viewport'
 import { Connection } from '../api/Connection'
 import { Board } from '../render/Board'
 import * as PIXI from 'pixi.js'
+import { BoardInfo } from './BoardInfo'
 
 export class Game {
   connection: Connection
-  board: Board
   app: PIXI.Application
   boardApi: BoardApi
 
@@ -19,12 +20,15 @@ export class Game {
 
     this.boardApi = new BoardApi()
 
-    this.boardApi.getBoard().then((info) => this.board.fill(info))
+    this.boardApi.getBoard().then(this.loadBoard.bind(this))
+  }
 
-    this.board = new Board(this.app)
-    this.app.stage.addChild(this.board)
-    
-    this.connection.on('player:new', (info) => this.board.addPlayer(info))
-    this.connection.on('player:leave', (id) => this.board.removePlayer(id))
+  loadBoard(info: BoardInfo) {
+    const board = new Board(this.app, info)
+
+    this.connection.on('player:new', (info) => board.addPlayer(info))
+    this.connection.on('player:leave', (id) => board.removePlayer(id))
+
+    this.app.stage.addChild(board)
   }
 }

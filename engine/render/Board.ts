@@ -5,39 +5,41 @@ import { Tile } from './Tile'
 import { BoardInfo } from '../entities/BoardInfo'
 import { PlayerInfo } from '../entities/PlayerInfo'
 import { Player } from './Player'
+import { Viewport } from 'pixi-viewport'
 
-const CELL_SIZE = 16
-const SCALE = 4
+const CELL_SIZE = 64
 
-const BOARD_WIDTH = 16
-const BOARD_HEIGHT = 12
-
-const COMMON_TINT = 0xb0b0b0
-const HIGHLIGHT_TINT = 0xffffff
-
-export class Board extends PIXI.Container {
+export class Board extends Viewport {
   public readonly tiles: Tile[][] = []
   public readonly players: Map<number, Player> = new Map()
   private activePlayer: Player | null = null
 
-  constructor(public readonly app: PIXI.Application) {
-    super()
+  constructor(
+    public readonly app: PIXI.Application,
+    public readonly info: BoardInfo,
+  ) {
+    super({
+      events: app.renderer.events,
+      disableOnContextMenu: true,
+      worldWidth: info.cols * CELL_SIZE,
+      worldHeight: info.rows * CELL_SIZE,
+    })
 
-    this.interactive = true
+    this.x = this.screenWidth / 2 - this.worldWidth / 2
+    this.y = this.screenHeight / 2 - this.worldHeight / 2
+
+    this.drag({ mouseButtons: 'right' })
+      .pinch()
+      .wheel({smooth: 5})
+      .decelerate({ friction: 0.9 })
 
     window.addEventListener('blur', this.deactivatePlayer.bind(this))
     this.on('pointerup', this.finishPlayerMove.bind(this))
     this.on('pointermove', this.dragPlayer.bind(this))
 
-    this.app.ticker.add(() => {
-      this.sortableChildren = true
+    this.sortableChildren = true
 
-      this.x = this.app.screen.width / 2
-      this.y = this.app.screen.height / 2
-
-      this.pivot.x = this.width / 2
-      this.pivot.y = this.height / 2
-    })
+    this.initBoard()
   }
 
   activatePlayer(player: Player) {
@@ -66,32 +68,32 @@ export class Board extends PIXI.Container {
   }
 
   getNearestTile(x: number, y: number): Tile {
-    let row = Math.round((y / SCALE - CELL_SIZE / 2) / CELL_SIZE)
+    let row = Math.round((y - CELL_SIZE / 2) / CELL_SIZE)
     row = Math.max(0, row)
-    row = Math.min(BOARD_HEIGHT - 1, row)
+    row = Math.min(this.info.rows, row)
 
-    let col = Math.round((x / SCALE - CELL_SIZE / 2) / CELL_SIZE)
+    let col = Math.round((x - CELL_SIZE / 2) / CELL_SIZE)
     col = Math.max(0, col)
-    col = Math.min(BOARD_WIDTH - 1, col)
+    col = Math.min(this.info.cols, col)
 
     return this.tiles[row][col]
   }
 
   calculateTilePosition(row: number, col: number) {
-    const target_x = (col * CELL_SIZE + CELL_SIZE / 2) * SCALE
-    const target_y = (row * CELL_SIZE + CELL_SIZE / 2) * SCALE
+    const target_x = col * CELL_SIZE + CELL_SIZE / 2
+    const target_y = row * CELL_SIZE + CELL_SIZE / 2
     return [target_x, target_y]
   }
 
-  fill(info: BoardInfo) {
+  initBoard() {
     if (this.tiles.length > 0)
       throw new Error('Trying to recreate the board without clearing it')
 
-    for (let i = 0; i < info.rows; i++) {
+    for (let i = 0; i < this.info.rows; i++) {
       this.tiles[i] = []
 
-      for (let j = 0; j < info.cols; j++) {
-        const tile = new Tile(this, info.tiles[i][j])
+      for (let j = 0; j < this.info.cols; j++) {
+        const tile = new Tile(this, this.info.tiles[i][j])
 
         this.addChild(tile)
 

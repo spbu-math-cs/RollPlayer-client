@@ -19,6 +19,8 @@ function getRandomInteger(min: number, max: number) {
 
 export class Player extends PIXI.Graphics {
   private nearestTile: Tile | null = null
+  private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
+  private update: (() => void) | null = null
   private active = false
 
   constructor(
@@ -42,6 +44,8 @@ export class Player extends PIXI.Graphics {
 
     this.moveAnimated(info.row, info.col)
 
+    this.board.app.ticker.add(this.updateTween.bind(this))
+
     this.zIndex = Infinity
   }
 
@@ -54,6 +58,8 @@ export class Player extends PIXI.Graphics {
   }
 
   public activate() {
+    this.tween?.stop()
+
     this.active = true
     this.alpha = 0.75
   }
@@ -83,6 +89,10 @@ export class Player extends PIXI.Graphics {
     if (moveBack) this.moveAnimated(this.info.row, this.info.col)
   }
 
+  private updateTween() {
+    if (this.tween?.isPlaying()) this.tween.update()
+  }
+
   private moveAnimated(
     row: number,
     col: number,
@@ -100,7 +110,9 @@ export class Player extends PIXI.Graphics {
 
     const coords = { x: this.x, y: this.y }
 
-    const tween = new TWEEN.Tween(coords, false)
+    this.tween?.stop()
+
+    this.tween = new TWEEN.Tween(coords, false)
       .to({ x: target_x, y: target_y }, timeout)
       .easing(easing)
       .onUpdate(() => {
@@ -108,12 +120,5 @@ export class Player extends PIXI.Graphics {
         this.y = coords.y
       })
       .start()
-      .onComplete(() => this.board.app.ticker.remove(animate))
-
-    function animate() {
-      tween.update()
-    }
-
-    this.board.app.ticker.add(animate)
   }
 }
