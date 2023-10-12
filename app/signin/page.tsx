@@ -1,15 +1,29 @@
 "use client"
 
 import Link from "next/link";
-import {useState} from "react";
+import React, {Dispatch, SetStateAction, useContext, useState} from "react";
+import AuthContext from "@/context/AuthContext";
+
+let authContext: {
+  signIn: (username: string, password: string) => void
+}
+let username: string;
+let setUsername: Dispatch<SetStateAction<string>>;
+let password: string;
+let setPassword: Dispatch<SetStateAction<string>>;
 
 function onSubmit() {
-
+  if (! username || !password) {
+    alert("Empty user!")
+    return
+  }
+  authContext.signIn(username, password);
 }
 
 export default function SignInPage() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  authContext = useContext(AuthContext);
+  [username, setUsername] = useState("");
+  [password, setPassword] = useState("");
 
   return (
     <>

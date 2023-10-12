@@ -1,15 +1,43 @@
 "use client"
 
 import Link from "next/link";
-import {useState} from "react";
+import React, {Dispatch, SetStateAction, useContext, useState} from "react";
+import AuthContext from "@/context/AuthContext";
+
+let authContext: {
+  signUp: (user: Object) => void
+}
+let email: string;
+let setEmail: Dispatch<SetStateAction<string>>;
+let username: string;
+let setUsername: Dispatch<SetStateAction<string>>;
+let password: string;
+let setPassword: Dispatch<SetStateAction<string>>;
+
+function onSubmit() {
+  if (!email || ! username || !password) {
+    alert("Empty user!")
+    return
+  }
+  const user = {
+    "email": email,
+    "name": username,
+    "password": password,
+  }
+  authContext.signUp(user);
+}
+
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("")
+  authContext = useContext(AuthContext);
+  [email, setEmail] = useState("");
+  [username, setUsername] = useState("");
+  [password, setPassword] = useState("");
 
   return (
     <>
       <section className="container mx-auto h-screen flex items-center justify-center">
-        <form className="w-full max-w-sm">
+        <form className="w-full max-w-sm" onSubmit={onSubmit}>
           <div className="mb-3">
             <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="email">
               E-mail
@@ -32,9 +60,11 @@ export default function SignUpPage() {
               id="username"
               type="text"
               placeholder="Username"
+              name={username}
+              onChange={e => setUsername(e.currentTarget.value)}
             />
           </div>
-          <div className="mb-3">
+          <div className="mb-6">
             <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="password">
               Password
             </label>
@@ -43,6 +73,8 @@ export default function SignUpPage() {
               id="password"
               type="password"
               placeholder="******************"
+              name={password}
+              onChange={e => setPassword(e.currentTarget.value)}
             />
           </div>
           <div className="md:items-center">

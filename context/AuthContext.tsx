@@ -1,34 +1,57 @@
+"use client"
+
 import {
-  createContext,
+  createContext, useEffect,
   useState,
 } from 'react'
-import {signInApi, signOutApi, signUpApi} from "@/engine/api/Auth";
 
 const AuthContext = createContext({
-  user: null,
-  signIn: (username: string, password: string) => {
-  },
-  signUp: (user: Object) => {
-  },
-  signOut: (user: Object) => {
-  },
+  user: null as Object | null,
+  signIn: (username: string, password: string) => {},
+  signUp: (user: Object) => {},
+  signOut: (user: Object) => {},
   authReady: false,
-})
+});
 
 export const AuthContextProvider = ({children}: any) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<Object | null>(null)
   const [authReady, setAuthReady] = useState(false)
 
+  useEffect(() => {
+    const userData = localStorage.getItem('user')
+    if (userData) {
+      setUser(JSON.parse(userData))
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user === null) {
+      localStorage.removeItem("user")
+    } else {
+      localStorage.setItem("user", JSON.stringify(user))
+    }
+  }, [user]);
+
   const signIn = (username: string, password: string) => {
-    signInApi(username, password).then()
+    // signInApi(username, password)
+    if (username === 'admin' && password === '1234') { // FIXME: tmp solution
+      const newUser = {
+        "email": "example@gmail.com",
+        "name": username,
+        "password": password,
+      }
+      setUser(newUser)
+    }
   }
 
-  const signUp = (user: Object) => {
-    signUpApi(user).then()
+  const signUp = (userData: Object) => {
+    // signUpApi(user)
+    setUser(userData) // FIXME: tmp solution
   }
 
-  const signOut = (user: Object) => {
-    signOutApi(user).then()
+  const signOut = (userData: Object) => {
+    // signOutApi(user)
+    setUser(null) // FIXME: tmp solution
   }
 
   return (
