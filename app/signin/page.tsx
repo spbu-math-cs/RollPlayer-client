@@ -57,13 +57,12 @@ export default function SignInPage() {
           </div>
           <div className="md:items-center">
             <div className="mx-auto flex items-center justify-center">
-              <button
-                className="text-xl text-center text-white block bg-orange-500 p-3 rounded-2xl hover:bg-orange-400"
-                type="submit"
-                value="Submit"
-              >
+              <Link href={"/profile"}>
+                <span className="text-xl text-center text-white block bg-orange-500 p-3 rounded-2xl hover:bg-orange-400">
+
                 Sign in
-              </button>
+              </span>
+              </Link>
             </div>
             <div className="mx-auto flex items-center justify-center">
               <Link href="/signup">
