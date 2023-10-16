@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link";
-import React, {Dispatch, SetStateAction, useContext, useState} from "react";
+import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import AuthContext from "@/context/AuthContext";
 
 let authContext: {
-  signIn: (username: string, password: string) => void
+  user: Object | null,
+  signIn: (username: string, password: string) => void,
+  authReady: Boolean;
 }
 let username: string;
 let setUsername: Dispatch<SetStateAction<string>>;
@@ -24,6 +26,22 @@ export default function SignInPage() {
   authContext = useContext(AuthContext);
   [username, setUsername] = useState("");
   [password, setPassword] = useState("");
+  const [loaded,setLoaded] = React.useState(false);
+
+  useEffect(() => {
+    if (!authContext.authReady) {
+      return;
+    }
+    if (authContext.user) {
+      location.replace("/profile");
+    } else {
+      setLoaded(true);
+    }
+  },[authContext.authReady]);
+
+  if(!loaded){
+    return <div></div>;
+  }
 
   return (
     <>

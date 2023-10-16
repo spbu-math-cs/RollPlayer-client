@@ -7,7 +7,6 @@ import AuthContext from "@/context/AuthContext";
 
 export default function NavBar() {
   const authContext = useContext(AuthContext)
-
   const pages = {
     '/': 'Home',
     '/play': 'Play',

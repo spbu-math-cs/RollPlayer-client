@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link";
-import React, {Dispatch, SetStateAction, useContext, useState} from "react";
+import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import AuthContext from "@/context/AuthContext";
 
 let authContext: {
-  signUp: (user: Object) => void
+  user: Object | null,
+  signUp: (user: Object) => void,
+  authReady: Boolean,
 }
 let email: string;
 let setEmail: Dispatch<SetStateAction<string>>;
@@ -33,6 +35,22 @@ export default function SignUpPage() {
   [email, setEmail] = useState("");
   [username, setUsername] = useState("");
   [password, setPassword] = useState("");
+  const [loaded,setLoaded] = React.useState(false);
+
+  useEffect(() => {
+    if (!authContext.authReady) {
+      return;
+    }
+    if (authContext.user) {
+      location.replace("/profile");
+    } else {
+      setLoaded(true);
+    }
+  },[authContext.authReady]);
+
+  if(!loaded){
+    return <div></div>;
+  }
 
   return (
     <>
