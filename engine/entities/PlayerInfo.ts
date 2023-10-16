@@ -15,8 +15,8 @@ export class PlayerInfo extends EventEmitter {
   ) {
     super()
 
-    this._row = col
-    this._col = row
+    this._row = row
+    this._col = col
 
     this.connection.on('player:move', this.onMove.bind(this))
     this.connection.on('player:reset', this.onReset.bind(this))

@@ -7,9 +7,6 @@ import { Tile } from './Tile'
 const CELL_SIZE = 16
 const SCALE = 4
 
-const BOARD_WIDTH = 16
-const BOARD_HEIGHT = 12
-
 const COMMON_TINT = 0xb0b0b0
 const HIGHLIGHT_TINT = 0xffffff
 
@@ -97,7 +94,7 @@ export class Player extends PIXI.Graphics {
     row: number,
     col: number,
     easing: Parameters<InstanceType<typeof TWEEN.Tween>['easing']>[0] = void 0,
-    timeout = 1000,
+    timeout = 1500,
   ) {
     const target_x = (col * CELL_SIZE + CELL_SIZE / 2) * SCALE
     const target_y = (row * CELL_SIZE + CELL_SIZE / 2) * SCALE

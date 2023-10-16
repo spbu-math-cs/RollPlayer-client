@@ -1,6 +1,4 @@
-import { Application } from 'pixi.js'
 import * as PIXI from 'pixi.js'
-
 import { Tile } from './Tile'
 import { BoardInfo } from '../entities/BoardInfo'
 import { PlayerInfo } from '../entities/PlayerInfo'
@@ -52,6 +50,7 @@ export class Board extends Viewport {
 
   dragPlayer(e: PIXI.FederatedPointerEvent) {
     if (this.activePlayer === null) return
+
     const pos = this.toLocal(e.global, void 0)
     this.activePlayer.drag(pos.x, pos.y)
   }
@@ -83,6 +82,7 @@ export class Board extends Viewport {
   calculateTilePosition(row: number, col: number) {
     const target_x = col * CELL_SIZE + CELL_SIZE / 2
     const target_y = row * CELL_SIZE + CELL_SIZE / 2
+
     return [target_x, target_y]
   }
 

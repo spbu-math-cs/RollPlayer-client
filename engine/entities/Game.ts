@@ -1,6 +1,7 @@
 import { BoardApi } from '../api/BoardApi'
 import { Viewport } from 'pixi-viewport'
 import { Connection } from '../api/Connection'
+import { Background } from '../render/Background'
 import { Board } from '../render/Board'
 import * as PIXI from 'pixi.js'
 import { BoardInfo } from './BoardInfo'
@@ -10,7 +11,11 @@ export class Game {
   app: PIXI.Application
   boardApi: BoardApi
 
-  constructor(gameId: string, canvas: HTMLCanvasElement, public readonly window: Window) {
+  constructor(
+    gameId: string,
+    canvas: HTMLCanvasElement,
+    public readonly window: Window
+  ) {
     this.connection = new Connection(gameId)
 
     this.app = new PIXI.Application({
@@ -18,9 +23,17 @@ export class Game {
       resizeTo: canvas.parentElement!,
     })
 
+    this.loadBackground()
+
     this.boardApi = new BoardApi()
 
     this.boardApi.getBoard().then(this.loadBoard.bind(this))
+  }
+
+  loadBackground() {
+    const background = new Background(this.app)
+
+    this.app.stage.addChild(background)
   }
 
   loadBoard(info: BoardInfo) {

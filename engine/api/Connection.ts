@@ -1,6 +1,9 @@
 import EventEmitter from 'events'
 import { PlayerInfo } from '../entities/PlayerInfo'
 
+const BOARD_WIDTH = 71
+const BOARD_HEIGHT = 47
+
 export class Connection extends EventEmitter {
   ws: WebSocket
 
@@ -14,7 +17,7 @@ export class Connection extends EventEmitter {
     this.ws = new WebSocket(process.env.NEXT_PUBLIC_SOCKET_URL)
     // this.ws.addEventListener('message', this.onMessage.bind(this))
 
-    setInterval(this.generateMessage.bind(this), 1000)
+    setInterval(this.generateMessage.bind(this), 2000)
   }
 
   private onMessage(data: any) {
@@ -60,17 +63,17 @@ export class Connection extends EventEmitter {
     const rand = (Math.random() * 10) | 0
     const randid = (Math.random() * 100000) | 0
     switch (true) {
-      case rand < 4 || this.players.size === 0:
+      case rand < 3 || this.players.size === 0:
         this.onMessage({
           type: 'player:new',
           id: randid,
           username: 'bob_' + randid,
           own: randid % 2 === 0,
-          row: randid % 10,
-          col: randid % 12,
+          row: randid % BOARD_HEIGHT,
+          col: randid % BOARD_WIDTH,
         })
         break
-      case rand < 6:
+      case rand < 5:
         this.onMessage({
           type: 'player:leave',
           id: [...this.players.values()][0].id,
@@ -80,8 +83,8 @@ export class Connection extends EventEmitter {
         this.onMessage({
           type: 'player:move',
           id: [...this.players.values()][0].id,
-          row: randid % 10,
-          col: randid % 12,
+          row: randid % BOARD_HEIGHT,
+          col: randid % BOARD_WIDTH,
         })
         break
     }
