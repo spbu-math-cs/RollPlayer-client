@@ -1,22 +1,35 @@
 'use client'
 
-
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import AuthContext from "@/context/AuthContext";
 import Link from "next/link";
 
 export default function UserProfilePage() {
-  let authContext = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
   const [editMode, setEditMode] = React.useState(false);
+  const [loaded,setLoaded] = React.useState(false);
 
-  if (!authContext.user) {
-    location.href = '/signin';
+  useEffect(() => {
+    if (!authContext.authReady) {
+      return;
+    }
+    if (!authContext.user) {
+      location.replace("/signin");
+    } else {
+      setLoaded(true);
+    }
+  },[authContext.authReady]);
+
+  if(!loaded){
+    return <div></div>;
   }
 
   function ClickSignOut() {
-    authContext.signOut(authContext.user!!)
+    if (authContext.user) {
+      setLoaded(false);
+      authContext.signOut(authContext.user);
+    }
   }
-
 
   return (
     <>
@@ -32,6 +45,7 @@ export default function UserProfilePage() {
                         src={"https://i.pinimg.com/originals/45/73/19/457319eeee8a2028e99293c7b83fa702.jpg"}
                         width="200" height="200"
                         style={{borderRadius: '50%'}}
+                        alt={"User img"}
                       />
                     </div>
                       <h3 className="text-2xl text-orange-400">

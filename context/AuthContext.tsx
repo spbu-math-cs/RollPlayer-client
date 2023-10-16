@@ -14,22 +14,24 @@ const AuthContext = createContext({
 });
 
 export const AuthContextProvider = ({children}: any) => {
-  const [user, setUser] = useState<Object | null>(null)
-  const [authReady, setAuthReady] = useState(false)
+  const [user, setUser] = useState<Object | null>(null);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user')
+    const userData = localStorage.getItem('user');
     if (userData) {
-      setUser(JSON.parse(userData))
+      setUser(JSON.parse(userData));
     }
+    setAuthReady(true);
   }, []);
 
   useEffect(() => {
     if (user === null) {
-      localStorage.removeItem("user")
+      localStorage.removeItem("user");
     } else {
-      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("user", JSON.stringify(user));
     }
+    setAuthReady(true);
   }, [user]);
 
   const signIn = (username: string, password: string) => {
@@ -39,20 +41,20 @@ export const AuthContextProvider = ({children}: any) => {
         "email": "example@gmail.com",
         "name": username,
         "password": password,
-      }
-      setUser(newUser)
+      };
+      setUser(newUser);
     }
-  }
+  };
 
   const signUp = (userData: Object) => {
     // signUpApi(user)
-    setUser(userData) // FIXME: tmp solution
-  }
+    setUser(userData); // FIXME: tmp solution
+  };
 
   const signOut = (userData: Object) => {
     // signOutApi(user)
-    setUser(null) // FIXME: tmp solution
-  }
+    setUser(null); // FIXME: tmp solution
+  };
 
   return (
       <AuthContext.Provider value={{user, signIn, signUp, signOut, authReady}}>
@@ -61,4 +63,4 @@ export const AuthContextProvider = ({children}: any) => {
   )
 }
 
-export default AuthContext
+export default AuthContext;
