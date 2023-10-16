@@ -1,13 +1,16 @@
 'use client'
 
-import React, {useContext, useEffect} from "react";
-import AuthContext from "@/context/AuthContext";
+import React, {useContext, useEffect, useState} from "react";
+import AuthContext, {AuthContextProvider} from "@/context/AuthContext";
 import Link from "next/link";
 
 export default function UserProfilePage() {
   const authContext = useContext(AuthContext);
-  const [editMode, setEditMode] = React.useState(false);
-  const [loaded,setLoaded] = React.useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [loaded,setLoaded] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (!authContext.authReady) {
@@ -16,6 +19,9 @@ export default function UserProfilePage() {
     if (!authContext.user) {
       location.replace("/signin");
     } else {
+      setName((authContext.user as { "name": string }).name);
+      setEmail((authContext.user as { "email": string }).email);
+      setPassword((authContext.user as { "password": string }).password);
       setLoaded(true);
     }
   },[authContext.authReady]);
@@ -29,6 +35,15 @@ export default function UserProfilePage() {
       setLoaded(false);
       authContext.signOut(authContext.user);
     }
+  }
+
+  function saveChanges() {
+    const updatedUser = {
+      "email": email,
+      "name": name,
+      "password": password,
+      };
+      authContext.updateData(updatedUser);
   }
 
   return (
@@ -48,24 +63,55 @@ export default function UserProfilePage() {
                         alt={"User img"}
                       />
                     </div>
-                      <h3 className="text-2xl text-orange-400">
-                        {` ${(authContext.user as { "name": string }).name}`}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Email: {`${(authContext.user as { "email": string }).email}`}
-                      </p>
-                      <button type="button" className="text-m text-white-200  text-end"
-                              onClick={() => setEditMode(!editMode)}>
-                        {editMode ? 'Save Changes' : 'Edit Profile'}
-                      </button>
-
-                      {/* Edit Mode */}
-                      {editMode && (
-                        <div>
-                          {/* Add the editable inputs here */}
-                        </div>
+                      <div>
+                      {!editMode ? (
+                        <h3 className="text-2xl text-orange-400">
+                          {name}
+                        </h3>
+                      ) : (
+                        <input className="text-black-500 outline-none outline-orange-500 rounded-xl"
+                          style={{backgroundColor: 'black', color: 'white'}}
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Name">
+                        </input>
                       )}
-                  </div>)
+                      </div>
+                      <div>
+                      {!editMode ? (
+                        <p className="text-sm text-gray-500 ">
+                          Email: {email}</p>
+                      ) : (
+                        <input className="text-black-500 m-1.5 outline-none outline-orange-500 rounded-xl"
+                               style={{backgroundColor: 'black', color: 'white'}}
+                               value={email}
+                               onChange={(e) => setEmail(e.target.value)}
+                               placeholder="Email">
+                        </input>
+                      )}
+                      </div>
+                      <div>
+                      {editMode && (
+                        <input className="text-black-500 outline-none outline-orange-500 rounded-xl"
+                               style={{backgroundColor: 'black', color: 'white'}}
+                               value={password}
+                               onChange={(e) => setPassword(e.target.value)}
+                               type="password"
+                               placeholder="Password">
+                        </input>
+                      )}
+                      </div>
+                      <button type="button"
+                        className="text-m text-white-200  text-end"
+                        onClick={() => {
+                          if (editMode) {
+                            saveChanges();
+                          }
+                          setEditMode(!editMode);
+                      }}>
+                        {editMode ? 'Save Changes' : 'Edit Profile'}
+                  </button>
+                    </div>)
                 }
               </AuthContext.Consumer>
             </h2>

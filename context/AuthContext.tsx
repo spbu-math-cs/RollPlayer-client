@@ -10,6 +10,7 @@ const AuthContext = createContext({
   signIn: (username: string, password: string) => {},
   signUp: (user: Object) => {},
   signOut: (user: Object) => {},
+  updateData: (user: Object) => {},
   authReady: false,
 });
 
@@ -56,8 +57,12 @@ export const AuthContextProvider = ({children}: any) => {
     setUser(null); // FIXME: tmp solution
   };
 
+    const updateData = (userData: Object) => {
+        setUser(userData);
+    };
+
   return (
-      <AuthContext.Provider value={{user, signIn, signUp, signOut, authReady}}>
+      <AuthContext.Provider value={{user, signIn, signUp, signOut, updateData, authReady}}>
         { children }
       </AuthContext.Provider>
   )
