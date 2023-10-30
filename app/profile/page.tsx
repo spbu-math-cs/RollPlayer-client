@@ -1,14 +1,15 @@
 'use client'
 
-import React, {useContext, useEffect, useState} from "react";
-import AuthContext, {AuthContextProvider} from "@/context/AuthContext";
+import React, {FormEvent, useContext, useEffect, useState} from "react";
+import AuthContext, {User} from "@/context/AuthContext";
 import Link from "next/link";
+import _ from "lodash";
 
 export default function UserProfilePage() {
   const authContext = useContext(AuthContext);
   const [editMode, setEditMode] = useState(false);
   const [loaded,setLoaded] = useState(false);
-  const [name, setName] = useState("");
+  const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,9 +20,9 @@ export default function UserProfilePage() {
     if (!authContext.user) {
       location.replace("/signin");
     } else {
-      setName((authContext.user as { "name": string }).name);
-      setEmail((authContext.user as { "email": string }).email);
-      setPassword((authContext.user as { "password": string }).password);
+      setLogin(authContext.user.login || "None");
+      setEmail(authContext.user.email || "None");
+      setPassword(authContext.user.password || "None");
       setLoaded(true);
     }
   },[authContext.authReady]);
@@ -30,20 +31,32 @@ export default function UserProfilePage() {
     return <div></div>;
   }
 
-  function ClickSignOut() {
-    if (authContext.user) {
-      setLoaded(false);
-      authContext.signOut(authContext.user);
+  function ClickSignOut(event: FormEvent) {
+    event.preventDefault();
+    if (authContext.user?.userId === undefined) {
+      return;
     }
+    authContext.signOut(authContext.user.userId, null);
   }
 
   function saveChanges() {
-    const updatedUser = {
-      "email": email,
-      "name": name,
+    if (authContext.user?.userId === undefined) {
+      return;
+    }
+    const updatedUser: User = {
+      "userId": authContext.user.userId,
       "password": password,
-      };
-      authContext.updateData(updatedUser);
+    };
+    if (email !== "None") {
+      updatedUser["email"] = email;
+    }
+    if (login !== "None") {
+      updatedUser["login"] = login;
+    }
+    if (_.isEqual(updatedUser, authContext.user)) {
+      return;
+    }
+    authContext.edit(authContext.user.userId, updatedUser);
   }
 
   return (
@@ -66,13 +79,13 @@ export default function UserProfilePage() {
                       <div>
                       {!editMode ? (
                         <h3 className="text-2xl text-orange-400">
-                          {name}
+                          {login}
                         </h3>
                       ) : (
                         <input className="text-black-500 outline-none outline-orange-500 rounded-xl"
                           style={{backgroundColor: 'black', color: 'white'}}
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          value={login}
+                          onChange={(e) => setLogin(e.target.value)}
                           placeholder="Name">
                         </input>
                       )}

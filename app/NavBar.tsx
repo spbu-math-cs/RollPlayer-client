@@ -10,8 +10,8 @@ export default function NavBar() {
   const pages = {
     '/': 'Home',
     '/play': 'Play',
-    '/signin': authContext.user ? null : 'Sign in',
-    '/profile': authContext.user ? (authContext.user as {"name": string}).name : null,
+    '/signin': (authContext.user || !authContext.authReady) ? null : 'Sign in',
+    '/profile': (!authContext.user || !authContext.authReady) ? null : (authContext.user as {"login": string}).login,
   }
 
   const pathname = usePathname()

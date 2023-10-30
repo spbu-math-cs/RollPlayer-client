@@ -1,29 +1,27 @@
 "use client"
 
 import Link from "next/link";
-import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
-import AuthContext from "@/context/AuthContext";
+import React, {Dispatch, FormEvent, SetStateAction, useContext, useEffect, useState} from "react";
+import AuthContext, {User} from "@/context/AuthContext";
 
 let authContext: {
-  user: Object | null,
+  user: User | null,
   signUp: (user: Object) => void,
   authReady: Boolean,
+  error: string | null,
 }
 let email: string;
 let setEmail: Dispatch<SetStateAction<string>>;
-let username: string;
-let setUsername: Dispatch<SetStateAction<string>>;
+let login: string;
+let setLogin: Dispatch<SetStateAction<string>>;
 let password: string;
 let setPassword: Dispatch<SetStateAction<string>>;
 
-function onSubmit() {
-  if (!email || ! username || !password) {
-    alert("Empty user!")
-    return
-  }
+function onSubmit(event: FormEvent) {
+  event.preventDefault()
   const user = {
     "email": email,
-    "name": username,
+    "login": login,
     "password": password,
   }
   authContext.signUp(user);
@@ -33,8 +31,9 @@ function onSubmit() {
 export default function SignUpPage() {
   authContext = useContext(AuthContext);
   [email, setEmail] = useState("");
-  [username, setUsername] = useState("");
+  [login, setLogin] = useState("");
   [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [loaded,setLoaded] = React.useState(false);
 
   useEffect(() => {
@@ -43,9 +42,12 @@ export default function SignUpPage() {
     }
     if (authContext.user) {
       location.replace("/profile");
-    } else {
-      setLoaded(true);
+      return;
     }
+    if (authContext.error !== null) {
+      setError(authContext.error)
+    }
+    setLoaded(true);
   },[authContext.authReady]);
 
   if(!loaded){
@@ -56,6 +58,9 @@ export default function SignUpPage() {
     <>
       <section className="container mx-auto h-screen flex items-center justify-center">
         <form className="w-full max-w-sm" onSubmit={onSubmit}>
+          <div className="mb-3">
+            <p>{error}</p>
+          </div>
           <div className="mb-3">
             <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="email">
               E-mail
@@ -78,8 +83,8 @@ export default function SignUpPage() {
               id="username"
               type="text"
               placeholder="Username"
-              name={username}
-              onChange={e => setUsername(e.currentTarget.value)}
+              name={login}
+              onChange={e => setLogin(e.currentTarget.value)}
             />
           </div>
           <div className="mb-6">

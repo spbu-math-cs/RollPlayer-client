@@ -1,31 +1,38 @@
 "use client"
 
 import Link from "next/link";
-import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
-import AuthContext from "@/context/AuthContext";
+import React, {Dispatch, FormEvent, SetStateAction, useContext, useEffect, useState} from "react";
+import AuthContext, {User} from "@/context/AuthContext";
+
+function validateEmail(email: string) {
+  return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+}
 
 let authContext: {
-  user: Object | null,
-  signIn: (username: string, password: string) => void,
-  authReady: Boolean;
-}
-let username: string;
-let setUsername: Dispatch<SetStateAction<string>>;
+  user: User | null,
+  signIn: (login: string | null, email: string | null, password: string) => void,
+  error: string | null,
+  authReady: Boolean,
+};
+let loginOrEmail: string;
+let setLoginOrEmail: Dispatch<SetStateAction<string>>;
 let password: string;
 let setPassword: Dispatch<SetStateAction<string>>;
 
-function onSubmit() {
-  if (! username || !password) {
-    alert("Empty user!")
-    return
+function onSubmit(event: FormEvent) {
+  event.preventDefault();
+  if (validateEmail(loginOrEmail)) {
+    authContext.signIn(null, loginOrEmail, password);
+  } else {
+    authContext.signIn(loginOrEmail, null, password);
   }
-  authContext.signIn(username, password);
 }
 
 export default function SignInPage() {
   authContext = useContext(AuthContext);
-  [username, setUsername] = useState("");
+  [loginOrEmail, setLoginOrEmail] = useState("");
   [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [loaded,setLoaded] = useState(false);
 
   useEffect(() => {
@@ -34,9 +41,12 @@ export default function SignInPage() {
     }
     if (authContext.user) {
       location.replace("/profile");
-    } else {
-      setLoaded(true);
+      return;
     }
+    if (authContext.error !== null) {
+      setError(authContext.error);
+    }
+    setLoaded(true);
   },[authContext.authReady]);
 
   if(!loaded){
@@ -48,16 +58,19 @@ export default function SignInPage() {
       <section className="container mx-auto h-screen flex items-center justify-center">
         <form className="w-full max-w-sm" onSubmit={onSubmit}>
           <div className="mb-3">
+            <p>{error}</p>
+          </div>
+          <div className="mb-3">
             <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="username">
-              Username
+              Username or email
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="username"
               type="text"
               placeholder="Username"
-              name={username}
-              onChange={e => setUsername(e.currentTarget.value)}
+              name={loginOrEmail}
+              onChange={e => setLoginOrEmail(e.currentTarget.value)}
             />
           </div>
           <div className="mb-6">

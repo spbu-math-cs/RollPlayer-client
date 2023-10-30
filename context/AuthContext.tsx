@@ -4,19 +4,29 @@ import {
   createContext, useEffect,
   useState,
 } from 'react'
+import {editApi, signInApi, signOutApi, signUpApi} from "@/engine/api/Auth";
+
+export interface User {
+  userId?: number,
+  email?: string,
+  login?: string,
+  password?: string,
+}
 
 const AuthContext = createContext({
-  user: null as Object | null,
-  signIn: (username: string, password: string) => {},
-  signUp: (user: Object) => {},
-  signOut: (user: Object) => {},
-  updateData: (user: Object) => {},
+  user: null as User | null,
+  signIn: (login: string | null, email: string | null, password: string) => {},
+  signUp: (user: User) => {},
+  signOut: (userId: number, sessionId: number | null) => {},
+  edit: (userId: number, user: User) => {},
   authReady: false,
+  error: null as string | null,
 });
 
 export const AuthContextProvider = ({children}: any) => {
-  const [user, setUser] = useState<Object | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -35,34 +45,92 @@ export const AuthContextProvider = ({children}: any) => {
     setAuthReady(true);
   }, [user]);
 
-  const signIn = (username: string, password: string) => {
-    // signInApi(username, password)
-    if (username === 'admin' && password === '1234') { // FIXME: tmp solution
-      const newUser = {
-        "email": "example@gmail.com",
-        "name": username,
-        "password": password,
-      };
-      setUser(newUser);
-    }
+  const signIn = (login: string | null, email: string | null, password: string) => {
+    setAuthReady(false);
+    signInApi(login, email, password).then(
+      response => {
+        if (typeof response === "string") {
+          setError(response);
+        } else {
+          const newUser: User = {
+            "userId": response,
+            "password": password,
+          }
+          if (login !== null) {
+            newUser["login"] = login;
+          }
+          if (email !== null) {
+            newUser["email"] = email;
+          }
+          setUser(newUser);
+        }
+        setAuthReady(true);
+      },
+      _ => {
+        setError(`Error 500: Unexpected problems occurred`);
+        setAuthReady(true);
+      }
+    );
   };
 
-  const signUp = (userData: Object) => {
-    // signUpApi(user)
-    setUser(userData); // FIXME: tmp solution
+  const signUp = (userData: User) => {
+    setAuthReady(false);
+    signUpApi(userData).then(
+      response => {
+        if (typeof response === "string") {
+          setError(response);
+        } else {
+          const newUser = userData;
+          newUser["userId"] = response;
+          setUser(newUser);
+        }
+        setAuthReady(true);
+      },
+      _ => {
+        setError(`Error 500: Unexpected problems occurred`);
+        setAuthReady(true);
+      }
+    );
   };
 
-  const signOut = (userData: Object) => {
-    // signOutApi(user)
-    setUser(null); // FIXME: tmp solution
+  const signOut = (userId: number, sessionId: number | null) => {
+    setAuthReady(false);
+    signOutApi(userId, sessionId).then(
+      response => {
+        if (typeof response === "string") {
+          setError(response);
+        } else {
+          setUser(null);
+        }
+        setAuthReady(true);
+      },
+      _ => {
+        setError(`Error 500: Unexpected problems occurred`);
+        setAuthReady(true);
+      }
+    );
   };
 
-    const updateData = (userData: Object) => {
-        setUser(userData);
-    };
+  const edit = (userId: number, userData: User) => {
+    setAuthReady(false);
+    editApi(userId, userData).then(
+      response => {
+        if (typeof response === "string") {
+          setError(response);
+        } else {
+          setUser(userData);
+        }
+        setAuthReady(true);
+      },
+      _ => {
+        setError(`Error 500: Unexpected problems occurred`);
+        setAuthReady(true);
+      }
+    );
+  }
 
   return (
-      <AuthContext.Provider value={{user, signIn, signUp, signOut, updateData, authReady}}>
+      <AuthContext.Provider value={{user, signIn, signUp, signOut, edit, authReady, error}}>
         { children }
       </AuthContext.Provider>
   )

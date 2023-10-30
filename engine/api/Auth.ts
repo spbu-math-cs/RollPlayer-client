@@ -1,36 +1,54 @@
-export async function signInApi(username: string, password: string) {
-  const userData = {name: username, password};
-  const response = await fetch('/api/signin', {
+import {User} from "@/context/AuthContext";
+
+export async function signInApi(login: string | null, email: string | null, password: string) {
+  const userData = {login, email, password};
+  const response = await fetch('/api/login', {
     method: 'POST',
     body: JSON.stringify(userData),
   });
-  if (response.ok) {
-    return response.json();
+  const responseData = await response.json() as {'userId': number, 'message': string};
+  if (!response.ok) {
+    return responseData['userId'];
   } else {
-    throw response.statusText;
+    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
   }
 }
 
-export async function signUpApi(user: Object) {
-  const response = await fetch('/api/signup', {
+export async function signUpApi(user: User) {
+  const response = await fetch('/api/register', {
     method: 'POST',
     body: JSON.stringify(user),
   });
+  const responseData = await response.json() as {'message': string};
   if (response.ok) {
-    return response.json();
+    return parseInt(responseData['message'].split(" ")[1]); // message == "User $id registered successfully"
   } else {
-    throw response.statusText;
+    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
   }
 }
 
-export async function signOutApi(user: Object) {
-  const response = await fetch('/api/signout', {
+export async function signOutApi(userId: number, sessionId: number | null) {
+  const response = await fetch('/api/logout', {
     method: 'POST',
-    body: JSON.stringify(user),
+    body: JSON.stringify({userId, sessionId}),
   });
+  const responseData = await response.json() as {'message': string};
   if (response.ok) {
-    return response.json();
+    return 0;
   } else {
-    throw response.statusText;
+    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+  }
+}
+
+export async function editApi(userId: number, userData: User) {
+  const response = await fetch(`/api/logout/${userId}`, {
+    method: 'POST',
+    body: JSON.stringify(userData),
+  });
+  const responseData = await response.json() as {'message': string};
+  if (response.ok) {
+    return 0;
+  } else {
+    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
   }
 }
