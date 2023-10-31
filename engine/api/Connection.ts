@@ -1,8 +1,17 @@
 import EventEmitter from 'events'
 import { PlayerInfo } from '../entities/PlayerInfo'
 
-const BOARD_WIDTH = 71
-const BOARD_HEIGHT = 47
+// const BOARD_WIDTH = 71
+const BOARD_WIDTH = 11
+// const BOARD_HEIGHT = 47
+const BOARD_HEIGHT = 7
+
+function sleepFor(sleepDuration) {
+  var now = new Date().getTime()
+  while (new Date().getTime() < now + sleepDuration) { 
+      /* Do nothing */
+  }
+}
 
 export class Connection extends EventEmitter {
   ws: WebSocket
@@ -14,16 +23,66 @@ export class Connection extends EventEmitter {
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    this.ws = new WebSocket(process.env.NEXT_PUBLIC_SOCKET_URL)
+    // this.ws = new WebSocket(process.env.NEXT_PUBLIC_SOCKET_URL)
+    const userID = (Math.random() * 10000) | 0
+    this.ws = new WebSocket(`ws://localhost:9999/api/connect/${userID}/0`)
+
+    this.ws.onerror = (event) => {
+      console.log("Error!", event)
+    }
+
+    this.ws.onclose = (event) => {
+      console.log("Close.", event)
+    }
+
+    console.log("readyState:", this.ws.readyState)
+    console.log(this.ws)
+    this.ws.send("kek")
+    
+    /*
+    this.ws.send(JSON.stringify({
+        'type': 'character:new',
+        'name': `user_${userID}`,
+        'row': '0',
+        'col': '0'
+      }))
+    */
+    
+      /*
+    this.ws.onopen = () => {
+      this.ws.send(JSON.stringify({
+        'type': 'character:new',
+        'name': `user_${userID}`,
+        'row': '0',
+        'col': '0'
+      }))
+      
+      console.log('Connection open!')
+    }
+      */
+    /*const ws = this.ws
+    
+    ws.onopen = function () {
+      ws.send(JSON.stringify({
+        "type": "character:new",
+        "name": `user_${userID}`,
+        "row": "0",
+        "col": "0"
+      }))
+      
+      console.log('Connection open!')
+    }*/
+
     // this.ws.addEventListener('message', this.onMessage.bind(this))
 
-    setInterval(this.generateMessage.bind(this), 2000)
+    // setInterval(this.generateMessage.bind(this), 2000)
   }
 
   private onMessage(data: any) {
     // if (!e.data) return
-    // console.log(e.data)
+    console.log(data)
     // const data = JSON.parse(e.data)
+    
     switch (data.type) {
       case 'player:move':
         this.emit('player:move', { ...data })
