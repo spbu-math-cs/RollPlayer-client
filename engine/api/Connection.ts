@@ -1,15 +1,15 @@
 import EventEmitter from 'events'
 import { PlayerInfo } from '../entities/PlayerInfo'
 
-// const BOARD_WIDTH = 71
-const BOARD_WIDTH = 11
-// const BOARD_HEIGHT = 47
-const BOARD_HEIGHT = 7
+const BOARD_WIDTH = 17
+// const BOARD_WIDTH = 11
+const BOARD_HEIGHT = 11
+// const BOARD_HEIGHT = 7
 
-function sleepFor(sleepDuration) {
+function sleepFor(sleepDuration: number) {
   var now = new Date().getTime()
-  while (new Date().getTime() < now + sleepDuration) { 
-      /* Do nothing */
+  while (new Date().getTime() < now + sleepDuration) {
+    /* Do nothing */
   }
 }
 
@@ -25,20 +25,36 @@ export class Connection extends EventEmitter {
 
     // this.ws = new WebSocket(process.env.NEXT_PUBLIC_SOCKET_URL)
     const userID = (Math.random() * 10000) | 0
-    this.ws = new WebSocket(`ws://localhost:9999/api/connect/${userID}/0`)
+    this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/0`)
+
+    this.ws.onopen = (event) => {
+      console.log('Open', event)
+      // this.ws.send('kek')
+      console.log('Open readyState:', this.ws.readyState)
+
+      this.ws.send(JSON.stringify({
+        type: 'character:new',
+        name: `user_${userID}`,
+        row: '0',
+        col: '0'
+      }))
+    }
 
     this.ws.onerror = (event) => {
-      console.log("Error!", event)
+      console.log('Error!', event)
     }
 
     this.ws.onclose = (event) => {
-      console.log("Close.", event)
+      console.log('Close.', event)
     }
 
-    console.log("readyState:", this.ws.readyState)
-    console.log(this.ws)
-    this.ws.send("kek")
-    
+    this.ws.onmessage = (event) => {
+      console.log('Message:', event)
+      this.onMessage(JSON.parse(event.data))
+    }
+
+    console.log('readyState:', this.ws.readyState)
+
     /*
     this.ws.send(JSON.stringify({
         'type': 'character:new',
@@ -47,19 +63,19 @@ export class Connection extends EventEmitter {
         'col': '0'
       }))
     */
+
+    /*
+  this.ws.onopen = () => {
+    this.ws.send(JSON.stringify({
+      'type': 'character:new',
+      'name': `user_${userID}`,
+      'row': '0',
+      'col': '0'
+    }))
     
-      /*
-    this.ws.onopen = () => {
-      this.ws.send(JSON.stringify({
-        'type': 'character:new',
-        'name': `user_${userID}`,
-        'row': '0',
-        'col': '0'
-      }))
-      
-      console.log('Connection open!')
-    }
-      */
+    console.log('Connection open!')
+  }
+    */
     /*const ws = this.ws
     
     ws.onopen = function () {
@@ -80,18 +96,23 @@ export class Connection extends EventEmitter {
 
   private onMessage(data: any) {
     // if (!e.data) return
-    console.log(data)
+    console.log("message:", data)
     // const data = JSON.parse(e.data)
-    
+
     switch (data.type) {
-      case 'player:move':
+      case 'character:move':
+        console.log("move", data)
+        console.log({ ...data })
+        data.type = 'player:move'
+        data.id = parseInt(data.id)
         this.emit('player:move', { ...data })
+        // this.onMessage({ type: 'player:move', id: parseInt(data.id), row: data.row, col: data.col })
         break
-      case 'player:new':
+      case 'character:new':
         const info = new PlayerInfo(
           this,
           data.id,
-          data.username,
+          data.name,
           data.own,
           data.row,
           data.col,
@@ -99,11 +120,11 @@ export class Connection extends EventEmitter {
         this.emit('player:new', info)
         this.players.set(info.id, info)
         break
-      case 'player:reset':
+      /*case 'player:reset':
         this.emit('player:reset', { ...data })
-        break
-      case 'player:leave':
-        const id = data.id
+        break*/
+      case 'character:leave':
+        const id = parseInt(data.id)
         this.players.delete(id)
         this.emit('player:leave', { id })
         break
@@ -111,11 +132,18 @@ export class Connection extends EventEmitter {
   }
 
   public movePlayer(id: number, row: number, col: number) {
-    if (Math.random() > 0.5) {
+    this.ws.send(JSON.stringify({
+      type: 'character:move',
+      id: id,
+      row: row,
+      col: col
+    }))
+
+    /*if (Math.random() > 0.5) {
       this.onMessage({ type: 'player:move', id, row, col })
     } else {
       this.onMessage({ type: 'player:reset', id })
-    }
+    }*/
   }
 
   public generateMessage() {
