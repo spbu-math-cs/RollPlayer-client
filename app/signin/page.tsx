@@ -4,37 +4,36 @@ import Link from "next/link";
 import React, {Dispatch, FormEvent, SetStateAction, useContext, useEffect, useState} from "react";
 import AuthContext, {User} from "@/context/AuthContext";
 
+function validateEmail(email: string) {
+  return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+}
+
 let authContext: {
   user: User | null,
-  signUp: (user: Object) => void,
-  authReady: Boolean,
+  signIn: (login: string | null, email: string | null, password: string) => void,
   error: string | null,
-}
-let email: string;
-let setEmail: Dispatch<SetStateAction<string>>;
-let login: string;
-let setLogin: Dispatch<SetStateAction<string>>;
+  authReady: Boolean,
+};
+let loginOrEmail: string;
+let setLoginOrEmail: Dispatch<SetStateAction<string>>;
 let password: string;
 let setPassword: Dispatch<SetStateAction<string>>;
 
 function onSubmit(event: FormEvent) {
-  event.preventDefault()
-  const user = {
-    "email": email,
-    "login": login,
-    "password": password,
+  event.preventDefault();
+  if (validateEmail(loginOrEmail)) {
+    authContext.signIn(null, loginOrEmail, password);
+  } else {
+    authContext.signIn(loginOrEmail, null, password);
   }
-  authContext.signUp(user);
 }
 
-
-export default function SignUpPage() {
+export default function SignInPage() {
   authContext = useContext(AuthContext);
-  [email, setEmail] = useState("");
-  [login, setLogin] = useState("");
+  [loginOrEmail, setLoginOrEmail] = useState("");
   [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loaded,setLoaded] = React.useState(false);
+  const [loaded,setLoaded] = useState(false);
 
   useEffect(() => {
     if (!authContext.authReady) {
@@ -45,7 +44,7 @@ export default function SignUpPage() {
       return;
     }
     if (authContext.error !== null) {
-      setError(authContext.error)
+      setError(authContext.error);
     }
     setLoaded(true);
   },[authContext.authReady]);
@@ -62,29 +61,16 @@ export default function SignUpPage() {
             <p>{error}</p>
           </div>
           <div className="mb-3">
-            <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="email">
-              E-mail
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="text"
-              placeholder="example@gmail.com"
-              name={email}
-              onChange={e => setEmail(e.currentTarget.value)}
-            />
-          </div>
-          <div className="mb-3">
             <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="username">
-              Username
+              Username or email
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="username"
               type="text"
               placeholder="Username"
-              name={login}
-              onChange={e => setLogin(e.currentTarget.value)}
+              name={loginOrEmail}
+              onChange={e => setLoginOrEmail(e.currentTarget.value)}
             />
           </div>
           <div className="mb-6">
@@ -107,13 +93,13 @@ export default function SignUpPage() {
                 type="submit"
                 value="Submit"
               >
-                Sign up
+                Sign in
               </button>
             </div>
             <div className="mx-auto flex items-center justify-center">
-              <Link href="/signin">
+              <Link href="/signup">
                 <span className="text-sm text-gray-700 font-bold hover:text-blue-500">
-                  Already have an account? Sign in!
+                  Don&apos;t have an account? Sign up!
                 </span>
               </Link>
             </div>
