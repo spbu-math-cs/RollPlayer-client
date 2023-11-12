@@ -1,11 +1,11 @@
 import EventEmitter from 'events'
 import { BOARD_WIDTH, BOARD_HEIGHT } from '../GlobalParameters'
-import { PlayerInfo } from '../entities/PlayerInfo'
+import { CharacterInfo } from '../entities/CharacterInfo'
 
 export class Connection extends EventEmitter {
   ws: WebSocket
 
-  private players: Map<number, PlayerInfo> = new Map()
+  private characters: Map<number, CharacterInfo> = new Map()
 
   constructor(public readonly gameId: string) {
     super()
@@ -44,7 +44,7 @@ export class Connection extends EventEmitter {
         this.emit('character:move', { ...data })
         break
       case 'character:new':
-        const info = new PlayerInfo(
+        const info = new CharacterInfo(
           this,
           data.id,
           data.name,
@@ -53,20 +53,20 @@ export class Connection extends EventEmitter {
           data.col,
         )
         this.emit('character:new', info)
-        this.players.set(info.id, info)
+        this.characters.set(info.id, info)
         break
-      /*case 'player:reset':
-        this.emit('player:reset', { ...data })
+      /*case 'character:reset':
+        this.emit('character:reset', { ...data })
         break*/
       case 'character:leave':
         const id = parseInt(data.id)
-        this.players.delete(id)
+        this.characters.delete(id)
         this.emit('character:leave', { id })
         break
     }
   }
 
-  public movePlayer(id: number, row: number, col: number) {
+  public moveCharacter(id: number, row: number, col: number) {
     this.ws.send(JSON.stringify({
       type: 'character:move',
       id: id,
@@ -86,7 +86,7 @@ export class Connection extends EventEmitter {
     const rand = (Math.random() * 10) | 0
     const randid = (Math.random() * 100000) | 0
     switch (true) {
-      case rand < 3 || this.players.size === 0:
+      case rand < 3 || this.characters.size === 0:
         this.onMessage({
           type: 'character:new',
           id: randid,
@@ -99,13 +99,13 @@ export class Connection extends EventEmitter {
       case rand < 5:
         this.onMessage({
           type: 'character:leave',
-          id: [...this.players.values()][0].id,
+          id: [...this.characters.values()][0].id,
         })
         break
       default:
         this.onMessage({
           type: 'character:move',
-          id: [...this.players.values()][0].id,
+          id: [...this.characters.values()][0].id,
           row: randid % BOARD_HEIGHT,
           col: randid % BOARD_WIDTH,
         })

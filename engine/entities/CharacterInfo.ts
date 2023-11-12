@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { Connection } from '../api/Connection'
 
-export class PlayerInfo extends EventEmitter {
+export class CharacterInfo extends EventEmitter {
   private _row: number
   private _col: number
 
@@ -38,7 +38,7 @@ export class PlayerInfo extends EventEmitter {
   }
 
   public move(row: number, col: number) {
-    this.connection.movePlayer(this.id, row, col)
+    this.connection.moveCharacter(this.id, row, col)
   }
 
   public get row() {

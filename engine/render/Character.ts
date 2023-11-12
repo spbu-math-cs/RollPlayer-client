@@ -1,4 +1,4 @@
-import { PlayerInfo } from '../entities/PlayerInfo'
+import { CharacterInfo } from '../entities/CharacterInfo'
 import * as PIXI from 'pixi.js'
 import * as TWEEN from '@tweenjs/tween.js'
 import { Board } from './Board'
@@ -13,7 +13,7 @@ function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-export class Player extends PIXI.Graphics {
+export class Character extends PIXI.Graphics {
   private nearestTile: Tile | null = null
   private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
   private update: (() => void) | null = null
@@ -21,14 +21,14 @@ export class Player extends PIXI.Graphics {
 
   constructor(
     private board: Board,
-    public readonly info: PlayerInfo,
+    public readonly info: CharacterInfo,
   ) {
     super()
 
-    const player_color = getRandomInteger(0xc0c0c0, 0xffffff + 1)
+    const character_color = getRandomInteger(0xc0c0c0, 0xffffff + 1)
     const outline_color = getRandomInteger(0xc0c0c0, 0xffffff + 1)
     this.lineStyle(2, outline_color, 1)
-    this.beginFill(player_color, 1)
+    this.beginFill(character_color, 1)
     this.drawCircle(0, 0, Math.min(ACTUAL_CELL_WIDTH, ACTUAL_CELL_HEIGHT) / 3)
     this.endFill()
 
