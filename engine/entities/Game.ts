@@ -39,8 +39,8 @@ export class Game {
   loadBoard(info: BoardInfo) {
     const board = new Board(this.app, info, this.window)
 
-    this.connection.on('player:new', (info) => board.addPlayer(info))
-    this.connection.on('player:leave', (id) => board.removePlayer(id))
+    this.connection.on('character:new', (info) => board.addPlayer(info))
+    this.connection.on('character:leave', (id) => board.removePlayer(id))
 
     this.app.stage.addChild(board)
   }

@@ -1,9 +1,11 @@
 import * as PIXI from 'pixi.js'
 import { Board } from './Board'
 import { TileInfo } from '../entities/TileInfo'
+import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE, ACTIVATED_CELL_SCALE } from '../GlobalParameters'
+import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
 
-const COMMON_TINT = 0xb0b0b0
-const HIGHLIGHT_TINT = 0xffffff
+const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
+const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
 export class Tile extends PIXI.Sprite {
   private originalScale: number
@@ -18,8 +20,8 @@ export class Tile extends PIXI.Sprite {
     this.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST
 
     this.anchor.set(0.5)
-    this.width = 64
-    this.height = 64
+    this.width = ACTUAL_CELL_WIDTH
+    this.height = ACTUAL_CELL_HEIGHT
     this.originalScale = this.scale.x
     this.tint = COMMON_TINT
 
@@ -27,13 +29,13 @@ export class Tile extends PIXI.Sprite {
   }
 
   activate() {
-    this.scale.set(5)
+    this.scale.set(ACTIVATED_CELL_SCALE)
     this.tint = HIGHLIGHT_TINT
     this.zIndex = this.board.info.rows * this.board.info.cols
   }
 
   deactivate() {
-    this.scale.set(4)
+    this.scale.set(CELL_SCALE)
     this.tint = COMMON_TINT
     this.zIndex = 0
   }

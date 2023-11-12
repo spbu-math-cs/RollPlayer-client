@@ -1,10 +1,6 @@
+import { BOARD_WIDTH, BOARD_HEIGHT } from '../GlobalParameters'
 import { BoardInfo } from '../entities/BoardInfo'
 import { TileInfo } from '../entities/TileInfo'
-
-const BOARD_WIDTH = 17
-// const BOARD_WIDTH = 11
-const BOARD_HEIGHT = 11
-// const BOARD_HEIGHT = 7
 
 function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min

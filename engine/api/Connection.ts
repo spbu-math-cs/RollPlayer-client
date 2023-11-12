@@ -1,17 +1,6 @@
 import EventEmitter from 'events'
+import { BOARD_WIDTH, BOARD_HEIGHT } from '../GlobalParameters'
 import { PlayerInfo } from '../entities/PlayerInfo'
-
-const BOARD_WIDTH = 17
-// const BOARD_WIDTH = 11
-const BOARD_HEIGHT = 11
-// const BOARD_HEIGHT = 7
-
-function sleepFor(sleepDuration: number) {
-  var now = new Date().getTime()
-  while (new Date().getTime() < now + sleepDuration) {
-    /* Do nothing */
-  }
-}
 
 export class Connection extends EventEmitter {
   ws: WebSocket
@@ -23,15 +12,10 @@ export class Connection extends EventEmitter {
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    // this.ws = new WebSocket(process.env.NEXT_PUBLIC_SOCKET_URL)
     const userID = (Math.random() * 10000) | 0
     this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/0`)
 
     this.ws.onopen = (event) => {
-      console.log('Open', event)
-      // this.ws.send('kek')
-      console.log('Open readyState:', this.ws.readyState)
-
       this.ws.send(JSON.stringify({
         type: 'character:new',
         name: `user_${userID}`,
@@ -44,50 +28,9 @@ export class Connection extends EventEmitter {
       console.log('Error!', event)
     }
 
-    this.ws.onclose = (event) => {
-      console.log('Close.', event)
-    }
-
     this.ws.onmessage = (event) => {
-      console.log('Message:', event)
       this.onMessage(JSON.parse(event.data))
     }
-
-    console.log('readyState:', this.ws.readyState)
-
-    /*
-    this.ws.send(JSON.stringify({
-        'type': 'character:new',
-        'name': `user_${userID}`,
-        'row': '0',
-        'col': '0'
-      }))
-    */
-
-    /*
-  this.ws.onopen = () => {
-    this.ws.send(JSON.stringify({
-      'type': 'character:new',
-      'name': `user_${userID}`,
-      'row': '0',
-      'col': '0'
-    }))
-    
-    console.log('Connection open!')
-  }
-    */
-    /*const ws = this.ws
-    
-    ws.onopen = function () {
-      ws.send(JSON.stringify({
-        "type": "character:new",
-        "name": `user_${userID}`,
-        "row": "0",
-        "col": "0"
-      }))
-      
-      console.log('Connection open!')
-    }*/
 
     // this.ws.addEventListener('message', this.onMessage.bind(this))
 
@@ -95,18 +38,10 @@ export class Connection extends EventEmitter {
   }
 
   private onMessage(data: any) {
-    // if (!e.data) return
-    console.log("message:", data)
-    // const data = JSON.parse(e.data)
-
     switch (data.type) {
       case 'character:move':
-        console.log("move", data)
-        console.log({ ...data })
-        data.type = 'player:move'
-        data.id = parseInt(data.id)
-        this.emit('player:move', { ...data })
-        // this.onMessage({ type: 'player:move', id: parseInt(data.id), row: data.row, col: data.col })
+        data.id = parseInt(data.id) // ??? fix
+        this.emit('character:move', { ...data })
         break
       case 'character:new':
         const info = new PlayerInfo(
@@ -117,7 +52,7 @@ export class Connection extends EventEmitter {
           data.row,
           data.col,
         )
-        this.emit('player:new', info)
+        this.emit('character:new', info)
         this.players.set(info.id, info)
         break
       /*case 'player:reset':
@@ -126,7 +61,7 @@ export class Connection extends EventEmitter {
       case 'character:leave':
         const id = parseInt(data.id)
         this.players.delete(id)
-        this.emit('player:leave', { id })
+        this.emit('character:leave', { id })
         break
     }
   }
@@ -140,19 +75,20 @@ export class Connection extends EventEmitter {
     }))
 
     /*if (Math.random() > 0.5) {
-      this.onMessage({ type: 'player:move', id, row, col })
+      this.onMessage({ type: 'character:move', id, row, col })
     } else {
-      this.onMessage({ type: 'player:reset', id })
+      this.onMessage({ type: 'character:reset', id })
     }*/
   }
 
+  // not used anymore
   public generateMessage() {
     const rand = (Math.random() * 10) | 0
     const randid = (Math.random() * 100000) | 0
     switch (true) {
       case rand < 3 || this.players.size === 0:
         this.onMessage({
-          type: 'player:new',
+          type: 'character:new',
           id: randid,
           username: 'bob_' + randid,
           own: randid % 2 === 0,
@@ -162,13 +98,13 @@ export class Connection extends EventEmitter {
         break
       case rand < 5:
         this.onMessage({
-          type: 'player:leave',
+          type: 'character:leave',
           id: [...this.players.values()][0].id,
         })
         break
       default:
         this.onMessage({
-          type: 'player:move',
+          type: 'character:move',
           id: [...this.players.values()][0].id,
           row: randid % BOARD_HEIGHT,
           col: randid % BOARD_WIDTH,

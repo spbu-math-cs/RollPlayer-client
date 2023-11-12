@@ -4,8 +4,10 @@ import { BoardInfo } from '../entities/BoardInfo'
 import { PlayerInfo } from '../entities/PlayerInfo'
 import { Player } from './Player'
 import { Viewport } from 'pixi-viewport'
+import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE } from '../GlobalParameters'
 
-const CELL_SIZE = 64
+const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
+const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
 export class Board extends Viewport {
   public readonly tiles: Tile[][] = []
@@ -20,8 +22,8 @@ export class Board extends Viewport {
     super({
       events: app.renderer.events,
       disableOnContextMenu: true,
-      worldWidth: info.cols * CELL_SIZE,
-      worldHeight: info.rows * CELL_SIZE,
+      worldWidth: info.cols * ACTUAL_CELL_WIDTH,
+      worldHeight: info.rows * ACTUAL_CELL_HEIGHT,
     })
 
     this.x = this.screenWidth / 2 - this.worldWidth / 2
@@ -68,20 +70,20 @@ export class Board extends Viewport {
   }
 
   getNearestTile(x: number, y: number): Tile {
-    let row = Math.round((y - CELL_SIZE / 2) / CELL_SIZE)
+    let row = Math.round((y - ACTUAL_CELL_HEIGHT / 2) / ACTUAL_CELL_HEIGHT)
     row = Math.max(0, row)
-    row = Math.min(this.info.rows, row)
+    row = Math.min(this.info.rows - 1, row)
 
-    let col = Math.round((x - CELL_SIZE / 2) / CELL_SIZE)
+    let col = Math.round((x - ACTUAL_CELL_WIDTH / 2) / ACTUAL_CELL_WIDTH)
     col = Math.max(0, col)
-    col = Math.min(this.info.cols, col)
+    col = Math.min(this.info.cols - 1, col)
 
     return this.tiles[row][col]
   }
 
   calculateTilePosition(row: number, col: number) {
-    const target_x = col * CELL_SIZE + CELL_SIZE / 2
-    const target_y = row * CELL_SIZE + CELL_SIZE / 2
+    const target_x = col * ACTUAL_CELL_WIDTH + ACTUAL_CELL_WIDTH / 2
+    const target_y = row * ACTUAL_CELL_HEIGHT + ACTUAL_CELL_HEIGHT / 2
 
     return [target_x, target_y]
   }

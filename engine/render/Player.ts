@@ -3,12 +3,11 @@ import * as PIXI from 'pixi.js'
 import * as TWEEN from '@tweenjs/tween.js'
 import { Board } from './Board'
 import { Tile } from './Tile'
+import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE } from '../GlobalParameters'
+import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
 
-const CELL_SIZE = 16
-const SCALE = 4
-
-const COMMON_TINT = 0xb0b0b0
-const HIGHLIGHT_TINT = 0xffffff
+const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
+const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
 function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -30,7 +29,7 @@ export class Player extends PIXI.Graphics {
     const outline_color = getRandomInteger(0xc0c0c0, 0xffffff + 1)
     this.lineStyle(2, outline_color, 1)
     this.beginFill(player_color, 1)
-    this.drawCircle(0, 0, (CELL_SIZE / 3) * SCALE)
+    this.drawCircle(0, 0, Math.min(ACTUAL_CELL_WIDTH, ACTUAL_CELL_HEIGHT) / 3)
     this.endFill()
 
     this.interactive = true
@@ -47,7 +46,7 @@ export class Player extends PIXI.Graphics {
   }
 
   private onMove({ row, col }: { row: number; col: number }) {
-    this.moveAnimated(row, col, TWEEN.Easing.Elastic.Out)
+    this.moveAnimated(row, col, TWEEN.Easing.Exponential.InOut)
   }
 
   private onReset() {
@@ -94,10 +93,10 @@ export class Player extends PIXI.Graphics {
     row: number,
     col: number,
     easing: Parameters<InstanceType<typeof TWEEN.Tween>['easing']>[0] = void 0,
-    timeout = 1500,
+    timeout = 1000,
   ) {
-    const target_x = (col * CELL_SIZE + CELL_SIZE / 2) * SCALE
-    const target_y = (row * CELL_SIZE + CELL_SIZE / 2) * SCALE
+    const target_x = col * ACTUAL_CELL_WIDTH + ACTUAL_CELL_WIDTH / 2
+    const target_y = row * ACTUAL_CELL_HEIGHT + ACTUAL_CELL_HEIGHT / 2
 
     if (!easing) {
       this.x = target_x
