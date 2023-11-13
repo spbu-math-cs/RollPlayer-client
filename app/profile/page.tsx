@@ -1,6 +1,6 @@
 'use client'
 
-import React, {FormEvent, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import AuthContext, {User} from "@/context/AuthContext";
 import Link from "next/link";
 import _ from "lodash";
