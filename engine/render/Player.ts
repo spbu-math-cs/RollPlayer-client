@@ -7,9 +7,6 @@ import { Tile } from './Tile'
 const CELL_SIZE = 16
 const SCALE = 4
 
-const COMMON_TINT = 0xb0b0b0
-const HIGHLIGHT_TINT = 0xffffff
-
 function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
@@ -17,8 +14,6 @@ function getRandomInteger(min: number, max: number) {
 export class Player extends PIXI.Graphics {
   private nearestTile: Tile | null = null
   private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
-  private update: (() => void) | null = null
-  private active = false
 
   constructor(
     private board: Board,
@@ -57,7 +52,6 @@ export class Player extends PIXI.Graphics {
   public activate() {
     this.tween?.stop()
 
-    this.active = true
     this.alpha = 0.75
   }
 
@@ -78,7 +72,6 @@ export class Player extends PIXI.Graphics {
   }
 
   public deactivate(moveBack = true) {
-    this.active = false
     this.alpha = 1
     this.nearestTile?.deactivate()
     this.nearestTile = null

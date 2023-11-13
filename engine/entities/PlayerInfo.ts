@@ -18,8 +18,8 @@ export class PlayerInfo extends EventEmitter {
     this._row = row
     this._col = col
 
-    this.connection.on('player:move', this.onMove.bind(this))
-    this.connection.on('player:reset', this.onReset.bind(this))
+    this.connection.on('character:move', this.onMove.bind(this))
+    this.connection.on('character:reset', this.onReset.bind(this))
   }
 
   private onMove({ id, row, col }: { id: number; row: number; col: number }) {

@@ -14,7 +14,7 @@ export class Tile extends PIXI.Sprite {
   ) {
     super()
 
-    this.texture = PIXI.Texture.from(info.texture)
+    this.texture = info.texture
     this.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST
 
     this.anchor.set(0.5)

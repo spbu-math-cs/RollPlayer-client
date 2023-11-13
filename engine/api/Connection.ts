@@ -32,12 +32,14 @@ export class Connection extends EventEmitter {
       // this.ws.send('kek')
       console.log('Open readyState:', this.ws.readyState)
 
-      this.ws.send(JSON.stringify({
-        type: 'character:new',
-        name: `user_${userID}`,
-        row: '0',
-        col: '0'
-      }))
+      this.ws.send(
+        JSON.stringify({
+          type: 'character:new',
+          name: `user_${userID}`,
+          row: 0,
+          col: 0,
+        }),
+      )
     }
 
     this.ws.onerror = (event) => {
@@ -96,17 +98,17 @@ export class Connection extends EventEmitter {
 
   private onMessage(data: any) {
     // if (!e.data) return
-    console.log("message:", data)
+    console.log('message:', data)
     // const data = JSON.parse(e.data)
 
     switch (data.type) {
       case 'character:move':
-        console.log("move", data)
+        console.log('move', data)
         console.log({ ...data })
-        data.type = 'player:move'
+        data.type = 'character:move'
         data.id = parseInt(data.id)
-        this.emit('player:move', { ...data })
-        // this.onMessage({ type: 'player:move', id: parseInt(data.id), row: data.row, col: data.col })
+        this.emit('character:move', { ...data })
+        // this.onMessage({ type: 'character:move', id: parseInt(data.id), row: data.row, col: data.col })
         break
       case 'character:new':
         const info = new PlayerInfo(
@@ -117,32 +119,34 @@ export class Connection extends EventEmitter {
           data.row,
           data.col,
         )
-        this.emit('player:new', info)
+        this.emit('character:new', info)
         this.players.set(info.id, info)
         break
-      /*case 'player:reset':
-        this.emit('player:reset', { ...data })
+      /*case 'character:reset':
+        this.emit('character:reset', { ...data })
         break*/
       case 'character:leave':
         const id = parseInt(data.id)
         this.players.delete(id)
-        this.emit('player:leave', { id })
+        this.emit('character:leave', { id })
         break
     }
   }
 
   public movePlayer(id: number, row: number, col: number) {
-    this.ws.send(JSON.stringify({
-      type: 'character:move',
-      id: id,
-      row: row,
-      col: col
-    }))
+    this.ws.send(
+      JSON.stringify({
+        type: 'character:move',
+        id: id,
+        row: row,
+        col: col,
+      }),
+    )
 
     /*if (Math.random() > 0.5) {
-      this.onMessage({ type: 'player:move', id, row, col })
+      this.onMessage({ type: 'character:move', id, row, col })
     } else {
-      this.onMessage({ type: 'player:reset', id })
+      this.onMessage({ type: 'character:reset', id })
     }*/
   }
 
@@ -152,7 +156,7 @@ export class Connection extends EventEmitter {
     switch (true) {
       case rand < 3 || this.players.size === 0:
         this.onMessage({
-          type: 'player:new',
+          type: 'character:new',
           id: randid,
           username: 'bob_' + randid,
           own: randid % 2 === 0,
@@ -162,13 +166,13 @@ export class Connection extends EventEmitter {
         break
       case rand < 5:
         this.onMessage({
-          type: 'player:leave',
+          type: 'character:leave',
           id: [...this.players.values()][0].id,
         })
         break
       default:
         this.onMessage({
-          type: 'player:move',
+          type: 'character:move',
           id: [...this.players.values()][0].id,
           row: randid % BOARD_HEIGHT,
           col: randid % BOARD_WIDTH,
