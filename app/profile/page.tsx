@@ -1,6 +1,6 @@
 'use client'
 
-import React, {FormEvent, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import AuthContext, {User} from "@/context/AuthContext";
 import Link from "next/link";
 import _ from "lodash";
@@ -31,12 +31,9 @@ export default function UserProfilePage() {
     return <div></div>;
   }
 
-  function ClickSignOut(event: FormEvent) {
-    event.preventDefault();
-    if (authContext.user?.userId === undefined) {
-      return;
-    }
-    authContext.signOut(authContext.user.userId, null);
+  function ClickSignOut() {
+    let userId = authContext.user?.userId
+    authContext.signOut(userId ? userId : null);
   }
 
   function saveChanges() {

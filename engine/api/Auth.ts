@@ -2,15 +2,27 @@ import {User} from "@/context/AuthContext";
 
 const API_BASE_ADDR = "http://127.0.0.1:9999"
 
+interface UserInfo {
+  id: number,
+  login?: string,
+  email?: string,
+  passwordHash?: number,
+}
+
 export async function signInApi(login: string | null, email: string | null, password: string) {
   const userData = {login, email, password};
   const response = await fetch(`${API_BASE_ADDR}/api/login`, {
     method: 'POST',
     body: JSON.stringify(userData),
   });
-  const responseData = await response.json() as {'userId': number, 'message': string};
-  if (!response.ok) {
-    return responseData['userId'];
+  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
+  if (response.ok) {
+    const info = responseData.userInfo;
+    return {
+      'userId': info.id,
+      'login': info.login,
+      'email': info.email,
+    };
   } else {
     return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
   }
@@ -21,18 +33,23 @@ export async function signUpApi(user: User) {
     method: 'POST',
     body: JSON.stringify(user),
   });
-  const responseData = await response.json() as {'message': string};
+  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
   if (response.ok) {
-    return parseInt(responseData['message'].split(" ")[1]); // message == "User $id registered successfully"
+    const info = responseData.userInfo;
+    return {
+      'userId': info.id,
+      'login': info.login,
+      'email': info.email,
+    };
   } else {
     return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
   }
 }
 
-export async function signOutApi(userId: number, sessionId: number | null) {
+export async function signOutApi(userId: number) {
   const response = await fetch(`${API_BASE_ADDR}/api/logout`, {
     method: 'POST',
-    body: JSON.stringify({userId, sessionId}),
+    body: JSON.stringify({userId}),
   });
   const responseData = await response.json() as {'message': string};
   if (response.ok) {
@@ -47,9 +64,14 @@ export async function editApi(userId: number, userData: User) {
     method: 'POST',
     body: JSON.stringify(userData),
   });
-  const responseData = await response.json() as {'message': string};
+  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
   if (response.ok) {
-    return 0;
+    const info = responseData.userInfo;
+    return {
+      'userId': info.id,
+      'login': info.login,
+      'email': info.email,
+    };
   } else {
     return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
   }
