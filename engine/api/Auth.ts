@@ -1,8 +1,10 @@
 import {User} from "@/context/AuthContext";
 
+const API_BASE_ADDR = "http://127.0.0.1:9999"
+
 export async function signInApi(login: string | null, email: string | null, password: string) {
   const userData = {login, email, password};
-  const response = await fetch('/api/login', {
+  const response = await fetch(`${API_BASE_ADDR}/api/login`, {
     method: 'POST',
     body: JSON.stringify(userData),
   });
@@ -15,7 +17,7 @@ export async function signInApi(login: string | null, email: string | null, pass
 }
 
 export async function signUpApi(user: User) {
-  const response = await fetch('/api/register', {
+  const response = await fetch(`${API_BASE_ADDR}/api/register`, {
     method: 'POST',
     body: JSON.stringify(user),
   });
@@ -28,7 +30,7 @@ export async function signUpApi(user: User) {
 }
 
 export async function signOutApi(userId: number, sessionId: number | null) {
-  const response = await fetch('/api/logout', {
+  const response = await fetch(`${API_BASE_ADDR}/api/logout`, {
     method: 'POST',
     body: JSON.stringify({userId, sessionId}),
   });
@@ -41,7 +43,7 @@ export async function signOutApi(userId: number, sessionId: number | null) {
 }
 
 export async function editApi(userId: number, userData: User) {
-  const response = await fetch(`/api/logout/${userId}`, {
+  const response = await fetch(`${API_BASE_ADDR}api/logout/${userId}`, {
     method: 'POST',
     body: JSON.stringify(userData),
   });

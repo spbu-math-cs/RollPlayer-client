@@ -29,6 +29,8 @@ export class Connection extends EventEmitter {
     }
 
     this.ws.onmessage = (event) => {
+      console.log('message:', event)
+
       this.onMessage(JSON.parse(event.data))
     }
 
