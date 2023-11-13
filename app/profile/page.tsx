@@ -31,7 +31,7 @@ export default function UserProfilePage() {
     return <div></div>;
   }
 
-  function ClickSignOut(event: FormEvent) {
+  function ClickSignOut() {
     let userId = authContext.user?.userId
     authContext.signOut(userId ? userId : null);
   }
