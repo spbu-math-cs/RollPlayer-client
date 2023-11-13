@@ -32,11 +32,8 @@ export default function UserProfilePage() {
   }
 
   function ClickSignOut(event: FormEvent) {
-    event.preventDefault();
-    if (authContext.user?.userId === undefined) {
-      return;
-    }
-    authContext.signOut(authContext.user.userId, null);
+    let userId = authContext.user?.userId
+    authContext.signOut(userId ? userId : null);
   }
 
   function saveChanges() {
