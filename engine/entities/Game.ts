@@ -7,27 +7,33 @@ import * as PIXI from 'pixi.js'
 import { BoardInfo } from './BoardInfo'
 
 export class Game {
-  connection: Connection
+  connection?: Connection
   app: PIXI.Application
   boardApi: BoardApi
 
   constructor(
-    gameId: string,
-    canvas: HTMLCanvasElement,
-    public readonly window: Window
+    private gameId: string,
+    private canvas: HTMLCanvasElement,
+    public readonly window: Window,
   ) {
-    this.connection = new Connection(gameId)
-
     this.app = new PIXI.Application({
       view: canvas,
       resizeTo: canvas.parentElement!,
     })
 
+    this.init()
+  }
+
+  async init() {
     this.loadBackground()
 
     this.boardApi = new BoardApi()
 
-    this.boardApi.getBoard().then(this.loadBoard.bind(this))
+    const info = await this.boardApi.getBoard('1')
+
+    this.connection = new Connection(this.gameId)
+
+    this.loadBoard(info)
   }
 
   loadBackground() {
@@ -39,8 +45,8 @@ export class Game {
   loadBoard(info: BoardInfo) {
     const board = new Board(this.app, info, this.window)
 
-    this.connection.on('character:new', (info) => board.addCharacter(info))
-    this.connection.on('character:leave', (id) => board.removeCharacter(id))
+    this.connection.on('character:new', (info) => board.addPlayer(info))
+    this.connection.on('character:leave', (id) => board.removePlayer(id))
 
     this.app.stage.addChild(board)
   }

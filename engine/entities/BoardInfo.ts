@@ -5,5 +5,5 @@ export class BoardInfo {
     public readonly rows: number,
     public readonly cols: number,
     public readonly tiles: TileInfo[][],
-  ) { }
+  ) {}
 }

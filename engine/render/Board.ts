@@ -31,7 +31,7 @@ export class Board extends Viewport {
 
     this.drag({ mouseButtons: 'right' })
       .pinch()
-      .wheel({smooth: 5})
+      .wheel({ smooth: 5 })
       .decelerate({ friction: 0.9 })
 
     this.window.addEventListener('blur', this.deactivateCharacter.bind(this))

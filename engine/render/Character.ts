@@ -16,8 +16,6 @@ function getRandomInteger(min: number, max: number) {
 export class Character extends PIXI.Graphics {
   private nearestTile: Tile | null = null
   private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
-  private update: (() => void) | null = null
-  private active = false
 
   constructor(
     private board: Board,
@@ -56,7 +54,6 @@ export class Character extends PIXI.Graphics {
   public activate() {
     this.tween?.stop()
 
-    this.active = true
     this.alpha = 0.75
   }
 
@@ -77,7 +74,6 @@ export class Character extends PIXI.Graphics {
   }
 
   public deactivate(moveBack = true) {
-    this.active = false
     this.alpha = 1
     this.nearestTile?.deactivate()
     this.nearestTile = null
