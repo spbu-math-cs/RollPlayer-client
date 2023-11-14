@@ -10,7 +10,7 @@ export interface User {
   password?: string,
 }
 
-const AuthContext = createContext({
+export const AuthContext = createContext({
   user: null as User | null,
   signIn: (login: string | null, email: string | null, password: string) => {},
   signUp: (user: User) => {},
@@ -49,7 +49,8 @@ export const AuthContextProvider = ({children}: any) => {
         if (typeof response === 'string') {
           setError(response);
         } else {
-          let newUser: User = response;
+          console.log(response);
+          let newUser: User = response as User;
           newUser.password = password;
           setUser(newUser);
         }

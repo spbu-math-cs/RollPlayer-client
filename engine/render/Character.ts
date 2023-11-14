@@ -13,6 +13,12 @@ function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
+function getCol(id: number, min: number, max: number) {
+  id += 1
+  const rn = (Math.sin((2 * id * id + 3 * id + 5) * 1000000) + 1) / 2
+  return Math.floor(rn * (max - min)) + min
+}
+
 export class Character extends PIXI.Graphics {
   private nearestTile: Tile | null = null
   private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
@@ -23,8 +29,8 @@ export class Character extends PIXI.Graphics {
   ) {
     super()
 
-    const character_color = getRandomInteger(0xc0c0c0, 0xffffff + 1)
-    const outline_color = getRandomInteger(0xc0c0c0, 0xffffff + 1)
+    const character_color = getCol(info.id * 2, 0xc0c0c0, 0xffffff + 1)
+    const outline_color = getCol(info.id * 2 + 1, 0xc0c0c0, 0xffffff + 1)
     this.lineStyle(2, outline_color, 1)
     this.beginFill(character_color, 1)
     this.drawCircle(0, 0, Math.min(ACTUAL_CELL_WIDTH, ACTUAL_CELL_HEIGHT) / 3)

@@ -12,16 +12,18 @@ export class Connection extends EventEmitter {
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    const userID = (Math.random() * 10000) | 0
-    this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/0`)
+    const userID = 1 // (Math.random() * 10000) | 0
+    this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/1`)
 
     this.ws.onopen = (event) => {
+      /*
       this.ws.send(JSON.stringify({
         type: 'character:new',
         name: `user_${userID}`,
         row: '0',
         col: '0'
       }))
+      */
     }
 
     this.ws.onerror = (event) => {
@@ -40,6 +42,8 @@ export class Connection extends EventEmitter {
   }
 
   private onMessage(data: any) {
+    console.log(data)
+
     switch (data.type) {
       case 'character:move':
         data.id = parseInt(data.id) // ??? fix
@@ -61,10 +65,18 @@ export class Connection extends EventEmitter {
         this.emit('character:reset', { ...data })
         break*/
       case 'character:leave':
-        const id = parseInt(data.id)
+        const id = parseInt(data.id) // ??? fix
         this.characters.delete(id)
         this.emit('character:leave', { id })
         break
+      case 'character:status':
+        const id_ = parseInt(data.id) // ??? fix
+        break
+      case 'character:error':
+        console.info('error:', data)
+        break
+      default:
+        console.error('unknown message type:', data.type)
     }
   }
 
