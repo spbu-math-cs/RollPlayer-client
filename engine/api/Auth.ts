@@ -13,9 +13,9 @@ export async function signInApi(login: string | null, email: string | null, pass
     method: 'POST',
     body: JSON.stringify(userData),
   });
-  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
+  const responseData = await response.json() as {'userInfo': string, 'message': string};
   if (response.ok) {
-    const info = responseData.userInfo;
+    const info: UserInfo = JSON.parse(responseData.userInfo);
     return {
       'userId': info.id,
       'login': info.login,
@@ -31,9 +31,9 @@ export async function signUpApi(user: User) {
     method: 'POST',
     body: JSON.stringify(user),
   });
-  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
+  const responseData = await response.json() as {'userInfo': string, 'message': string};
   if (response.ok) {
-    const info = responseData.userInfo;
+    const info: UserInfo = JSON.parse(responseData.userInfo);
     return {
       'userId': info.id,
       'login': info.login,
@@ -62,9 +62,9 @@ export async function editApi(userId: number, userData: User) {
     method: 'POST',
     body: JSON.stringify(userData),
   });
-  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
+  const responseData = await response.json() as {'userInfo': string, 'message': string};
   if (response.ok) {
-    const info = responseData.userInfo;
+    const info: UserInfo = JSON.parse(responseData.userInfo);
     return {
       'userId': info.id,
       'login': info.login,

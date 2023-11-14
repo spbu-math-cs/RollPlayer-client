@@ -3,13 +3,14 @@ export interface SessionInfo {
 }
 
 export async function getSessions(userId: number) {
-  const response = await fetch('/api/login', {
+  const response = await fetch(`/api/${userId}/sessions`, {
     method: 'POST',
     body: JSON.stringify(userId),
   });
-  const responseData = await response.json() as {'sessions': SessionInfo[], 'message': string};
+  const responseData = await response.json() as {'sessions': string, 'message': string};
   if (response.ok) {
-    return responseData.sessions;
+    const sessions: SessionInfo[] = JSON.parse(responseData.sessions)
+    return sessions;
   } else {
     return getError(responseData.message, response)
   }
