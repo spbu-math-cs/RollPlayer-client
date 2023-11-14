@@ -1,17 +1,19 @@
+import {getError} from "@/engine/api/Utils";
+
 export interface SessionInfo {
   sessionId: number,
 }
 
 export async function getSessions(userId: number) {
   const response = await fetch(`/api/${userId}/sessions`, {
-    method: 'POST',
-    body: JSON.stringify(userId),
+    method: 'GET',
   });
-  const responseData = await response.json() as {'sessions': string, 'message': string};
+  const responseData = await response.text();
+  console.log(responseData)
   if (response.ok) {
-    const sessions: SessionInfo[] = JSON.parse(responseData.sessions)
+    const sessions: SessionInfo[] = JSON.parse(responseData)
     return sessions;
   } else {
-    return getError(responseData.message, response)
+    return getError('Could not get sessions', response)
   }
 }

@@ -1,4 +1,5 @@
 import {User} from "@/context/AuthContext";
+import {getError} from "@/engine/api/Utils";
 
 interface UserInfo {
   id: number,
@@ -22,7 +23,7 @@ export async function signInApi(login: string | null, email: string | null, pass
       'email': info.email,
     };
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
 
@@ -40,7 +41,7 @@ export async function signUpApi(user: User) {
       'email': info.email,
     };
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
 
@@ -53,7 +54,7 @@ export async function signOutApi(userId: number) {
   if (response.ok) {
     return 0;
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
 
@@ -71,6 +72,6 @@ export async function editApi(userId: number, userData: User) {
       'email': info.email,
     };
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
