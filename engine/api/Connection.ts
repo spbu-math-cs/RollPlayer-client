@@ -12,7 +12,7 @@ export class Connection extends EventEmitter {
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    const userID = 1 // (Math.random() * 10000) | 0
+    const userID = 2 // (Math.random() * 10000) | 0
     this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/1`)
 
     this.ws.onopen = (event) => {
@@ -81,6 +81,8 @@ export class Connection extends EventEmitter {
   }
 
   public moveCharacter(id: number, row: number, col: number) {
+    if (this.ws.readyState !== WebSocket.OPEN) return
+
     this.ws.send(JSON.stringify({
       type: 'character:move',
       id: id,
@@ -125,5 +127,9 @@ export class Connection extends EventEmitter {
         })
         break
     }
+  }
+
+  public close() {
+    this.ws.close()
   }
 }

@@ -8,14 +8,17 @@ import { BoardInfo } from './BoardInfo'
 
 export class Game {
   connection?: Connection
-  app: PIXI.Application
   boardApi: BoardApi
+  app: PIXI.Application
+  board?: Board
 
   constructor(
     private gameId: string,
     private canvas: HTMLCanvasElement,
     public readonly window: Window,
   ) {
+    this.boardApi = new BoardApi()
+
     this.app = new PIXI.Application({
       view: canvas,
       resizeTo: canvas.parentElement!,
@@ -26,8 +29,6 @@ export class Game {
 
   async init() {
     this.loadBackground()
-
-    this.boardApi = new BoardApi()
 
     const info = await this.boardApi.getBoard('1')
 
@@ -43,11 +44,20 @@ export class Game {
   }
 
   loadBoard(info: BoardInfo) {
-    const board = new Board(this.app, info, this.window)
+    if (!this.connection)
+      throw new Error('Trying to load board without an active connection')
 
-    this.connection.on('character:new', (info) => board.addCharacter(info))
-    this.connection.on('character:leave', (id) => board.removeCharacter(id))
+    this.board = new Board(this.app, info, this.window)
 
-    this.app.stage.addChild(board)
+    this.connection.on('character:new', (info) => this.board?.addCharacter(info))
+    this.connection.on('character:leave', (id) => this.board?.removeCharacter(id))
+
+    this.app.stage.addChild(this.board)
+  }
+
+  cleanUp() {
+    if (this.connection) this.connection.close()
+    if (this.board) this.app.stage.removeChild(this.board)
+    this.app.stop()
   }
 }
