@@ -49,8 +49,7 @@ export const AuthContextProvider = ({children}: any) => {
         if (typeof response === 'string') {
           setError(response);
         } else {
-          console.log(response);
-          let newUser: User = response as User;
+          let newUser: User = response;
           newUser.password = password;
           setUser(newUser);
         }

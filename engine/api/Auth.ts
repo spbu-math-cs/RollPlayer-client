@@ -1,6 +1,7 @@
 import {User} from "@/context/AuthContext";
+import {getError} from "@/engine/api/Utils";
 
-const API_BASE_ADDR = "http://127.0.0.1:9999"
+const API_BASE_ADDR = "http://127.0.0.1:9999";
 
 interface UserInfo {
   id: number,
@@ -15,16 +16,16 @@ export async function signInApi(login: string | null, email: string | null, pass
     method: 'POST',
     body: JSON.stringify(userData),
   });
-  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
+  const responseData = await response.json() as {'userInfo': string, 'message': string};
   if (response.ok) {
-    const info = responseData.userInfo;
+    const info: UserInfo = JSON.parse(responseData.userInfo);
     return {
       'userId': info.id,
       'login': info.login,
       'email': info.email,
     };
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
 
@@ -33,16 +34,16 @@ export async function signUpApi(user: User) {
     method: 'POST',
     body: JSON.stringify(user),
   });
-  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
+  const responseData = await response.json() as {'userInfo': string, 'message': string};
   if (response.ok) {
-    const info = responseData.userInfo;
+    const info: UserInfo = JSON.parse(responseData.userInfo);
     return {
       'userId': info.id,
       'login': info.login,
       'email': info.email,
     };
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
 
@@ -55,7 +56,7 @@ export async function signOutApi(userId: number) {
   if (response.ok) {
     return 0;
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
 
@@ -64,15 +65,15 @@ export async function editApi(userId: number, userData: User) {
     method: 'POST',
     body: JSON.stringify(userData),
   });
-  const responseData = await response.json() as {'userInfo': UserInfo, 'message': string};
+  const responseData = await response.json() as {'userInfo': string, 'message': string};
   if (response.ok) {
-    const info = responseData.userInfo;
+    const info: UserInfo = JSON.parse(responseData.userInfo);
     return {
       'userId': info.id,
       'login': info.login,
       'email': info.email,
     };
   } else {
-    return `Error ${response.status}: ${response.statusText}, ${responseData['message']}`;
+    return getError(responseData.message, response);
   }
 }
