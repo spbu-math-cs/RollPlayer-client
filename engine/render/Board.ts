@@ -1,16 +1,18 @@
 import * as PIXI from 'pixi.js'
 import { Tile } from './Tile'
 import { BoardInfo } from '../entities/BoardInfo'
-import { PlayerInfo } from '../entities/PlayerInfo'
-import { Player } from './Player'
+import { CharacterInfo } from '../entities/CharacterInfo'
+import { Character } from './Character'
 import { Viewport } from 'pixi-viewport'
+import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE } from '../GlobalParameters'
 
-const CELL_SIZE = 64
+const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
+const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
 export class Board extends Viewport {
   public readonly tiles: Tile[][] = []
-  public readonly players: Map<number, Player> = new Map()
-  private activePlayer: Player | null = null
+  public readonly characters: Map<number, Character> = new Map()
+  private activeCharacter: Character | null = null
 
   constructor(
     public readonly app: PIXI.Application,
@@ -20,8 +22,8 @@ export class Board extends Viewport {
     super({
       events: app.renderer.events,
       disableOnContextMenu: true,
-      worldWidth: info.cols * CELL_SIZE,
-      worldHeight: info.rows * CELL_SIZE,
+      worldWidth: info.cols * ACTUAL_CELL_WIDTH,
+      worldHeight: info.rows * ACTUAL_CELL_HEIGHT,
     })
 
     this.x = this.screenWidth / 2 - this.worldWidth / 2
@@ -29,59 +31,59 @@ export class Board extends Viewport {
 
     this.drag({ mouseButtons: 'right' })
       .pinch()
-      .wheel({smooth: 5})
+      .wheel({ smooth: 5 })
       .decelerate({ friction: 0.9 })
 
-    this.window.addEventListener('blur', this.deactivatePlayer.bind(this))
-    this.on('pointerup', this.finishPlayerMove.bind(this))
-    this.on('pointermove', this.dragPlayer.bind(this))
+    this.window.addEventListener('blur', this.deactivateCharacter.bind(this))
+    this.on('pointerup', this.finishCharacterMove.bind(this))
+    this.on('pointermove', this.dragCharacter.bind(this))
 
     this.sortableChildren = true
 
     this.initBoard()
   }
 
-  activatePlayer(player: Player) {
-    this.deactivatePlayer()
+  activateCharacter(character: Character) {
+    this.deactivateCharacter()
 
-    this.activePlayer = player
-    player.activate()
+    this.activeCharacter = character
+    character.activate()
   }
 
-  dragPlayer(e: PIXI.FederatedPointerEvent) {
-    if (this.activePlayer === null) return
+  dragCharacter(e: PIXI.FederatedPointerEvent) {
+    if (this.activeCharacter === null) return
 
     const pos = this.toLocal(e.global, void 0)
-    this.activePlayer.drag(pos.x, pos.y)
+    this.activeCharacter.drag(pos.x, pos.y)
   }
 
-  deactivatePlayer() {
-    this.activePlayer?.deactivate()
-    this.activePlayer = null
+  deactivateCharacter() {
+    this.activeCharacter?.deactivate()
+    this.activeCharacter = null
   }
 
-  finishPlayerMove() {
-    if (!this.activePlayer) return
+  finishCharacterMove() {
+    if (!this.activeCharacter) return
 
-    this.activePlayer.finishMove()
-    this.deactivatePlayer()
+    this.activeCharacter.finishMove()
+    this.deactivateCharacter()
   }
 
   getNearestTile(x: number, y: number): Tile {
-    let row = Math.round((y - CELL_SIZE / 2) / CELL_SIZE)
+    let row = Math.round((y - ACTUAL_CELL_HEIGHT / 2) / ACTUAL_CELL_HEIGHT)
     row = Math.max(0, row)
-    row = Math.min(this.info.rows, row)
+    row = Math.min(this.info.rows - 1, row)
 
-    let col = Math.round((x - CELL_SIZE / 2) / CELL_SIZE)
+    let col = Math.round((x - ACTUAL_CELL_WIDTH / 2) / ACTUAL_CELL_WIDTH)
     col = Math.max(0, col)
-    col = Math.min(this.info.cols, col)
+    col = Math.min(this.info.cols - 1, col)
 
     return this.tiles[row][col]
   }
 
   calculateTilePosition(row: number, col: number) {
-    const target_x = col * CELL_SIZE + CELL_SIZE / 2
-    const target_y = row * CELL_SIZE + CELL_SIZE / 2
+    const target_x = col * ACTUAL_CELL_WIDTH + ACTUAL_CELL_WIDTH / 2
+    const target_y = row * ACTUAL_CELL_HEIGHT + ACTUAL_CELL_HEIGHT / 2
 
     return [target_x, target_y]
   }
@@ -103,21 +105,21 @@ export class Board extends Viewport {
     }
   }
 
-  addPlayer(info: PlayerInfo) {
-    const player = new Player(this, info)
+  addCharacter(info: CharacterInfo) {
+    const character = new Character(this, info)
 
-    if (player.info.own)
-      player.on('pointerdown', () => this.activatePlayer(player))
+    if (character.info.own)
+      character.on('pointerdown', () => this.activateCharacter(character))
 
-    this.addChild(player)
-    this.players.set(info.id, player)
+    this.addChild(character)
+    this.characters.set(info.id, character)
   }
 
-  removePlayer(info: PlayerInfo) {
-    const player = this.players.get(info.id)
-    if (!player) return
+  removeCharacter(info: CharacterInfo) {
+    const character = this.characters.get(info.id)
+    if (!character) return
 
-    this.removeChild(player)
-    this.players.delete(info.id)
+    this.removeChild(character)
+    this.characters.delete(info.id)
   }
 }

@@ -10,7 +10,7 @@ export interface User {
   password?: string,
 }
 
-const AuthContext = createContext({
+export const AuthContext = createContext({
   user: null as User | null,
   signIn: (login: string | null, email: string | null, password: string) => {},
   signUp: (user: User) => {},

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { Connection } from '../api/Connection'
 
-export class PlayerInfo extends EventEmitter {
+export class CharacterInfo extends EventEmitter {
   private _row: number
   private _col: number
 
@@ -18,8 +18,8 @@ export class PlayerInfo extends EventEmitter {
     this._row = row
     this._col = col
 
-    this.connection.on('player:move', this.onMove.bind(this))
-    this.connection.on('player:reset', this.onReset.bind(this))
+    this.connection.on('character:move', this.onMove.bind(this))
+    this.connection.on('character:reset', this.onReset.bind(this))
   }
 
   private onMove({ id, row, col }: { id: number; row: number; col: number }) {
@@ -38,7 +38,7 @@ export class PlayerInfo extends EventEmitter {
   }
 
   public move(row: number, col: number) {
-    this.connection.movePlayer(this.id, row, col)
+    this.connection.moveCharacter(this.id, row, col)
   }
 
   public get row() {

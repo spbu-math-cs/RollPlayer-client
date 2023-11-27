@@ -71,7 +71,7 @@ export default function PlayPage() {
     <>
       <section className="container mx-auto w-screen h-[95%] flex-row-reverse items-center justify-center overflow-y-scroll">
         {
-          sessions.map(session =>
+          sessions.map(JSON.parse).map(session =>
             <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
               <button
                 className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"

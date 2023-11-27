@@ -7,27 +7,34 @@ import * as PIXI from 'pixi.js'
 import { BoardInfo } from './BoardInfo'
 
 export class Game {
-  connection: Connection
-  app: PIXI.Application
+  connection?: Connection
   boardApi: BoardApi
+  app: PIXI.Application
+  board?: Board
 
   constructor(
-    gameId: string,
-    canvas: HTMLCanvasElement,
-    public readonly window: Window
+    private gameId: string,
+    private canvas: HTMLCanvasElement,
+    public readonly window: Window,
   ) {
-    this.connection = new Connection(gameId)
+    this.boardApi = new BoardApi()
 
     this.app = new PIXI.Application({
       view: canvas,
       resizeTo: canvas.parentElement!,
     })
 
+    this.init()
+  }
+
+  async init() {
     this.loadBackground()
 
-    this.boardApi = new BoardApi()
+    const info = await this.boardApi.getBoard('1')
 
-    this.boardApi.getBoard().then(this.loadBoard.bind(this))
+    this.connection = new Connection(this.gameId)
+
+    this.loadBoard(info)
   }
 
   loadBackground() {
@@ -37,11 +44,20 @@ export class Game {
   }
 
   loadBoard(info: BoardInfo) {
-    const board = new Board(this.app, info, this.window)
+    if (!this.connection)
+      throw new Error('Trying to load board without an active connection')
 
-    this.connection.on('player:new', (info) => board.addPlayer(info))
-    this.connection.on('player:leave', (id) => board.removePlayer(id))
+    this.board = new Board(this.app, info, this.window)
 
-    this.app.stage.addChild(board)
+    this.connection.on('character:new', (info) => this.board?.addCharacter(info))
+    this.connection.on('character:leave', (id) => this.board?.removeCharacter(id))
+
+    this.app.stage.addChild(this.board)
+  }
+
+  cleanUp() {
+    if (this.connection) this.connection.close()
+    if (this.board) this.app.stage.removeChild(this.board)
+    this.app.stop()
   }
 }

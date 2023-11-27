@@ -1,7 +1,5 @@
 import * as PIXI from 'pixi.js'
-
-const COMMON_TINT = 0xb0b0b0
-const HIGHLIGHT_TINT = 0xffffff
+import { BACKGROUND_SCALE, COMMON_TINT } from '../GlobalParameters'
 
 export class Background extends PIXI.Sprite {
   private texture: PIXI.Texture | null = null
@@ -21,7 +19,7 @@ export class Background extends PIXI.Sprite {
     this.anchor.set(0.5)
     this.x = app.screen.width / 2
     this.y = app.screen.height / 2
-    this.scale.set(1.35)
+    this.scale.set(BACKGROUND_SCALE)
     this.tint = COMMON_TINT
     this.zIndex = -1
   }

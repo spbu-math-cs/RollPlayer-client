@@ -3,16 +3,16 @@
 import { Game } from '@/engine/entities/Game'
 import { useEffect, useRef } from 'react'
 
-let init = false
 export default function GameCanvas({ gameId }: { gameId: string }) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const div = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (init) return
-
     const game = new Game(gameId, canvas.current!, window)
-    init = true
+
+    console.log('rerender')
+
+    return () => game.cleanUp()
   }, [gameId])
 
   return (

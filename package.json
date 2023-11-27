@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tweenjs/tween.js": "^21.0.0",
+    "axios": "^1.6.1",
     "events": "^3.3.0",
     "lodash": "^4.17.21",
     "next": "latest",
