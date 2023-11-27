@@ -7,7 +7,8 @@ export interface SessionInfo {
 }
 
 export async function getSessions(userId: number) {
-  const response = await fetch(`/api/${userId}/sessions`, {
+  //const response = await fetch(`/api/${userId}/sessions`, {
+  const response = await fetch(`/api/all/sessions`, {
     method: 'GET',
   });
   const responseData = await response.json() as {'result': SessionInfo[]};

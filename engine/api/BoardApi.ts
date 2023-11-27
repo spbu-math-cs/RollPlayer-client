@@ -33,7 +33,7 @@ export class BoardApi {
     if (Object.keys(this.tilesetIds).length > 0) return
 
     const response = await this.axios.get('/tilesets')
-    const dirMeta = await zDirMeta.parseAsync(response.data)
+    const dirMeta = await zDirMeta.parseAsync(response.data.result)
 
     for (const entry of dirMeta) {
       const filename = entry.filepath.split('/').pop()
@@ -60,7 +60,7 @@ export class BoardApi {
   async ensureTextureIds() {
     if (Object.keys(this.textureIds).length > 0) return
     const response = await this.axios.get('/textures')
-    const dirMeta = await zDirMeta.parseAsync(response.data)
+    const dirMeta = await zDirMeta.parseAsync(response.data.result)
 
     for (const entry of dirMeta) {
       const filename = entry.filepath.split('/').pop()

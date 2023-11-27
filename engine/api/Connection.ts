@@ -45,10 +45,6 @@ export class Connection extends EventEmitter {
     console.log(data)
 
     switch (data.type) {
-      case 'character:move':
-        data.id = parseInt(data.id) // ??? fix
-        this.emit('character:move', { ...data })
-        break
       case 'character:new':
         const info = new CharacterInfo(
           this,
@@ -60,6 +56,10 @@ export class Connection extends EventEmitter {
         )
         this.emit('character:new', info)
         this.characters.set(info.id, info)
+        break
+      case 'character:move':
+        data.id = parseInt(data.id) // ??? fix
+        this.emit('character:move', { ...data })
         break
       /*case 'character:reset':
         this.emit('character:reset', { ...data })
@@ -75,8 +75,8 @@ export class Connection extends EventEmitter {
       case 'character:error':
         console.info('error:', data)
         break
-      default:
-        console.error('unknown message type:', data.type)
+      // default:
+      //   console.error('unknown message type:', data.type)
     }
   }
 
