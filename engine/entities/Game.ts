@@ -5,6 +5,7 @@ import { Background } from '../render/Background'
 import { Board } from '../render/Board'
 import * as PIXI from 'pixi.js'
 import { BoardInfo } from './BoardInfo'
+import { ConnectionProperties } from '../api/Connection'
 
 export class Game {
   connection?: Connection
@@ -13,7 +14,7 @@ export class Game {
   board?: Board
 
   constructor(
-    private gameId: string,
+    private connectionProperties: ConnectionProperties,
     private canvas: HTMLCanvasElement,
     public readonly window: Window,
   ) {
@@ -30,9 +31,9 @@ export class Game {
   async init() {
     this.loadBackground()
 
-    const info = await this.boardApi.getBoard('1')
+    const info = await this.boardApi.getBoard('2')
 
-    this.connection = new Connection(this.gameId)
+    this.connection = new Connection(this.connectionProperties)
 
     this.loadBoard(info)
   }

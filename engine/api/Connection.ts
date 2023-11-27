@@ -2,18 +2,29 @@ import EventEmitter from 'events'
 import { BOARD_WIDTH, BOARD_HEIGHT } from '../GlobalParameters'
 import { CharacterInfo } from '../entities/CharacterInfo'
 
+export interface ConnectionProperties {
+  userId: number,
+  userToken: string,
+  sessionId: number,
+}
+
 export class Connection extends EventEmitter {
   ws: WebSocket
 
   private characters: Map<number, CharacterInfo> = new Map()
 
-  constructor(public readonly gameId: string) {
+  constructor(public readonly connectionProperties: ConnectionProperties) {
     super()
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    const userID = 2 // (Math.random() * 10000) | 0
-    this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/1`)
+    const userID = connectionProperties.userId
+    const userToken = connectionProperties.userToken
+    const sessionId = connectionProperties.sessionId
+
+    this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/${sessionId}`)
+
+    console.log(connectionProperties)
 
     this.ws.onopen = (event) => {
       /*
@@ -31,7 +42,7 @@ export class Connection extends EventEmitter {
     }
 
     this.ws.onmessage = (event) => {
-      console.log('message:', event)
+      // console.log('message:', event)
 
       this.onMessage(JSON.parse(event.data))
     }
@@ -42,8 +53,6 @@ export class Connection extends EventEmitter {
   }
 
   private onMessage(data: any) {
-    console.log(data)
-
     switch (data.type) {
       case 'character:new':
         const info = new CharacterInfo(

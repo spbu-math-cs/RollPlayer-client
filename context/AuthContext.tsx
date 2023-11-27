@@ -1,14 +1,14 @@
 'use client'
 
-import {createContext, useEffect, useState,} from 'react'
+import {createContext, useEffect, useState} from 'react';
 import {editApi, signInApi, signOutApi, signUpApi} from "@/engine/api/Auth";
 
 export interface User {
-  userId?: number,
-  email?: string,
-  login?: string,
-  password?: string,
-}
+  userId: number,
+  email: string,
+  login: string,
+  password: string,
+};
 
 export const AuthContext = createContext({
   user: null as User | null,

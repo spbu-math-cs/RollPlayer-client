@@ -2,18 +2,21 @@
 
 import { Game } from '@/engine/entities/Game'
 import { useEffect, useRef } from 'react'
+import { ConnectionProperties } from '../../engine/api/Connection'
 
-export default function GameCanvas({ gameId }: { gameId: string }) {
+export default function GameCanvas(
+  { connectionProperties }: { connectionProperties: ConnectionProperties }
+) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const div = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const game = new Game(gameId, canvas.current!, window)
+    const game = new Game(connectionProperties, canvas.current!, window)
 
     console.log('rerender')
 
     return () => game.cleanUp()
-  }, [gameId])
+  }, [connectionProperties])
 
   return (
     <>
