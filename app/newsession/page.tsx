@@ -10,7 +10,7 @@ import {getMaps, MapInfo} from "@/engine/api/Maps";
 let authContext: {
   user: User | null,
   authReady: Boolean,
-  setGameId: (newGameId: SetStateAction<number | null>) => void,
+  setSessionId: (newSessionId: SetStateAction<number | null>) => void,
 };
 
 let error: string | null;
@@ -22,7 +22,7 @@ function chooseMap(mapId: number) {
         if (typeof response === 'string') {
           setError(response);
         } else {
-          authContext.setGameId(response.id);
+          authContext.setSessionId(response.id);
           location.replace('/play');
         }
       }
@@ -81,7 +81,7 @@ export default function NewSessionPage() {
               <button
                 className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"
                 onClick={_ => chooseMap(mapInfo.id)}>
-                <p>Session {mapInfo.id}: {mapInfo.filepath}</p>
+                <p>Map {mapInfo.id}: {mapInfo.filepath}</p>
               </button>
             </div>
           )
