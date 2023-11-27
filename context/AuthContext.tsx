@@ -1,17 +1,19 @@
 'use client'
 
-import {createContext, useEffect, useState} from 'react';
+import React, {createContext, SetStateAction, useEffect, useState,} from 'react'
 import {editApi, signInApi, signOutApi, signUpApi} from "@/engine/api/Auth";
 
 export interface User {
-  userId: number,
-  email: string,
-  login: string,
-  password: string,
-};
+  userId?: number,
+  email?: string,
+  login?: string,
+  password?: string,
+}
 
 export const AuthContext = createContext({
   user: null as User | null,
+  gameId: null as number | null,
+  setGameId: (newGameId: SetStateAction<number | null>) => {},
   signIn: (login: string | null, email: string | null, password: string) => {},
   signUp: (user: User) => {},
   signOut: (userId: number | null) => {},
@@ -22,6 +24,7 @@ export const AuthContext = createContext({
 
 export const AuthContextProvider = ({children}: any) => {
   const [user, setUser] = useState<User | null>(null);
+  const [gameId, setGameId] = useState<number | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [error, setError] = useState<string | null>(null)
 
@@ -29,6 +32,10 @@ export const AuthContextProvider = ({children}: any) => {
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
+    }
+    const gameIdData = localStorage.getItem('gameId');
+    if (gameIdData) {
+      setGameId(JSON.parse(gameIdData));
     }
     setAuthReady(true);
   }, []);
@@ -41,6 +48,14 @@ export const AuthContextProvider = ({children}: any) => {
     }
     setAuthReady(true);
   }, [user]);
+
+  useEffect(() => {
+    if (gameId === null) {
+      localStorage.removeItem('gameId');
+    } else {
+      localStorage.setItem('gameId', JSON.stringify(gameId));
+    }
+  }, [gameId]);
 
   const signIn = (login: string | null, email: string | null, password: string) => {
     setAuthReady(false);
@@ -126,7 +141,7 @@ export const AuthContextProvider = ({children}: any) => {
   }
 
   return (
-    <AuthContext.Provider value={{user, signIn, signUp, signOut, edit, authReady, error}}>
+    <AuthContext.Provider value={{user, gameId, setGameId, signIn, signUp, signOut, edit, authReady, error}}>
       {children}
     </AuthContext.Provider>
   )
