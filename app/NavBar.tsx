@@ -12,6 +12,7 @@ export default function NavBar() {
     '/play': 'Play',
     '/signin': !authContext.authReady ? 'Loading...' : authContext.user ? null : 'Sign in',
     '/profile': (!authContext.user || !authContext.authReady) ? null : (authContext.user as {"login": string}).login,
+    '/quitSession': (!authContext.user || !authContext.authReady || !authContext.sessionId) ? null : `Quit Session (#${authContext.sessionId})`,
   }
 
   const pathname = usePathname()
