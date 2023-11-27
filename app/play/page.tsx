@@ -75,8 +75,8 @@ export default function PlayPage() {
             <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
               <button
                 className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"
-                onClick={_ => chooseGameId(session.sessionId)}>
-                <p>Session {session.sessionId}</p>
+                onClick={_ => chooseGameId(session.id)}>
+                <p>Session {session.id}</p>
               </button>
             </div>
           )

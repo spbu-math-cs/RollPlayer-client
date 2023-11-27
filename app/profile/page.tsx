@@ -44,10 +44,10 @@ export default function UserProfilePage() {
       "userId": authContext.user.userId,
       "password": password,
     };
-    if (email !== "None") {
+    if (email !== "None" && authContext.user?.email !== email) {
       updatedUser["email"] = email;
     }
-    if (login !== "None") {
+    if (login !== "None" && authContext.user?.login !== login) {
       updatedUser["login"] = login;
     }
     if (_.isEqual(updatedUser, authContext.user)) {
