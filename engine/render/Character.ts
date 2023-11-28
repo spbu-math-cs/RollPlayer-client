@@ -50,11 +50,11 @@ export class Character extends PIXI.Graphics {
   }
 
   private onMove({ row, col }: { row: number; col: number }) {
-    this.moveAnimated(row, col, TWEEN.Easing.Exponential.InOut)
+    this.moveAnimated(row, col, TWEEN.Easing.Linear.None, 200)
   }
 
   private onReset() {
-    this.moveAnimated(this.info.row, this.info.col, TWEEN.Easing.Elastic.Out)
+    this.moveAnimated(this.info.row, this.info.col)
   }
 
   public activate() {

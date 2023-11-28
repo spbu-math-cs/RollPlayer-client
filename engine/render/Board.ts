@@ -34,7 +34,7 @@ export class Board extends Viewport {
       .wheel({ smooth: 5 })
       .decelerate({ friction: 0.9 })
 
-    this.window.addEventListener('blur', this.deactivateCharacter.bind(this))
+    this.window.addEventListener('blur', () => this.deactivateCharacter())
     this.on('pointerup', this.finishCharacterMove.bind(this))
     this.on('pointermove', this.dragCharacter.bind(this))
 
@@ -55,10 +55,11 @@ export class Board extends Viewport {
 
     const pos = this.toLocal(e.global, void 0)
     this.activeCharacter.drag(pos.x, pos.y)
+    this.emit('context:character', null)
   }
 
-  deactivateCharacter() {
-    this.activeCharacter?.deactivate()
+  deactivateCharacter(moveBack = true) {
+    this.activeCharacter?.deactivate(moveBack)
     this.activeCharacter = null
   }
 
@@ -66,7 +67,7 @@ export class Board extends Viewport {
     if (!this.activeCharacter) return
 
     this.activeCharacter.finishMove()
-    this.deactivateCharacter()
+    this.deactivateCharacter(false)
   }
 
   getNearestTile(x: number, y: number): Tile {
@@ -109,7 +110,21 @@ export class Board extends Viewport {
     const character = new Character(this, info)
 
     if (character.info.own)
-      character.on('pointerdown', () => this.activateCharacter(character))
+      character.on('pointerdown', (e) => {
+        if (e.button !== 0) return
+        this.activateCharacter(character)
+      })
+
+    character.on('pointerenter', () => {
+      if (this.activeCharacter) return
+      this.emit('context:character', {
+        character: character.info,
+        x: character.getGlobalPosition().x,
+        y: character.getGlobalPosition().y,
+      })
+    })
+
+    character.on('pointerleave', () => this.emit('context:character', null))
 
     this.addChild(character)
     this.characters.set(info.id, character)

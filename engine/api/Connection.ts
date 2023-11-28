@@ -1,55 +1,58 @@
 import EventEmitter from 'events'
+import swal from 'sweetalert2'
 import { BOARD_WIDTH, BOARD_HEIGHT } from '../GlobalParameters'
 import { CharacterInfo } from '../entities/CharacterInfo'
 
 export interface ConnectionProperties {
-  userId: number,
-  userToken: string,
-  sessionId: number,
+  userId: number
+  userToken: string
+  sessionId: number
 }
 
 export class Connection extends EventEmitter {
-  ws: WebSocket
+  ws?: WebSocket
 
-  private characters: Map<number, CharacterInfo> = new Map()
+  characters: Map<number, CharacterInfo> = new Map()
 
   constructor(public readonly connectionProperties: ConnectionProperties) {
     super()
+  }
+
+  public open() {
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    const userID = connectionProperties.userId
-    const userToken = connectionProperties.userToken
-    const sessionId = connectionProperties.sessionId
+    const userID = this.connectionProperties.userId
+    const userToken = this.connectionProperties.userToken
+    const sessionId = this.connectionProperties.sessionId
 
-    this.ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/${sessionId}`)
+    const ws = new WebSocket(
+      `${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/${sessionId}`,
+    )
+    console.log(this.connectionProperties)
 
-    console.log(connectionProperties)
+    this.ws = ws
 
-    this.ws.onopen = (event) => {
-      /*
-      this.ws.send(JSON.stringify({
-        type: 'character:new',
-        name: `user_${userID}`,
-        row: '0',
-        col: '0'
-      }))
-      */
+    ws.onopen = (event) => {
+      console.log('Open', event)
+      // this.ws.send('kek')
+      console.log('Open readyState:', ws.readyState)
     }
 
-    this.ws.onerror = (event) => {
+    ws.onerror = (event) => {
       console.log('Error!', event)
     }
 
-    this.ws.onmessage = (event) => {
-      // console.log('message:', event)
+    ws.onclose = (event) => {
+      console.log('Close.', event)
+    }
 
+    ws.onmessage = (event) => {
+      console.log('Message:', event)
       this.onMessage(JSON.parse(event.data))
     }
 
-    // this.ws.addEventListener('message', this.onMessage.bind(this))
-
-    // setInterval(this.generateMessage.bind(this), 2000)
+    console.log('readyState:', ws.readyState)
   }
 
   private onMessage(data: any) {
@@ -63,20 +66,30 @@ export class Connection extends EventEmitter {
           data.row,
           data.col,
         )
+        this.characters.set(data.id, info)
         this.emit('character:new', info)
-        this.characters.set(info.id, info)
         break
       case 'character:move':
         data.id = parseInt(data.id) // ??? fix
         this.emit('character:move', { ...data })
         break
-      /*case 'character:reset':
-        this.emit('character:reset', { ...data })
-        break*/
       case 'character:leave':
-        const id = parseInt(data.id) // ??? fix
+        const id = parseInt(data.id)
         this.characters.delete(id)
         this.emit('character:leave', { id })
+        break
+      case 'error':
+        switch (data.on) {
+          case 'character:move':
+            this.emit('character:reset')
+            swal.fire({
+              title: 'Error',
+              text: data.message,
+              icon: 'error',
+            })
+
+            break
+        }
         break
       case 'character:status':
         const id_ = parseInt(data.id) // ??? fix
@@ -89,15 +102,40 @@ export class Connection extends EventEmitter {
     }
   }
 
-  public moveCharacter(id: number, row: number, col: number) {
-    if (this.ws.readyState !== WebSocket.OPEN) return
+  public createCharacter(name: string) {
+    if (this.ws?.readyState !== WebSocket.OPEN) return
 
-    this.ws.send(JSON.stringify({
-      type: 'character:move',
-      id: id,
-      row: row,
-      col: col
-    }))
+    this.ws.send(
+      JSON.stringify({
+        type: 'character:new',
+        name: name,
+        row: 0,
+        col: 0,
+      }),
+    )
+  }
+
+  public removeCharacter(id: number) {
+    if (this.ws?.readyState !== WebSocket.OPEN) return
+    this.ws.send(
+      JSON.stringify({
+        type: 'character:remove',
+        id: id,
+      }),
+    )
+  }
+
+  public moveCharacter(id: number, row: number, col: number) {
+    if (this.ws?.readyState !== WebSocket.OPEN) return
+
+    this.ws.send(
+      JSON.stringify({
+        type: 'character:move',
+        id: id,
+        row: row,
+        col: col,
+      }),
+    )
 
     /*if (Math.random() > 0.5) {
       this.onMessage({ type: 'character:move', id, row, col })
@@ -106,7 +144,6 @@ export class Connection extends EventEmitter {
     }*/
   }
 
-  // not used anymore
   public generateMessage() {
     const rand = (Math.random() * 10) | 0
     const randid = (Math.random() * 100000) | 0
@@ -139,6 +176,6 @@ export class Connection extends EventEmitter {
   }
 
   public close() {
-    this.ws.close()
+    this.ws?.close()
   }
 }
