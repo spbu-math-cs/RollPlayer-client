@@ -6,8 +6,8 @@ import { Tile } from './Tile'
 import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE } from '../GlobalParameters'
 import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
 
-const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
-const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
+//const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
+//const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
 function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -33,7 +33,7 @@ export class Character extends PIXI.Graphics {
     const outline_color = getCol(info.id * 2 + 1, 0xc0c0c0, 0xffffff + 1)
     this.lineStyle(2, outline_color, 1)
     this.beginFill(character_color, 1)
-    this.drawCircle(0, 0, Math.min(ACTUAL_CELL_WIDTH, ACTUAL_CELL_HEIGHT) / 3)
+    this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3 * CELL_SCALE)
     this.endFill()
 
     this.interactive = true
@@ -97,8 +97,8 @@ export class Character extends PIXI.Graphics {
     easing: Parameters<InstanceType<typeof TWEEN.Tween>['easing']>[0] = void 0,
     timeout = 1000,
   ) {
-    const target_x = col * ACTUAL_CELL_WIDTH + ACTUAL_CELL_WIDTH / 2
-    const target_y = row * ACTUAL_CELL_HEIGHT + ACTUAL_CELL_HEIGHT / 2
+    const target_x = (col * this.board.info.tileWidth + this.board.info.tileWidth / 2) * CELL_SCALE
+    const target_y = (row * this.board.info.tileHeight + this.board.info.tileHeight / 2) * CELL_SCALE
 
     if (!easing) {
       this.x = target_x

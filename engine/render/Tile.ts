@@ -4,8 +4,8 @@ import { TileInfo } from '../entities/TileInfo'
 import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE, ACTIVATED_CELL_SCALE } from '../GlobalParameters'
 import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
 
-const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
-const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
+//const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
+//const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
 export class Tile extends PIXI.Sprite {
   private originalScale: number
@@ -33,8 +33,8 @@ export class Tile extends PIXI.Sprite {
 
 
     this.anchor.set(0.5)
-    this.width = ACTUAL_CELL_WIDTH
-    this.height = ACTUAL_CELL_HEIGHT
+    this.width = this.board.info.tileWidth * CELL_SCALE
+    this.height = this.board.info.tileHeight * CELL_SCALE
     this.scale.set(CELL_SCALE)
     // console.log(this)
     // console.log(this.scale)

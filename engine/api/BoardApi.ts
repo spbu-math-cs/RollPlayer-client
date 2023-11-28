@@ -88,6 +88,11 @@ export class BoardApi {
     const tiles: TileInfo[][] = []
     for (let i = 0; i < rows; i++) tiles.push([])
 
+    // REWRITE LATER !!!
+    let _tileWidth: number = 0
+    let _tileHeight: number = 0
+    // REWRITE LATER !!!
+
     const layer = mapData.layers[0]
     for (let i = 0; i < layer.data.length; i++) {
       const row = Math.floor(i / cols)
@@ -121,8 +126,11 @@ export class BoardApi {
         ),
       )
       tiles[row][col] = new TileInfo(texture, row, col)
+
+      _tileWidth = tileWidth
+      _tileHeight = tileHeight
     }
 
-    return new BoardInfo(rows, cols, tiles)
+    return new BoardInfo(rows, cols, _tileWidth, _tileHeight, tiles)
   }
 }

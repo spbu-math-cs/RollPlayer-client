@@ -1,8 +1,8 @@
 export const BOARD_WIDTH = 17
 export const BOARD_HEIGHT = 11
 
-export const CELL_WIDTH = 16   // in pixels
-export const CELL_HEIGHT = 16  // in pixels
+export const CELL_WIDTH = 40   // in pixels
+export const CELL_HEIGHT = 40  // in pixels
 
 export const CELL_SCALE = 4
 export const ACTIVATED_CELL_SCALE = 5
