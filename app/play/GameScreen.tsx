@@ -13,13 +13,12 @@ export default function GameScreen({
   connectionProperties: ConnectionProperties
 }) {
   const canvas = useRef<HTMLCanvasElement>(null)
-  const [players, setPlayers] = useState<CharacterInfo[]>([])
+  const [character, setCharacters] = useState<CharacterInfo[]>([])
   const [game, setGame] = useState<Game | null>(null)
 
   const handleCharacterOp = (connection: Connection) => {
-    const players = [...connection.characters.values()]
-    console.log(players)
-    setPlayers(players)
+    const characterList = [...connection.characters.values()]
+    setCharacters(characterList.filter((c) => c.own))
   }
 
   useEffect(() => {
@@ -44,7 +43,7 @@ export default function GameScreen({
       <div className="w-full h-full">
         <canvas id="field" ref={canvas}></canvas>
         {game && (
-          <CharacterList game={game} characters={players}></CharacterList>
+          <CharacterList game={game} characters={character}></CharacterList>
         )}
       </div>
       {game && <CharacterContextMenu game={game}></CharacterContextMenu>}
