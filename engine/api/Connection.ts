@@ -23,7 +23,7 @@ export class Connection extends EventEmitter {
       throw new Error('Could not find server url in env')
 
     const userID = this.connectionProperties.userId
-    const userToken = this.connectionProperties.userToken
+    const _userToken = this.connectionProperties.userToken
     const sessionId = this.connectionProperties.sessionId
 
     const ws = new WebSocket(
@@ -35,7 +35,6 @@ export class Connection extends EventEmitter {
 
     ws.onopen = (event) => {
       console.log('Open', event)
-      // this.ws.send('kek')
       console.log('Open readyState:', ws.readyState)
     }
 
@@ -102,10 +101,19 @@ export class Connection extends EventEmitter {
     }
   }
 
-  public createCharacter(name: string) {
-    if (this.ws?.readyState !== WebSocket.OPEN) return
+  private send(message: string) {
+    if (this.ws?.readyState !== WebSocket.OPEN) {
+      console.error(`Trying to send message "${message}" without opening ws connection`)
+      return
+    }
 
-    this.ws.send(
+    console.log("Sending message: ", JSON.parse(message))
+
+    this.ws.send(message)
+  }
+
+  public createCharacter(name: string) {
+    this.send(
       JSON.stringify({
         type: 'character:new',
         name: name,
@@ -116,8 +124,7 @@ export class Connection extends EventEmitter {
   }
 
   public removeCharacter(id: number) {
-    if (this.ws?.readyState !== WebSocket.OPEN) return
-    this.ws.send(
+    this.send(
       JSON.stringify({
         type: 'character:remove',
         id: id,
@@ -126,9 +133,7 @@ export class Connection extends EventEmitter {
   }
 
   public moveCharacter(id: number, row: number, col: number) {
-    if (this.ws?.readyState !== WebSocket.OPEN) return
-
-    this.ws.send(
+    this.send(
       JSON.stringify({
         type: 'character:move',
         id: id,
@@ -136,43 +141,6 @@ export class Connection extends EventEmitter {
         col: col,
       }),
     )
-
-    /*if (Math.random() > 0.5) {
-      this.onMessage({ type: 'character:move', id, row, col })
-    } else {
-      this.onMessage({ type: 'character:reset', id })
-    }*/
-  }
-
-  public generateMessage() {
-    const rand = (Math.random() * 10) | 0
-    const randid = (Math.random() * 100000) | 0
-    switch (true) {
-      case rand < 3 || this.characters.size === 0:
-        this.onMessage({
-          type: 'character:new',
-          id: randid,
-          username: 'bob_' + randid,
-          own: randid % 2 === 0,
-          row: randid % BOARD_HEIGHT,
-          col: randid % BOARD_WIDTH,
-        })
-        break
-      case rand < 5:
-        this.onMessage({
-          type: 'character:leave',
-          id: [...this.characters.values()][0].id,
-        })
-        break
-      default:
-        this.onMessage({
-          type: 'character:move',
-          id: [...this.characters.values()][0].id,
-          row: randid % BOARD_HEIGHT,
-          col: randid % BOARD_WIDTH,
-        })
-        break
-    }
   }
 
   public close() {
