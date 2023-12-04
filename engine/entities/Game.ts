@@ -32,8 +32,8 @@ export class Game {
   }
 
   async startUp() {
-    const sessionId = this.connectionProperties.sessionId + 1
-    const info = await this.boardApi.getBoard(sessionId.toString())
+    const sessionId = this.connectionProperties.sessionId
+    const info = await this.boardApi.getBoard(sessionId)
 
     this.createBoard(info)
 

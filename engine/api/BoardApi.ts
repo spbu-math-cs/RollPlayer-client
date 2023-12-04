@@ -22,6 +22,12 @@ export class BoardApi {
 
   constructor() {}
 
+  async getMapId(sessionId: number): Promise<string> {
+    const response = await this.axios.get(`/game/${sessionId}/mapId`)
+    const mapId = response.data.result
+    return mapId
+  }
+
   async getMap(id: string): Promise<MapData> {
     if (this.mapCache[id]) return this.mapCache[id]
 
@@ -81,7 +87,8 @@ export class BoardApi {
     )
   }
 
-  async getBoard(mapId: string) {
+  async getBoard(sessionId: number) {
+    const mapId = await this.getMapId(sessionId)
     const mapData = await this.getMap(mapId)
     const rows = mapData.height
     const cols = mapData.width
