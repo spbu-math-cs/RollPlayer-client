@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@pixi/filter-glow": "^5.2.1",
     "@tweenjs/tween.js": "^21.0.0",
     "axios": "^1.6.1",
     "events": "^3.3.0",
@@ -19,6 +20,7 @@
     "react": "latest",
     "react-dom": "latest",
     "sweetalert2": "^11.10.1",
+    "tweenjs": "^1.0.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {

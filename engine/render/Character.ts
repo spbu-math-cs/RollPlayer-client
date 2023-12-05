@@ -5,13 +5,10 @@ import { Board } from './Board'
 import { Tile } from './Tile'
 import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE } from '../GlobalParameters'
 import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
+import { GlowFilter } from '@pixi/filter-glow'
 
 //const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
 //const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
-
-function getRandomInteger(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min)) + min
-}
 
 function getCol(id: number, min: number, max: number) {
   id += 1
@@ -23,15 +20,20 @@ export class Character extends PIXI.Graphics {
   private nearestTile: Tile | null = null
   private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
 
+  private defaultFilters = []
+  private highlightFilters = [new GlowFilter({ distance: 20, outerStrength: 2 })]
+
   constructor(
     private board: Board,
     public readonly info: CharacterInfo,
   ) {
     super()
 
+    //const outline_color = getCol(info.id * 2 + 1, 0xc0c0c0, 0xffffff + 1)
+    const outline_color = this.info.own ? 0xff0000 : 0xffffff
+    this.lineStyle(5, outline_color, 1)
+
     const character_color = getCol(info.id * 2, 0xc0c0c0, 0xffffff + 1)
-    const outline_color = getCol(info.id * 2 + 1, 0xc0c0c0, 0xffffff + 1)
-    this.lineStyle(2, outline_color, 1)
     this.beginFill(character_color, 1)
     this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3 * CELL_SCALE)
     this.endFill()
@@ -41,12 +43,15 @@ export class Character extends PIXI.Graphics {
 
     this.info.on('move', this.onMove.bind(this))
     this.info.on('reset', this.onReset.bind(this))
+    this.info.on('status', this.onStatusUpdate.bind(this))
 
     this.moveAnimated(info.row, info.col)
 
     this.board.app.ticker.add(this.updateTween.bind(this))
 
     this.zIndex = Infinity
+
+    this.filters = this.defaultFilters
   }
 
   private onMove({ row, col }: { row: number; col: number }) {
@@ -55,6 +60,14 @@ export class Character extends PIXI.Graphics {
 
   private onReset() {
     this.moveAnimated(this.info.row, this.info.col)
+  }
+
+  private onStatusUpdate(hightlight: boolean) {
+    if (hightlight) {
+      this.filters = this.highlightFilters
+    } else {
+      this.filters = this.defaultFilters
+    }
   }
 
   public activate() {
@@ -80,7 +93,7 @@ export class Character extends PIXI.Graphics {
   }
 
   public deactivate(moveBack = true) {
-    this.alpha = 1
+    this.alpha = 1.0
     this.nearestTile?.deactivate()
     this.nearestTile = null
 

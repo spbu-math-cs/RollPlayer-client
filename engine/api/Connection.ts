@@ -56,28 +56,32 @@ export class Connection extends EventEmitter {
 
   private onMessage(data: any) {
     switch (data.type) {
-      case 'character:new':
+      case 'character:new': {
         const info = new CharacterInfo(
           this,
           data.id,
           data.name,
           data.own,
+          false,
           data.row,
           data.col,
         )
         this.characters.set(data.id, info)
         this.emit('character:new', info)
         break
-      case 'character:move':
+      }
+      case 'character:move': {
         data.id = parseInt(data.id) // ??? fix
         this.emit('character:move', { ...data })
         break
-      case 'character:leave':
+      }
+      case 'character:leave': {
         const id = parseInt(data.id)
         this.characters.delete(id)
         this.emit('character:leave', { id })
         break
-      case 'error':
+      }
+      case 'error': {
         switch (data.on) {
           case 'character:move':
             this.emit('character:reset')
@@ -90,14 +94,23 @@ export class Connection extends EventEmitter {
             break
         }
         break
-      case 'character:status':
-        const id_ = parseInt(data.id) // ??? fix
+      }
+      case 'character:status': {
+        const id = parseInt(data.id)
+        const canDoAction = data.can_move
+        this.emit('character:status', { id, canDoAction })
         break
-      case 'character:error':
+      }
+      case 'character:error': {
         console.info('error:', data)
         break
-      // default:
-      //   console.error('unknown message type:', data.type)
+      }
+      case undefined: {
+        break
+      }
+      default: {
+        console.error('unknown message type:', data.type)
+      }
     }
   }
 
