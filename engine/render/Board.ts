@@ -3,7 +3,7 @@ import { Tile } from './Tile'
 import { BoardInfo } from '../entities/BoardInfo'
 import { CharacterInfo } from '../entities/CharacterInfo'
 import { Character } from './Character'
-import { Viewport } from 'pixi-viewport'
+import { Viewport } from '../pixi-viewport/src'
 
 export class Board extends Viewport {
   public readonly tiles: Tile[][] = []
@@ -18,6 +18,8 @@ export class Board extends Viewport {
     super({
       events: app.renderer.events,
       disableOnContextMenu: true,
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight,
       worldWidth: info.cols * info.tileWidth,
       worldHeight: info.rows * info.tileHeight,
     })
