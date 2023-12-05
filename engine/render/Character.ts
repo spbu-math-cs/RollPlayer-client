@@ -12,8 +12,12 @@ import { GlowFilter } from '@pixi/filter-glow'
 
 function getCol(id: number, min: number, max: number) {
   id += 1
-  const rn = (Math.sin((2 * id * id + 3 * id + 5) * 1000000) + 1) / 2
-  return Math.floor(rn * (max - min)) + min
+
+  const r = min + id * 998_244_353 % (max - min + 1)
+  const g = min + id * 805_306_457 % (max - min + 1)
+  const b = min + id * 1_000_000_007 % (max - min + 1)
+
+  return r * 256 * 256 + g * 256 + b
 }
 
 export class Character extends PIXI.Graphics {
@@ -29,11 +33,10 @@ export class Character extends PIXI.Graphics {
   ) {
     super()
 
-    //const outline_color = getCol(info.id * 2 + 1, 0xc0c0c0, 0xffffff + 1)
     const outline_color = this.info.own ? 0xff0000 : 0xffffff
     this.lineStyle(5, outline_color, 1)
 
-    const character_color = getCol(info.id * 2, 0xc0c0c0, 0xffffff + 1)
+    const character_color = getCol(info.id, 0x40, 0xff)
     this.beginFill(character_color, 1)
     this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3 * CELL_SCALE)
     this.endFill()
