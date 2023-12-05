@@ -1,7 +1,8 @@
 'use client'
 
-import { SetStateAction, useContext } from "react"
-import { AuthContext } from "@/context/AuthContext"
+import { SetStateAction, useContext } from 'react'
+import { AuthContext } from '@/context/AuthContext'
+import { redirect } from 'next/navigation'
 
 let authContext: {
   sessionId: number | null,
@@ -12,5 +13,5 @@ export default function QuitSession() {
   authContext = useContext(AuthContext)
   
   authContext.setSessionId(null)
-  location.replace('/')
+  redirect('/')
 }
