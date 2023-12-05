@@ -37,8 +37,10 @@ export default function PlayPage() {
   const [sessions, setSessions] = useState<SessionInfo[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loaded, setLoaded] = useState(false)
+  const [editMode, setEditMode] = useState(false)
 
-  useEffect(() => {
+
+    useEffect(() => {
     if (!authContext.authReady) {
       return
     }
@@ -100,8 +102,57 @@ export default function PlayPage() {
     throw RuntimeError // Should never get here
   }
 
+  const editMenu = () => {
+    setEditMode(!editMode);
+  };
+
+  function handleMenuItemClick(editMenuItem: string) {
+    if (editMenuItem === 'Save') {
+      //Todo: some realisation
+    }
+    if (editMenuItem === 'Load') {
+      //Todo: some realisation
+    }
+  }
+
+  const handleChooseTile = (value: string) => {
+    //Todo: some realisation
+  }
+
+
+
   return (
     <>
+      <div className="absolute right-0 top-0  rounded-2xl flex flex-col  bg-gray-900" >
+        <button className=" text-4xl right-0 top-0"
+                onClick={editMenu}> Edit map
+        </button>
+          {editMode && (
+            <div className=" flex flex-col items-center h-screen bg-gray-900" style={{width: '100px'}}>
+              <button className=" text-l" onClick={() => handleMenuItemClick('Save')}>
+                Save map
+              </button>
+                <button className=" text-l" onClick={() => handleMenuItemClick('Load')}>
+                  Load map
+                </button>
+                <select className="text-l" onChange={(e) => handleChooseTile(e.target.value)}>
+                  <option value="">Choose tile</option>
+                  <option value="tile1">Tile 1</option>
+                  <option value="tile2">Tile 2</option>
+                  <option value="tile3">Tile 3</option>
+                  {/*<option value="tile1">*/}
+                    {/*  <img src="path_to_tile1_image" alt="Tile 1" />*/}
+                  {/*</option>*/}
+                  {/*<option value="tile2">*/}
+                    {/*  <img src="path_to_tile2_image" alt="Tile 2" />*/}
+                  {/*</option>*/}
+                  {/*<option value="tile3">*/}
+                    {/*  <img src="path_to_tile3_image" alt="Tile 3" />*/}
+                  {/*</option>*/}
+                </select>
+            </div>
+          )}
+      </div>
       <section className="container mx-auto w-screen h-[95%] flex-row-reverse items-center justify-center overflow-y-scroll">
         {sessions.map((session) => (
           <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
