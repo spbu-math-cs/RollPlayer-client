@@ -10,6 +10,8 @@ import { GlowFilter } from '@pixi/filter-glow'
 //const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
 //const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
+const CHARACTER_Z_INDEX = 1_000_000_000
+
 function getCol(id: number, min: number, max: number) {
   id += 1
 
@@ -52,7 +54,7 @@ export class Character extends PIXI.Graphics {
 
     this.board.app.ticker.add(this.updateTween.bind(this))
 
-    this.zIndex = Infinity
+    this.zIndex = CHARACTER_Z_INDEX
 
     this.filters = this.defaultFilters
   }
@@ -68,8 +70,10 @@ export class Character extends PIXI.Graphics {
   private onStatusUpdate(hightlight: boolean) {
     if (hightlight) {
       this.filters = this.highlightFilters
+      this.zIndex = CHARACTER_Z_INDEX + 1
     } else {
       this.filters = this.defaultFilters
+      this.zIndex = CHARACTER_Z_INDEX
     }
   }
 
