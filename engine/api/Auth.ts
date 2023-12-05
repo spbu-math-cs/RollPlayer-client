@@ -23,6 +23,14 @@ export async function signInApi(login: string | null, email: string | null, pass
   const responseData = await response.json() as {'result': UserInfo, 'message': string};
   if (response.ok) {
     const info = responseData.result;
+    if (info.login === undefined) {
+      info.login = "";
+      console.error("got user without login during sign in");
+    }
+    if (info.email === undefined) {
+      info.email = "";
+      console.error("got user without e-mail during sign in");
+    }
     return {
       'userId': info.id,
       'login': info.login,
@@ -41,6 +49,14 @@ export async function signUpApi(user: User) {
   const responseData = await response.json() as {'result': UserInfo, 'message': string};
   if (response.ok) {
     const info = responseData.result;
+    if (info.login === undefined) {
+      info.login = "";
+      console.error("got user without login during sign up");
+    }
+    if (info.email === undefined) {
+      info.email = "";
+      console.error("got user without e-mail during sign up");
+    }
     return {
       'userId': info.id,
       'login': info.login,
@@ -72,6 +88,14 @@ export async function editApi(userId: number, userData: User) {
   const responseData = await response.json() as {'result': UserInfo, 'message': string};
   if (response.ok) {
     const info = responseData.result;
+    if (info.login === undefined) {
+      info.login = "";
+      console.error("got user without login during edit");
+    }
+    if (info.email === undefined) {
+      info.email = "";
+      console.error("got user without e-mail during edit");
+    }
     return {
       'userId': info.id,
       'login': info.login,

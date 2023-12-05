@@ -67,8 +67,7 @@ export const AuthContextProvider = ({children}: any) => {
         if (typeof response === 'string') {
           setError(response);
         } else {
-          let newUser: User = response;
-          newUser.password = password;
+          let newUser: User = { ...response, password: password };
           setUser(newUser);
           setSessionId(null);
         }
@@ -88,8 +87,7 @@ export const AuthContextProvider = ({children}: any) => {
         if (typeof response === 'string') {
           setError(response);
         } else {
-          let newUser: User = response;
-          newUser.password = userData.password;
+          let newUser: User = { ...response, password: userData.password };
           setUser(newUser);
         }
         setAuthReady(true);
@@ -132,8 +130,7 @@ export const AuthContextProvider = ({children}: any) => {
         if (typeof response === 'string') {
           setError(response);
         } else {
-          let newUser: User = response;
-          newUser.password = userData.password;
+          let newUser: User = { ...response, password: userData.password };
           setUser(newUser);
         }
         setAuthReady(true);

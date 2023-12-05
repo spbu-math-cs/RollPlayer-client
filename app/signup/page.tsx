@@ -6,7 +6,7 @@ import AuthContext, {User} from "@/context/AuthContext";
 
 let authContext: {
   user: User | null,
-  signUp: (user: Object) => void,
+  signUp: (user: User) => void,
   authReady: Boolean,
   error: string | null,
 }
@@ -20,6 +20,7 @@ let setPassword: Dispatch<SetStateAction<string>>;
 function onSubmit(event: FormEvent) {
   event.preventDefault()
   const user = {
+    "userId": -1,
     "email": email,
     "login": login,
     "password": password,

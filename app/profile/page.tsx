@@ -42,12 +42,14 @@ export default function UserProfilePage() {
     }
     const updatedUser: User = {
       "userId": authContext.user.userId,
+      "email": authContext.user.email,
+      "login": authContext.user.login,
       "password": password,
     };
-    if (email !== "None" && authContext.user?.email !== email) {
+    if (email !== "None") {
       updatedUser["email"] = email;
     }
-    if (login !== "None" && authContext.user?.login !== login) {
+    if (login !== "None") {
       updatedUser["login"] = login;
     }
     if (_.isEqual(updatedUser, authContext.user)) {
