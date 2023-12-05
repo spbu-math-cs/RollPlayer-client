@@ -3,7 +3,7 @@ import { Tile } from './Tile'
 import { BoardInfo } from '../entities/BoardInfo'
 import { CharacterInfo } from '../entities/CharacterInfo'
 import { Character } from './Character'
-import { Viewport } from '../pixi-viewport/src'
+import { Viewport } from '../pixi-viewport-fork/src'
 
 export class Board extends Viewport {
   public readonly tiles: Tile[][] = []
