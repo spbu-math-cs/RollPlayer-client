@@ -4,8 +4,7 @@ import * as TWEEN from '@tweenjs/tween.js'
 import { Board } from './Board'
 import { Tile } from './Tile'
 import { GlowFilter } from '@pixi/filter-glow'
-
-const CHARACTER_Z_INDEX = 1_000_000_000
+import { CHARACTER_Z_INDEX } from '../GlobalParameters'
 
 function getCol(id: number, min: number, max: number) {
   id += 1
@@ -38,6 +37,10 @@ export class Character extends PIXI.Graphics {
     this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3)
     this.endFill()
 
+    this.filters = this.defaultFilters
+
+    this.zIndex = CHARACTER_Z_INDEX
+
     this.interactive = true
     this.cursor = 'pointer'
 
@@ -48,10 +51,6 @@ export class Character extends PIXI.Graphics {
     this.moveAnimated(info.row, info.col)
 
     this.board.app.ticker.add(this.updateTween.bind(this))
-
-    this.zIndex = CHARACTER_Z_INDEX
-
-    this.filters = this.defaultFilters
   }
 
   private onMove({ row, col }: { row: number; col: number }) {
