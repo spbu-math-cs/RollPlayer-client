@@ -1,6 +1,5 @@
 import EventEmitter from 'events'
 import swal from 'sweetalert2'
-import { BOARD_WIDTH, BOARD_HEIGHT } from '../GlobalParameters'
 import { CharacterInfo } from '../entities/CharacterInfo'
 
 export interface ConnectionProperties {

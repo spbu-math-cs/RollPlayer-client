@@ -3,12 +3,7 @@ import * as PIXI from 'pixi.js'
 import * as TWEEN from '@tweenjs/tween.js'
 import { Board } from './Board'
 import { Tile } from './Tile'
-import { CELL_WIDTH, CELL_HEIGHT, CELL_SCALE } from '../GlobalParameters'
-import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
 import { GlowFilter } from '@pixi/filter-glow'
-
-//const ACTUAL_CELL_WIDTH = CELL_WIDTH * CELL_SCALE
-//const ACTUAL_CELL_HEIGHT = CELL_HEIGHT * CELL_SCALE
 
 const CHARACTER_Z_INDEX = 1_000_000_000
 
@@ -36,11 +31,11 @@ export class Character extends PIXI.Graphics {
     super()
 
     const outline_color = this.info.own ? 0xff0000 : 0xffffff
-    this.lineStyle(5, outline_color, 1)
+    this.lineStyle(1, outline_color, 1)
 
     const character_color = getCol(info.id, 0x40, 0xff)
     this.beginFill(character_color, 1)
-    this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3 * CELL_SCALE)
+    this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3)
     this.endFill()
 
     this.interactive = true
@@ -117,8 +112,8 @@ export class Character extends PIXI.Graphics {
     easing: Parameters<InstanceType<typeof TWEEN.Tween>['easing']>[0] = void 0,
     timeout = 1000,
   ) {
-    const target_x = (col * this.board.info.tileWidth + this.board.info.tileWidth / 2) * CELL_SCALE
-    const target_y = (row * this.board.info.tileHeight + this.board.info.tileHeight / 2) * CELL_SCALE
+    const target_x = col * this.board.info.tileWidth + this.board.info.tileWidth / 2
+    const target_y = row * this.board.info.tileHeight + this.board.info.tileHeight / 2
 
     if (!easing) {
       this.x = target_x
