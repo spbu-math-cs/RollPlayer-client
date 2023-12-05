@@ -1,3 +1,0 @@
-[submodule "engine/pixi-viewport"]
-	path = engine/pixi-viewport
-	url = https://github.com/davidfig/pixi-viewport.git
