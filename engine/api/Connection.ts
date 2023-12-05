@@ -70,12 +70,11 @@ export class Connection extends EventEmitter {
         break
       }
       case 'character:move': {
-        data.id = parseInt(data.id) // ??? fix
         this.emit('character:move', { ...data })
         break
       }
       case 'character:leave': {
-        const id = parseInt(data.id)
+        const id = data.id
         this.characters.delete(id)
         this.emit('character:leave', { id })
         break
@@ -89,14 +88,13 @@ export class Connection extends EventEmitter {
               text: data.message,
               icon: 'error',
             })
-
             break
         }
         break
       }
       case 'character:status': {
-        const id = parseInt(data.id)
-        const canDoAction = data.can_move
+        const id = data.id
+        const canDoAction = data.can_do_action
         this.emit('character:status', { id, canDoAction })
         break
       }
