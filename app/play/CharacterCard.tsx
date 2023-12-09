@@ -3,39 +3,41 @@ import Swal from 'sweetalert2'
 
 export function CharacterCard({
   character,
-  context,
+  position,
   onClose = () => {},
+  children,
 }: {
   character: CharacterInfo
-  context?: { x: number; y: number }
+  position?: { x: number; y: number }
   onClose?: () => void
+  children?: React.ReactNode
 }) {
-  const onClickStatic = () => {
-    Swal.fire({
-      text: 'Are you sure?',
-      showConfirmButton: true,
-      confirmButtonText: 'Yes',
-      showDenyButton: true,
-      denyButtonText: 'No',
-    }).then((r) => r.isConfirmed && character.remove())
-  }
-  const onClickContext = onClose
-  const onClick = context ? onClickContext : onClickStatic
+  // const onClickStatic = () => {
+  //   Swal.fire({
+  //     text: 'Are you sure?',
+  //     showConfirmButton: true,
+  //     confirmButtonText: 'Yes',
+  //     showDenyButton: true,
+  //     denyButtonText: 'No',
+  //   }).then((r) => r.isConfirmed && character.remove())
+  // }
+  // const onClickContext = onClose
+  // const onClick = position ? onClickContext : onClickStatic
 
   return (
     <div
       style={
-        context && {
+        position && {
           position: 'absolute',
-          left: context.x + 24,
-          top: context.y + 24,
+          left: position.x + 24,
+          top: position.y + 24,
           opacity: 0.8,
         }
       }
       className="bg-white text-black rounded-xl p-6 shadow-xl relative"
     >
       {
-        <button className="top-2 right-2 absolute" onClick={onClick}>
+        <button className="top-2 right-2 absolute" onClick={onClose}>
           X
         </button>
       }
@@ -49,6 +51,7 @@ export function CharacterCard({
           ),
         )}
       </ul>
+      {children}
     </div>
   )
 }

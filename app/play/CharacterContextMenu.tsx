@@ -13,7 +13,7 @@ export function CharacterContextMenu({ game }: { game: Game }) {
     characterContext && (
       <CharacterCard
         character={characterContext.character}
-        context={characterContext}
+        position={characterContext}
         onClose={() => setCharacterContext(null)}
       ></CharacterCard>
     )
