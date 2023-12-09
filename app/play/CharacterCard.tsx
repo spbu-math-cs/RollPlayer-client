@@ -1,4 +1,5 @@
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
+import Swal from 'sweetalert2'
 
 export function CharacterCard({
   character,
@@ -23,9 +24,17 @@ export function CharacterCard({
       {!context && (
         <button
           className="top-2 right-2 absolute"
-          onClick={() => character.remove()}
+          onClick={() =>
+            Swal.fire({
+              text: 'Are you sure?',
+              showConfirmButton: true,
+              confirmButtonText: 'Yes',
+              showDenyButton: true,
+              denyButtonText: 'No',
+            }).then((r) => r.isConfirmed && character.remove())
+          }
         >
-          🗑️
+          X
         </button>
       )}
       <span className="block text-xl">Character {character.username}</span>
