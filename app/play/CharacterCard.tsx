@@ -12,18 +12,6 @@ export function CharacterCard({
   onClose?: () => void
   children?: React.ReactNode
 }) {
-  // const onClickStatic = () => {
-  //   Swal.fire({
-  //     text: 'Are you sure?',
-  //     showConfirmButton: true,
-  //     confirmButtonText: 'Yes',
-  //     showDenyButton: true,
-  //     denyButtonText: 'No',
-  //   }).then((r) => r.isConfirmed && character.remove())
-  // }
-  // const onClickContext = onClose
-  // const onClick = position ? onClickContext : onClickStatic
-
   return (
     <div
       style={
