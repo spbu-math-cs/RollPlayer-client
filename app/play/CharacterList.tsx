@@ -12,9 +12,17 @@ export function CharacterList({
 }) {
   return (
     <div className="fixed bottom-0 bg-white w-full text-black flex flex-row gap-4 p-4">
-      {characters.map((character) => (
-        <CharacterCard character={character} key={character.id}></CharacterCard>
-      ))}
+      {characters.map(
+        (character) => (
+          console.log(character),
+          (
+            <CharacterCard
+              character={character}
+              key={character.id}
+            ></CharacterCard>
+          )
+        ),
+      )}
       <NewCharacterCard game={game}></NewCharacterCard>
     </div>
   )

@@ -58,19 +58,19 @@ export class Connection extends EventEmitter {
       case 'character:new': {
         const info = new CharacterInfo(
           this,
-          data.id,
-          data.name,
+          data.character.id,
+          data.character.name,
           data.own,
           false,
-          data.row,
-          data.col,
+          data.character.row,
+          data.character.col,
         )
-        this.characters.set(data.id, info)
+        this.characters.set(data.character.id, info)
         this.emit('character:new', info)
         break
       }
       case 'character:move': {
-        this.emit('character:move', { ...data })
+        this.emit('character:move', { ...data.character })
         break
       }
       case 'character:leave': {
@@ -113,11 +113,13 @@ export class Connection extends EventEmitter {
 
   private send(message: string) {
     if (this.ws?.readyState !== WebSocket.OPEN) {
-      console.error(`Trying to send message "${message}" without opening ws connection`)
+      console.error(
+        `Trying to send message "${message}" without opening ws connection`,
+      )
       return
     }
 
-    console.log("Sending message: ", JSON.parse(message))
+    console.log('Sending message: ', JSON.parse(message))
 
     this.ws.send(message)
   }
