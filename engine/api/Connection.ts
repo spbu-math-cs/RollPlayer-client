@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import swal from 'sweetalert2'
 import { CharacterInfo } from '../entities/CharacterInfo'
+import { BASIC_PROPERTIES } from '../GlobalParameters'
 
 export interface ConnectionProperties {
   userId: number
@@ -56,12 +57,20 @@ export class Connection extends EventEmitter {
   private onMessage(data: any) {
     switch (data.type) {
       case 'character:new': {
+        const basicProperties = Object.entries(BASIC_PROPERTIES).map(
+          ([key, name]) => ({
+            name,
+            value: data.character.basicProperties[key],
+          }),
+        )
         const info = new CharacterInfo(
           this,
           data.character.id,
           data.character.name,
           data.own,
           false,
+          basicProperties,
+          data.character.properties,
           data.character.row,
           data.character.col,
         )

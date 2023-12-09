@@ -5,7 +5,8 @@ import { CharacterInfo } from '../entities/CharacterInfo'
 import { Character } from './Character'
 import { Viewport } from '../pixi-viewport-fork/src'
 
-export class Board extends Viewport {
+//! VERY UNSAFE
+export class Board extends (Viewport as unknown as typeof import('pixi-viewport').Viewport) {
   public readonly tiles: Tile[][] = []
   public readonly characters: Map<number, Character> = new Map()
   private activeCharacter: Character | null = null
@@ -35,6 +36,10 @@ export class Board extends Viewport {
     this.window.addEventListener('blur', () => this.deactivateCharacter())
     this.on('pointerup', this.finishCharacterMove.bind(this))
     this.on('pointermove', this.dragCharacter.bind(this))
+    this.on(
+      'pointerdown',
+      (e) => e.button === 0 && this.emit('context:character', null),
+    )
 
     this.sortableChildren = true
 
@@ -53,7 +58,6 @@ export class Board extends Viewport {
 
     const pos = this.toLocal(e.global, void 0)
     this.activeCharacter.drag(pos.x, pos.y)
-    this.emit('context:character', null)
   }
 
   deactivateCharacter(moveBack = true) {
@@ -109,20 +113,19 @@ export class Board extends Viewport {
 
     if (character.info.own)
       character.on('pointerdown', (e) => {
-        if (e.button !== 0) return
-        this.activateCharacter(character)
+        switch (e.button) {
+          case 0:
+            this.activateCharacter(character)
+            break
+          case 2:
+            this.emit('context:character', {
+              character: character.info,
+              x: character.getGlobalPosition().x,
+              y: character.getGlobalPosition().y,
+            })
+            break
+        }
       })
-
-    character.on('pointerenter', () => {
-      if (this.activeCharacter) return
-      this.emit('context:character', {
-        character: character.info,
-        x: character.getGlobalPosition().x,
-        y: character.getGlobalPosition().y,
-      })
-    })
-
-    character.on('pointerleave', () => this.emit('context:character', null))
 
     this.addChild(character)
     this.characters.set(info.id, character)

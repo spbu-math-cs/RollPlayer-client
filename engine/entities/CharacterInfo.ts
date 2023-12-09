@@ -1,5 +1,8 @@
 import { EventEmitter } from 'events'
 import { Connection } from '../api/Connection'
+import { BASIC_PROPERTIES } from '../GlobalParameters'
+
+export type Property = { name: string; value: number }
 
 export class CharacterInfo extends EventEmitter {
   private _row: number
@@ -11,6 +14,8 @@ export class CharacterInfo extends EventEmitter {
     public readonly username: string,
     public readonly own: boolean,
     private canDoAction: boolean,
+    public basicProperties: Property[],
+    public properties: Property[],
     row: number,
     col: number,
   ) {
@@ -40,7 +45,13 @@ export class CharacterInfo extends EventEmitter {
     this.emit('reset')
   }
 
-  private onStatusUpdate({ id, canDoAction }: { id: number; canDoAction: boolean }) {
+  private onStatusUpdate({
+    id,
+    canDoAction,
+  }: {
+    id: number
+    canDoAction: boolean
+  }) {
     if (id !== this.id) return
 
     this.canDoAction = canDoAction

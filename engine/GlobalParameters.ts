@@ -13,3 +13,12 @@ export const HIGHLIGHT_TINT = 0xffffff
 export const BACKGROUND_SCALE = 1.35
 
 export const CHARACTER_Z_INDEX = 1_000_000_000
+
+export const BASIC_PROPERTIES = Object.seal({
+  charisma: 'Charisma',
+  constitution: 'Constitution',
+  dexterity: 'Dexterity',
+  intelligence: 'Intelligence',
+  strength: 'Strength',
+  wisdom: 'Wisdom',
+})

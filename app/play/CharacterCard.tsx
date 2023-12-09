@@ -28,7 +28,16 @@ export function CharacterCard({
           🗑️
         </button>
       )}
-      Character {character.username}
+      <span className="block text-xl">Character {character.username}</span>
+      <ul className="max-h-32 overflow-y-scroll">
+        {[...character.basicProperties, ...character.properties].map(
+          (property) => (
+            <li key={property.name}>
+              {property.name}: {property.value}
+            </li>
+          ),
+        )}
+      </ul>
     </div>
   )
 }
