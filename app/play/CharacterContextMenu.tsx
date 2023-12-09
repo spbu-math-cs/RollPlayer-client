@@ -14,6 +14,7 @@ export function CharacterContextMenu({ game }: { game: Game }) {
       <CharacterCard
         character={characterContext.character}
         context={characterContext}
+        onClose={() => setCharacterContext(null)}
       ></CharacterCard>
     )
   )
