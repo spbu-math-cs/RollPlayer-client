@@ -7,11 +7,11 @@ import { GlowFilter } from '@pixi/filter-glow'
 import { CHARACTER_Z_INDEX } from '../GlobalParameters'
 
 function getCol(id: number, min: number, max: number) {
-  id += 1
+  id = ((id + 1) * 1_000_000_000) % 57_885_161
 
-  const r = min + id * 998_244_353 % (max - min + 1)
-  const g = min + id * 805_306_457 % (max - min + 1)
-  const b = min + id * 1_000_000_007 % (max - min + 1)
+  const r = min + (id * 998_244_353) % (max - min + 1)
+  const g = min + (id * 805_306_457) % (max - min + 1)
+  const b = min + (id * 1_000_000_007) % (max - min + 1)
 
   return r * 256 * 256 + g * 256 + b
 }
@@ -32,7 +32,7 @@ export class Character extends PIXI.Graphics {
     const outline_color = this.info.own ? 0xff0000 : 0xffffff
     this.lineStyle(1, outline_color, 1)
 
-    const character_color = getCol(info.id, 0x40, 0xff)
+    const character_color = getCol(info.id, 0x00, 0xfb)
     this.beginFill(character_color, 1)
     this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3)
     this.endFill()
