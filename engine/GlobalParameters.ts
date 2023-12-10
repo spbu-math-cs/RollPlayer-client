@@ -27,6 +27,8 @@ export type BasicProperties = Readonly<
   Record<(typeof BASIC_PROPERTIES)[number], number>
 >
 
+export const POINTS_RANGE = [6, 8]
+
 export const BASIC_PROPERTY_NAMES = Object.seal({
   charisma: 'Charisma',
   constitution: 'Constitution',
