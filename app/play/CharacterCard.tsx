@@ -1,35 +1,40 @@
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
+import Swal from 'sweetalert2'
 
 export function CharacterCard({
   character,
-  context,
+  position,
+  onClose = () => {},
+  children,
 }: {
   character: CharacterInfo
-  context?: { x: number; y: number }
+  position?: { x: number; y: number }
+  onClose?: () => void
+  children?: React.ReactNode
 }) {
   return (
     <div
       style={
-        context && {
+        position && {
           position: 'absolute',
-          left: context.x + 24,
-          top: context.y + 24,
-          pointerEvents: 'none',
+          left: position.x + 24,
+          top: position.y + 24,
           opacity: 0.8,
         }
       }
       className="bg-white text-black rounded-xl p-6 shadow-xl relative"
     >
-      {!context && (
-        <button
-          className="top-2 right-2 absolute"
-          onClick={() => character.remove()}
-        >
-          🗑️
+      {
+        <button className="top-2 right-2 absolute" onClick={onClose}>
+          X
         </button>
-      )}
-      <span className="block text-xl">Character {character.username}</span>
-      <ul className="max-h-32 overflow-y-scroll">
+      }
+      <span className="block text-xl">Character {character.username} plss</span>
+      <ul
+        className={`overflow-y-auto block box-border ${
+          !position && ' h-0 min-h-[90%] '
+        }`}
+      >
         {[...character.basicProperties, ...character.properties].map(
           (property) => (
             <li key={property.name}>
@@ -38,6 +43,7 @@ export function CharacterCard({
           ),
         )}
       </ul>
+      {children}
     </div>
   )
 }
