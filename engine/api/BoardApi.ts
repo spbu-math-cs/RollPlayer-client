@@ -87,25 +87,24 @@ export class BoardApi {
     )
   }
 
-  async getBoard(sessionId: number) {
-    const mapId = await this.getMapId(sessionId)
-    const mapData = await this.getMap(mapId)
+  async loadLayer(
+    mapData: MapData, layerId: number, tiles: TileInfo[][]
+  ): Promise<[number | undefined, number | undefined]> {
     const rows = mapData.height
     const cols = mapData.width
-    const tiles: TileInfo[][] = []
-    for (let i = 0; i < rows; i++) tiles.push([])
+    const layer = mapData.layers[layerId]
+    let tileWidth: number | undefined
+    let tileHeight: number | undefined
 
-    // REWRITE LATER !!!
-    let _tileWidth: number = 0
-    let _tileHeight: number = 0
-    // REWRITE LATER !!!
-
-    const layer = mapData.layers[0]
     for (let i = 0; i < layer.data.length; i++) {
       const row = Math.floor(i / cols)
       const col = i % cols
 
       const tileId = layer.data[i]
+      if (tiles[row][col] !== undefined || tileId == 0) {
+        continue
+      }
+
       const closestTileset = mapData.tilesets
         .filter((tileset) => tileset.firstgid <= tileId)
         .reduce(
@@ -120,24 +119,65 @@ export class BoardApi {
       )
       const tilesetCol =
         (tileId - closestTileset.firstgid) % tilesetData.columns
-      const tileWidth = tilesetData.tilewidth
-      const tileHeight = tilesetData.tileheight
+      const curTileWidth = tilesetData.tilewidth
+      const curTileHeight = tilesetData.tileheight
 
       const texture = new PIXI.Texture(
         baseTexture,
         new PIXI.Rectangle(
-          tilesetCol * tileWidth,
-          tilesetRow * tileHeight,
-          tileWidth,
-          tileHeight,
+          tilesetCol * curTileWidth,
+          tilesetRow * curTileHeight,
+          curTileWidth,
+          curTileHeight,
         ),
       )
       tiles[row][col] = new TileInfo(texture, row, col)
 
-      _tileWidth = tileWidth
-      _tileHeight = tileHeight
+      if (tileWidth === undefined) {
+        tileWidth = curTileWidth
+      } else {
+        console.assert(curTileWidth === tileWidth)
+      }
+      if (tileHeight === undefined) {
+        tileHeight = curTileHeight
+      } else {
+        console.assert(curTileHeight === tileHeight)
+      }
     }
 
-    return new BoardInfo(rows, cols, _tileWidth, _tileHeight, tiles)
+    return [tileWidth, tileHeight]
+  }
+
+  async getBoard(sessionId: number) {
+    const mapId = await this.getMapId(sessionId)
+    const mapData = await this.getMap(mapId)
+    const rows = mapData.height
+    const cols = mapData.width
+    const tiles: TileInfo[][] = []
+    for (let i = 0; i < rows; i++) tiles.push([])
+
+    let tileWidth: number | undefined
+    let tileHeight: number | undefined
+
+    for (let i = mapData.layers.length - 1; i >= 0; i--) {
+      const [curTileWidth, curTileHeight] = await this.loadLayer(mapData, i, tiles)
+
+      if (curTileWidth === undefined || curTileHeight === undefined) {
+        continue
+      }
+
+      if (tileWidth === undefined) {
+        tileWidth = curTileWidth
+      } else {
+        console.assert(curTileWidth === tileWidth)
+      }
+      if (tileHeight === undefined) {
+        tileHeight = curTileHeight
+      } else {
+        console.assert(curTileHeight === tileHeight)
+      }
+    }
+
+    return new BoardInfo(rows, cols, tileWidth as number, tileHeight as number, tiles)
   }
 }

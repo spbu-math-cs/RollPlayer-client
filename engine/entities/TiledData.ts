@@ -1,23 +1,23 @@
 import { z } from 'zod'
 
+export const zLayerData = z.object({
+  data: z.array(z.number()),
+  height: z.number(),
+  id: z.number(),
+  name: z.string(),
+  opacity: z.number(),
+  type: z.string(),
+  visible: z.boolean(),
+  width: z.number(),
+  x: z.number(),
+  y: z.number(),
+})
+
 export const zMapData = z.object({
   compressionlevel: z.number(),
   height: z.number(),
   infinite: z.boolean(),
-  layers: z.array(
-    z.object({
-      data: z.array(z.number()),
-      height: z.number(),
-      id: z.number(),
-      name: z.string(),
-      opacity: z.number(),
-      type: z.string(),
-      visible: z.boolean(),
-      width: z.number(),
-      x: z.number(),
-      y: z.number(),
-    }),
-  ),
+  layers: z.array(zLayerData),
   nextlayerid: z.number(),
   nextobjectid: z.number(),
   orientation: z.string(),
@@ -56,5 +56,6 @@ export const zTilesetData = z.object({
   version: z.string(),
 })
 
+export type LayerData = z.infer<typeof zLayerData>
 export type MapData = z.infer<typeof zMapData>
 export type TilesetData = z.infer<typeof zTilesetData>
