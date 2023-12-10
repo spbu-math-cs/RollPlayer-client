@@ -29,8 +29,12 @@ export function CharacterCard({
           X
         </button>
       }
-      <span className="block text-xl">Character {character.username}</span>
-      <ul className="max-h-32 overflow-y-scroll">
+      <span className="block text-xl">Character {character.username} plss</span>
+      <ul
+        className={`overflow-y-auto block box-border ${
+          !position && ' h-0 min-h-[90%] '
+        }`}
+      >
         {[...character.basicProperties, ...character.properties].map(
           (property) => (
             <li key={property.name}>

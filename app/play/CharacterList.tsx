@@ -22,7 +22,7 @@ export function CharacterList({
   }
 
   return (
-    <div className="fixed bottom-0 bg-white w-full text-black flex flex-row gap-4 p-4">
+    <div className="fixed translate-y-[95%] hover:translate-y-0 duration-300  bottom-0 bg-white w-full text-black flex flex-row gap-4 p-4 h-auto">
       {characters.map((character) => (
         <CharacterCard
           character={character}

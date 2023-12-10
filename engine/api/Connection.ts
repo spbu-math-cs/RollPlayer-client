@@ -1,7 +1,11 @@
 import EventEmitter from 'events'
 import swal from 'sweetalert2'
 import { CharacterInfo } from '../entities/CharacterInfo'
-import { BASIC_PROPERTIES } from '../GlobalParameters'
+import {
+  BASIC_PROPERTIES,
+  BASIC_PROPERTY_NAMES,
+  BasicProperties,
+} from '../GlobalParameters'
 
 export interface ConnectionProperties {
   userId: number
@@ -57,7 +61,7 @@ export class Connection extends EventEmitter {
   private onMessage(data: any) {
     switch (data.type) {
       case 'character:new': {
-        const basicProperties = Object.entries(BASIC_PROPERTIES).map(
+        const basicProperties = Object.entries(BASIC_PROPERTY_NAMES).map(
           ([key, name]) => ({
             name,
             value: data.character.basicProperties[key],
@@ -133,13 +137,14 @@ export class Connection extends EventEmitter {
     this.ws.send(message)
   }
 
-  public createCharacter(name: string) {
+  public createCharacter(name: string, basicProperties: BasicProperties) {
     this.send(
       JSON.stringify({
         type: 'character:new',
         name: name,
         row: 0,
         col: 0,
+        basicProperties,
       }),
     )
   }

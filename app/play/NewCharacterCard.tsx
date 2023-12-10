@@ -1,4 +1,8 @@
-import { BASIC_PROPERTIES } from '@/engine/GlobalParameters'
+import {
+  BASIC_PROPERTIES,
+  BASIC_PROPERTY_NAMES,
+  BasicProperties,
+} from '@/engine/GlobalParameters'
 import { Game } from '@/engine/entities/Game'
 import { useState } from 'react'
 
@@ -43,30 +47,30 @@ function PointsSelector({
 
 export function NewCharacterCard({ game }: { game: Game }) {
   const [newUsername, setNewUsername] = useState('')
+
+  const [basicProperties, setBasicProperties] = useState(
+    Object.fromEntries(
+      BASIC_PROPERTIES.map((key) => [key, 0]),
+    ) as BasicProperties,
+  )
+
   const addCharacter = () => {
-    game.connection.createCharacter(newUsername)
+    game.connection.createCharacter(newUsername, basicProperties)
   }
 
-  const keys = Object.keys(BASIC_PROPERTIES)
+  const sum = Object.values(basicProperties).reduce((a, b) => a + b, 0)
 
-  const [values, setValues] = useState(
-    Object.fromEntries(keys.map((key) => [key, 0])),
-  )
-
-  const sum = Object.values(values).reduce((a, b) => a + b, 0)
-  console.log({ sum, values })
-
-  const basicProperties = Object.entries(BASIC_PROPERTIES).map(
-    ([key, name]) => (
-      <li key={key}>
-        Property: {name}
-        <PointsSelector
-          addingEnabled={sum < 6}
-          onValueUpdate={(v) => setValues({ ...values, [key]: v })}
-        ></PointsSelector>
-      </li>
-    ),
-  )
+  const content = Object.entries(BASIC_PROPERTY_NAMES).map(([key, name]) => (
+    <li key={key}>
+      Property: {name}
+      <PointsSelector
+        addingEnabled={sum < 6}
+        onValueUpdate={(v) =>
+          setBasicProperties({ ...basicProperties, [key]: v })
+        }
+      ></PointsSelector>
+    </li>
+  ))
 
   return (
     <div className="bg-white text-black rounded-xl p-2 shadow-xl relative flex flex-col items-stretch">
@@ -78,7 +82,7 @@ export function NewCharacterCard({ game }: { game: Game }) {
         value={newUsername}
         onInput={(e) => setNewUsername((e.target as HTMLInputElement).value)}
       />
-      {basicProperties}
+      {content}
       <button
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded block m-2"
         onClick={addCharacter}

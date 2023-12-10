@@ -14,11 +14,24 @@ export const BACKGROUND_SCALE = 1.35
 
 export const CHARACTER_Z_INDEX = 1_000_000_000
 
-export const BASIC_PROPERTIES = Object.seal({
+export const BASIC_PROPERTIES = [
+  'strength',
+  'dexterity',
+  'constitution',
+  'intelligence',
+  'wisdom',
+  'charisma',
+] as const
+
+export type BasicProperties = Readonly<
+  Record<(typeof BASIC_PROPERTIES)[number], number>
+>
+
+export const BASIC_PROPERTY_NAMES = Object.seal({
   charisma: 'Charisma',
   constitution: 'Constitution',
   dexterity: 'Dexterity',
   intelligence: 'Intelligence',
   strength: 'Strength',
   wisdom: 'Wisdom',
-})
+}) as Readonly<Record<(typeof BASIC_PROPERTIES)[number], string>>
