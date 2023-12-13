@@ -25,10 +25,10 @@ export class Board extends (Viewport as unknown as typeof import('pixi-viewport'
       worldHeight: info.rows * info.tileHeight,
     })
 
-    this.x = this.screenWidth / 2 - this.worldWidth / 2
-    this.y = this.screenHeight / 2 - this.worldHeight / 2
+    this.x = (this.screenWidth - this.worldWidth) / 2
+    this.y = (this.screenHeight - this.worldHeight) / 2
 
-    this.drag({ mouseButtons: 'right' })
+    this.drag({ mouseButtons: 'right', keyToPress: ['ShiftLeft'] })
       .pinch()
       .wheel({ smooth: 5 })
       .decelerate({ friction: 0.9 })
