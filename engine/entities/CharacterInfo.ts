@@ -14,6 +14,7 @@ export class CharacterInfo extends EventEmitter {
     public readonly username: string,
     public readonly own: boolean,
     private canDoAction: boolean,
+    private isDefeated: boolean,
     public basicProperties: Property[],
     public properties: Property[],
     row: number,
@@ -48,14 +49,18 @@ export class CharacterInfo extends EventEmitter {
   private onStatusUpdate({
     id,
     canDoAction,
+    isDefeated,
   }: {
     id: number
-    canDoAction: boolean
+    canDoAction: boolean | undefined
+    isDefeated: boolean | undefined
   }) {
     if (id !== this.id) return
 
-    this.canDoAction = canDoAction
-    this.emit('status', canDoAction)
+    if (canDoAction !== undefined) this.canDoAction = canDoAction
+    if (isDefeated !== undefined) this.isDefeated = isDefeated
+
+    this.emit('status', { canDoAction: this.canDoAction, isDefeated: this.isDefeated })
   }
 
   public move(row: number, col: number) {

@@ -73,7 +73,8 @@ export class Connection extends EventEmitter {
           data.character.id,
           data.character.name,
           data.own,
-          false,
+          false, // canDoAction
+          data.character.isDefeated,
           basicProperties,
           data.character.properties,
           data.character.row,
@@ -84,7 +85,17 @@ export class Connection extends EventEmitter {
         break
       }
       case 'character:move': {
-        this.emit('character:move', { ...data.character })
+        const id = data.id
+        const newCharacterInfo = data.character
+        if (newCharacterInfo === undefined) {
+          console.error('Server didn\'t send character info on move')
+          break
+        }
+
+        const isDefeated = newCharacterInfo.isDefeated
+
+        this.updateCharacterInfo(id, newCharacterInfo, undefined, isDefeated)
+
         break
       }
       case 'character:leave': {
@@ -108,8 +119,24 @@ export class Connection extends EventEmitter {
       }
       case 'character:status': {
         const id = data.id
+        const newCharacterInfo = data.character
         const canDoAction = data.can_do_action
-        this.emit('character:status', { id, canDoAction })
+        const isDefeated = data.is_defeated
+
+        this.updateCharacterInfo(id, newCharacterInfo, canDoAction, isDefeated)
+
+        break
+      }
+      case 'character:attack': {
+        const attackType = data.attackType
+        const characterId = data.character.id
+        const opponentId = data.opponent.id
+
+        // emit attack type
+
+        this.updateCharacterInfo(characterId, data.character, undefined, data.character.isDefeated)
+        this.updateCharacterInfo(opponentId, data.opponent, undefined, data.opponent.isDefeated)
+
         break
       }
       case 'character:error': {
@@ -136,6 +163,20 @@ export class Connection extends EventEmitter {
     console.log('Sending message: ', JSON.parse(message))
 
     this.ws.send(message)
+  }
+
+  private updateCharacterInfo(
+    id: number,
+    newCharacterInfo: CharacterInfo | undefined,
+    canDoAction: boolean | undefined,
+    isDefeated: boolean | undefined
+  ) {
+    this.emit('character:status', { id, canDoAction, isDefeated })
+
+    if (newCharacterInfo === undefined) return
+
+    this.emit('character:move', { ...newCharacterInfo })
+    this.characters.set(id, newCharacterInfo)
   }
 
   public createCharacter(name: string, basicProperties: BasicProperties) {

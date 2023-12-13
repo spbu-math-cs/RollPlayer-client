@@ -4,6 +4,7 @@ import * as TWEEN from '@tweenjs/tween.js'
 import { Board } from './Board'
 import { Tile } from './Tile'
 import { GlowFilter } from '@pixi/filter-glow'
+import { DotFilter } from '@pixi/filter-dot'
 import { CHARACTER_Z_INDEX } from '../GlobalParameters'
 
 function getCol(id: number, min: number, max: number) {
@@ -21,7 +22,8 @@ export class Character extends PIXI.Graphics {
   private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
 
   private defaultFilters = []
-  private highlightFilters = [new GlowFilter({ distance: 20, outerStrength: 2 })]
+  private canDoActionFilters = [new GlowFilter({ distance: 20, outerStrength: 2 })]
+  private defeatedFilters = [new DotFilter()]
 
   constructor(
     private board: Board,
@@ -61,14 +63,27 @@ export class Character extends PIXI.Graphics {
     this.moveAnimated(this.info.row, this.info.col)
   }
 
-  private onStatusUpdate(hightlight: boolean) {
-    if (hightlight) {
-      this.filters = this.highlightFilters
-      this.zIndex = CHARACTER_Z_INDEX + 1
-    } else {
-      this.filters = this.defaultFilters
-      this.zIndex = CHARACTER_Z_INDEX
+  private onStatusUpdate({ canDoAction, isDefeated }: { canDoAction: boolean; isDefeated: boolean }) {
+    this.zIndex = CHARACTER_Z_INDEX + 1
+
+    if (canDoAction && isDefeated) {
+      this.filters = [...this.canDoActionFilters, ...this.defeatedFilters]
+      return
     }
+
+    if (canDoAction) {
+      this.filters = this.canDoActionFilters
+      return
+    }
+
+    this.zIndex = CHARACTER_Z_INDEX
+
+    if (isDefeated) {
+      this.filters = this.defeatedFilters
+      return
+    }
+
+    this.filters = this.defaultFilters
   }
 
   public activate() {
