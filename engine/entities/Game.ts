@@ -6,6 +6,7 @@ import * as PIXI from 'pixi.js'
 import { BoardInfo } from './BoardInfo'
 import { ConnectionProperties } from '../api/Connection'
 import { CharacterContext } from '@/app/play/page'
+import { CharacterInfo } from './CharacterInfo'
 
 export class Game {
   connection: Connection
@@ -13,6 +14,7 @@ export class Game {
   app: PIXI.Application
   board?: Board
   invalid: boolean = false
+  selectedCharacter: CharacterInfo | null = null
 
   constructor(
     private connectionProperties: ConnectionProperties,
@@ -58,7 +60,12 @@ export class Game {
 
     this.connection.on(
       'character:new',
-      (info) => this.board?.addCharacter(info),
+      (info: CharacterInfo) => {
+        this.board?.addCharacter(info)
+        if (info.own) info.on('status', ({ canDoAction }) => {
+          if (canDoAction) this.selectedCharacter = info
+        })
+      },
     )
 
     this.connection.on(
@@ -69,7 +76,7 @@ export class Game {
     this.app.stage.addChild(this.board)
   }
 
-  onCharacterContext: (context: CharacterContext) => void = () => {}
+  onCharacterContext: (context: CharacterContext) => void = () => { }
 
   cleanUp() {
     this.invalid = true

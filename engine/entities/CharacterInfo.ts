@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { Connection } from '../api/Connection'
-import { BASIC_PROPERTIES } from '../GlobalParameters'
+import { AttackType, BASIC_PROPERTIES } from '../GlobalParameters'
 
 export type Property = { name: string; value: number }
 
@@ -28,6 +28,7 @@ export class CharacterInfo extends EventEmitter {
     this.connection.on('character:move', this.onMove.bind(this))
     this.connection.on('character:reset', this.onReset.bind(this))
     this.connection.on('character:status', this.onStatusUpdate.bind(this))
+    this.connection.on('character:attack', this.onAttack.bind(this))
   }
 
   private onMove({ id, row, col }: { id: number; row: number; col: number }) {
@@ -46,6 +47,16 @@ export class CharacterInfo extends EventEmitter {
     this.emit('reset')
   }
 
+  private onAttack({ character, opponent }: { character: CharacterInfo, opponent: CharacterInfo }) {
+    if (character.id === this.id) {
+      this.emit('attack', opponent)
+      return
+    }
+    if (opponent.id === this.id) {
+      this.emit('attacked', character)
+    }
+  }
+
   private onStatusUpdate({
     id,
     canDoAction,
@@ -61,6 +72,10 @@ export class CharacterInfo extends EventEmitter {
     if (isDefeated !== undefined) this.isDefeated = isDefeated
 
     this.emit('status', { canDoAction: this.canDoAction, isDefeated: this.isDefeated })
+  }
+
+  public attack(attackType: AttackType, opponentId: number) {
+    this.connection.attack(attackType, this.id, opponentId)
   }
 
   public move(row: number, col: number) {

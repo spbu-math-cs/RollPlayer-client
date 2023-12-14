@@ -2,3 +2,5 @@
 /.next/
 /.idea/
 
+flake.lock
+flake.nix

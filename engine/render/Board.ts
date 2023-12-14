@@ -111,21 +111,21 @@ export class Board extends (Viewport as unknown as typeof import('pixi-viewport'
   addCharacter(info: CharacterInfo) {
     const character = new Character(this, info)
 
-    if (character.info.own)
-      character.on('pointerdown', (e) => {
-        switch (e.button) {
-          case 0:
+    character.on('pointerdown', (e) => {
+      switch (e.button) {
+        case 0:
+          if (character.info.own)
             this.activateCharacter(character)
-            break
-          case 2:
-            this.emit('context:character', {
-              character: character.info,
-              x: character.getGlobalPosition().x,
-              y: character.getGlobalPosition().y,
-            })
-            break
-        }
-      })
+          break
+        case 2:
+          this.emit('context:character', {
+            character: character.info,
+            x: character.getGlobalPosition().x,
+            y: character.getGlobalPosition().y,
+          })
+          break
+      }
+    })
 
     this.addChild(character)
     this.characters.set(info.id, character)

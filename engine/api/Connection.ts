@@ -2,9 +2,11 @@ import EventEmitter from 'events'
 import swal from 'sweetalert2'
 import { CharacterInfo } from '../entities/CharacterInfo'
 import {
+  AttackType,
   BASIC_PROPERTIES,
   BASIC_PROPERTY_NAMES,
   BasicProperties,
+  ERROR_TEXT,
 } from '../GlobalParameters'
 
 export interface ConnectionProperties {
@@ -105,16 +107,16 @@ export class Connection extends EventEmitter {
         break
       }
       case 'error': {
-        switch (data.on) {
-          case 'character:move':
-            this.emit('character:reset')
-            swal.fire({
-              title: 'Error',
-              text: data.message,
-              icon: 'error',
-            })
-            break
+        if (data.reason) {
+          swal.fire({
+            title: 'Error',
+            text: data.reason in ERROR_TEXT ? ERROR_TEXT[data.reason as keyof typeof ERROR_TEXT] : 'Unknown error',
+            icon: 'error',
+          })
         }
+        if (data.on === 'character:move')
+          this.emit('character:reset')
+
         break
       }
       case 'character:status': {
@@ -134,8 +136,13 @@ export class Connection extends EventEmitter {
 
         // emit attack type
 
-        this.updateCharacterInfo(characterId, data.character, undefined, data.character.isDefeated)
-        this.updateCharacterInfo(opponentId, data.opponent, undefined, data.opponent.isDefeated)
+        this.updateCharacterInfo(characterId, data.character, undefined, data.character.isDefeated, data.character)
+        this.updateCharacterInfo(opponentId, data.opponent, undefined, data.opponent.isDefeated, data.opponent)
+
+        const character = this.characters.get(characterId)
+        const opponent = this.characters.get(opponentId)
+
+        this.emit('character:attack', { character, opponent })
 
         break
       }
@@ -169,14 +176,18 @@ export class Connection extends EventEmitter {
     id: number,
     newCharacterInfo: CharacterInfo | undefined,
     canDoAction: boolean | undefined,
-    isDefeated: boolean | undefined
+    isDefeated: boolean | undefined,
+    characterJson: any | undefined,
   ) {
     this.emit('character:status', { id, canDoAction, isDefeated })
+
+    if (characterJson && this.characters.has(id)) {
+      this.characters.get(id).properties = characterJson.properties
+    }
 
     if (newCharacterInfo === undefined) return
 
     this.emit('character:move', { ...newCharacterInfo })
-    this.characters.set(id, newCharacterInfo)
   }
 
   public createCharacter(name: string, basicProperties: BasicProperties) {
@@ -209,6 +220,15 @@ export class Connection extends EventEmitter {
         col: col,
       }),
     )
+  }
+
+  public attack(attackType: AttackType, id: number, opponentId: number) {
+    this.send(JSON.stringify({
+      type: 'character:attack',
+      attackType,
+      id,
+      opponentId,
+    }))
   }
 
   public close() {

@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@pixi/filter-dot':
+    specifier: ^5.1.1
+    version: 5.1.1(@pixi/core@7.3.1)
+  '@pixi/filter-glow':
+    specifier: ^5.2.1
+    version: 5.2.1(@pixi/core@7.3.1)
   '@tweenjs/tween.js':
     specifier: ^21.0.0
     version: 21.0.0
@@ -20,6 +26,9 @@ dependencies:
   next:
     specifier: latest
     version: 13.5.4(react-dom@18.2.0)(react@18.2.0)
+  penner:
+    specifier: ^0.1.3
+    version: 0.1.3
   pixi-viewport:
     specifier: ^5.0.2
     version: 5.0.2
@@ -35,6 +44,9 @@ dependencies:
   sweetalert2:
     specifier: ^11.10.1
     version: 11.10.1
+  tweenjs:
+    specifier: ^1.0.2
+    version: 1.0.2
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -422,10 +434,26 @@ packages:
       '@pixi/core': 7.3.1
     dev: false
 
+  /@pixi/filter-dot@5.1.1(@pixi/core@7.3.1):
+    resolution: {integrity: sha512-w3g6bumHzZgv9ktzegEWQS7OWuHH0QG76sbg/hZBy5K01dyuGAe1uUUnzVN5hZuFTD6q77T2UPlifhNI5j4ixg==}
+    peerDependencies:
+      '@pixi/core': ^7.0.0-X
+    dependencies:
+      '@pixi/core': 7.3.1
+    dev: false
+
   /@pixi/filter-fxaa@7.3.1(@pixi/core@7.3.1):
     resolution: {integrity: sha512-ZL3kjIkMm29+G8AOuxDDo2VrqeJEBw6zloDDerUq71NRsyIUWJEdscdiVUDytL1/JqZwxdHEvzDNG6IF3P1VFg==}
     peerDependencies:
       '@pixi/core': 7.3.1
+    dependencies:
+      '@pixi/core': 7.3.1
+    dev: false
+
+  /@pixi/filter-glow@5.2.1(@pixi/core@7.3.1):
+    resolution: {integrity: sha512-94I4XePDF9yqqA6KQuhPSphEHPJ2lXfqJLn0Bes8VVdwft0Ianj1wALqjoSUeBWqiJbhjBEXGDNkRZhPHvY3Xg==}
+    peerDependencies:
+      '@pixi/core': ^7.0.0-X
     dependencies:
       '@pixi/core': 7.3.1
     dev: false
@@ -2426,6 +2454,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /penner@0.1.3:
+    resolution: {integrity: sha512-UzkaC2L6d9J1VzJAFH0TQwuKE/rerpTZkgW6aPLVeu/LdjWn6rnuY9lXcVN1AE9tZVfHrsJ2gZOBsRjpQECNHA==}
+    dev: false
+
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
 
@@ -2961,6 +2993,10 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: false
+
+  /tweenjs@1.0.2:
+    resolution: {integrity: sha512-WnFozCNkUkmJtLqJyGrToxVojW2Srzudktr8BzFKQijQRVcmlq7Fc+qfo75ccnwIJGiRWbXKfg7qU67Tzbb1bg==}
     dev: false
 
   /type-check@0.4.0:
