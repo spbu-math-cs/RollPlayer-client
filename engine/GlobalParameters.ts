@@ -47,11 +47,11 @@ export const BASIC_PROPERTY_NAMES = Object.seal({
 }) as Readonly<Record<(typeof BASIC_PROPERTIES)[number], string>>
 
 export const ERROR_TEXT = {
-  not_your_turn: "Not Your Turn",
-  is_defeated: "Is Defeated",
-  big_dist: "Big Dist",
-  tile_obstacle: "Tile Obstacle",
-  low_mana: "Low Mana",
-  opponent_is_defeated: "Opponent Is Defeated",
-  is_not_defeated: "Is Not Defeated",
+  not_your_turn: "Not your turn yet!",
+  is_defeated: "You are defeated!",
+  big_dist: "Too big distance!",
+  tile_obstacle: "Can't move! That is an obstacle tile!",
+  low_mana: "You have too little mana!",
+  opponent_is_defeated: "The opponent is defeated!",
+  is_not_defeated: "You are not defeated!",
 }
