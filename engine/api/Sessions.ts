@@ -6,9 +6,10 @@ export interface SessionInfo {
   active?: boolean,
 }
 
-export async function getSessions(userId: number) {
-  const response = await fetch(`/api/${userId}/sessions`, {
+export async function getSessions(token: string) {
+  const response = await fetch(`/api/user/sessions`, {
     method: 'GET',
+    headers: [['Authorization', `Bearer ${token}`]],
   });
   const responseData = await response.json() as {'result': SessionInfo[]};
   console.log(responseData)

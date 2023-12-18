@@ -1,9 +1,8 @@
 'use client'
 
 import React, {useContext, useEffect, useState} from "react";
-import AuthContext, {User} from "@/context/AuthContext";
+import AuthContext from "@/context/AuthContext";
 import Link from "next/link";
-import _ from "lodash";
 
 export default function UserProfilePage() {
   const authContext = useContext(AuthContext);
@@ -32,30 +31,28 @@ export default function UserProfilePage() {
   }
 
   function ClickSignOut() {
-    let userId = authContext.user?.userId
-    authContext.signOut(userId ? userId : null);
+    let token = authContext.user?.token
+    authContext.signOut(token ? token : null);
   }
 
   function saveChanges() {
     if (authContext.user?.userId === undefined) {
       return;
     }
-    const updatedUser: User = {
-      "userId": authContext.user.userId,
-      "email": authContext.user.email,
-      "login": authContext.user.login,
-      "password": password,
+    const updatedUser: {token: string, password: string, email?: string, login?: string} = {
+      token: authContext.user.token,
+      password: authContext.user.password,
     };
-    if (email !== "None") {
-      updatedUser["email"] = email;
+    if (email !== "None" && email !== authContext.user.email) {
+      updatedUser.email = email;
     }
-    if (login !== "None") {
-      updatedUser["login"] = login;
+    if (login !== "None" && login !== authContext.user.login) {
+      updatedUser.login = login;
     }
-    if (_.isEqual(updatedUser, authContext.user)) {
-      return;
+    if (password !== "None") {
+      updatedUser.password = password;
     }
-    authContext.edit(authContext.user.userId, updatedUser);
+    authContext.edit(updatedUser);
   }
 
   return (

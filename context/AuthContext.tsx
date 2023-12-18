@@ -4,11 +4,19 @@ import React, {createContext, SetStateAction, useEffect, useState} from 'react';
 import {editApi, signInApi, signOutApi, signUpApi} from "@/engine/api/Auth";
 
 export interface User {
+  token: string,
   userId: number,
   email: string,
   login: string,
   password: string,
-};
+}
+
+export interface UserEdit {
+  token: string
+  password: string,
+  login?: string,
+  email?: string,
+}
 
 export const AuthContext = createContext({
   user: null as User | null,
@@ -18,8 +26,8 @@ export const AuthContext = createContext({
 
   signIn: (login: string | null, email: string | null, password: string) => {},
   signUp: (user: User) => {},
-  signOut: (userId: number | null) => {},
-  edit: (userId: number, user: User) => {},
+  signOut: (token: string | null) => {},
+  edit: (user: UserEdit) => {},
 
   authReady: false,
   error: null as string | null,
@@ -99,14 +107,14 @@ export const AuthContextProvider = ({children}: any) => {
     );
   };
 
-  const signOut = (userId: number | null) => {
+  const signOut = (token: string | null) => {
     setAuthReady(false);
-    if (userId === null) {
+    if (token === null) {
       setUser(null);
       setAuthReady(true);
       return;
     }
-    signOutApi(userId).then(
+    signOutApi(token).then(
       response => {
         if (typeof response === 'string') {
           setError(response);
@@ -123,9 +131,9 @@ export const AuthContextProvider = ({children}: any) => {
     );
   };
 
-  const edit = (userId: number, userData: User) => {
+  const edit = (userData: UserEdit) => {
     setAuthReady(false);
-    editApi(userId, userData).then(
+    editApi(userData).then(
       response => {
         if (typeof response === 'string') {
           setError(response);

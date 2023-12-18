@@ -1,7 +1,8 @@
-import {User} from "@/context/AuthContext";
+import {User, UserEdit} from "@/context/AuthContext";
 import {getError} from "@/engine/api/Utils";
 
 interface UserInfo {
+  token: string,
   id: number,
   login?: string,
   email?: string,
@@ -16,13 +17,23 @@ export async function signInApi(login: string | null, email: string | null, pass
   if (email !== null) {
     userData['email'] = email;
   }
-  const response = await fetch('/api/login', {
+  const loginResponse = await fetch('/api/login', {
     method: 'POST',
     body: JSON.stringify(userData),
   });
+  const loginResponseData = await loginResponse.json() as {'result': string, 'message': string};
+  if (!loginResponse.ok) {
+    return getError(loginResponseData.message, loginResponse);
+  }
+  const token = loginResponseData.result
+  const response = await fetch('/api/user', {
+    method: 'GET',
+    headers: [['Authorization', `Bearer ${token}`]],
+  })
   const responseData = await response.json() as {'result': UserInfo, 'message': string};
   if (response.ok) {
     const info = responseData.result;
+    info.token = token
     if (info.login === undefined) {
       info.login = "";
       console.error("got user without login during sign in");
@@ -32,6 +43,7 @@ export async function signInApi(login: string | null, email: string | null, pass
       console.error("got user without e-mail during sign in");
     }
     return {
+      'token': info.token,
       'userId': info.id,
       'login': info.login,
       'email': info.email,
@@ -57,20 +69,16 @@ export async function signUpApi(user: User) {
       info.email = "";
       console.error("got user without e-mail during sign up");
     }
-    return {
-      'userId': info.id,
-      'login': info.login,
-      'email': info.email,
-    };
+    return signInApi(info.login, info.email, user.password);
   } else {
     return getError(responseData.message, response);
   }
 }
 
-export async function signOutApi(userId: number) {
+export async function signOutApi(token: string) {
   const response = await fetch('/api/logout', {
     method: 'POST',
-    body: JSON.stringify({userId}),
+    headers: [['Authorization', `Bearer ${token}`]],
   });
   const responseData = await response.json() as {'message': string};
   if (response.ok) {
@@ -80,9 +88,10 @@ export async function signOutApi(userId: number) {
   }
 }
 
-export async function editApi(userId: number, userData: User) {
-  const response = await fetch(`/api/edit/${userId}`, {
+export async function editApi(userData: UserEdit) {
+  const response = await fetch(`/api/user/edit/`, {
     method: 'POST',
+    headers: [['Authorization', `Bearer ${userData.token}`]],
     body: JSON.stringify(userData),
   });
   const responseData = await response.json() as {'result': UserInfo, 'message': string};
@@ -97,6 +106,7 @@ export async function editApi(userId: number, userData: User) {
       console.error("got user without e-mail during edit");
     }
     return {
+      'token': userData.token,
       'userId': info.id,
       'login': info.login,
       'email': info.email,
