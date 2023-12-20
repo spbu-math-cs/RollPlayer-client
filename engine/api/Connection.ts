@@ -134,10 +134,8 @@ export class Connection extends EventEmitter {
         const characterId = data.character.id
         const opponentId = data.opponent.id
 
-        // emit attack type
-
-        this.updateCharacterInfo(characterId, data.character, undefined, data.character.isDefeated, data.character)
-        this.updateCharacterInfo(opponentId, data.opponent, undefined, data.opponent.isDefeated, data.opponent)
+        this.updateCharacterInfo(characterId, data.character, undefined, data.character.isDefeated)
+        this.updateCharacterInfo(opponentId, data.opponent, undefined, data.opponent.isDefeated)
 
         const character = this.characters.get(characterId)
         const opponent = this.characters.get(opponentId)
@@ -177,15 +175,13 @@ export class Connection extends EventEmitter {
     newCharacterInfo: CharacterInfo | undefined,
     canDoAction: boolean | undefined,
     isDefeated: boolean | undefined,
-    characterJson: any | undefined,
   ) {
     this.emit('character:status', { id, canDoAction, isDefeated })
 
-    if (characterJson && this.characters.has(id)) {
-      this.characters.get(id).properties = characterJson.properties
-    }
+    const character = this.characters.get(id)
+    if (newCharacterInfo === undefined || character === undefined) return
 
-    if (newCharacterInfo === undefined) return
+    character.properties = newCharacterInfo.properties
 
     this.emit('character:move', { ...newCharacterInfo })
   }
@@ -195,8 +191,8 @@ export class Connection extends EventEmitter {
       JSON.stringify({
         type: 'character:new',
         name: name,
-        row: 0,
-        col: 0,
+        row: 9,
+        col: 16,
         basicProperties,
       }),
     )

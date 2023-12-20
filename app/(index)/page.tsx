@@ -5,7 +5,7 @@ export default function Home() {
     <>
       <section className="container mx-auto h-screen flex items-center justify-center">
         <div>
-          <h1 className="text-7xl my-5">RollCharacter</h1>
+          <h1 className="text-7xl my-5">RollPlayer</h1>
           <Link
             href="/play"
             className="text-xl text-center text-white block bg-orange-500 p-3 rounded-2xl"
