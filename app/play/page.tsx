@@ -5,7 +5,7 @@ import { SessionInfo, getSessions } from '@/engine/api/Sessions'
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
 import { RuntimeError } from 'next/dist/client/components/react-dev-overlay/internal/container/RuntimeError'
 import { SetStateAction, useContext, useEffect, useState } from 'react'
-import { ConnectionProperties } from '../../engine/api/Connection'
+import { ConnectionProperties } from '@/engine/api/Connection'
 import GameScreen from './GameScreen'
 
 let authContext: {
@@ -45,7 +45,7 @@ export default function PlayPage() {
     if (authContext.user?.userId === undefined) {
       location.replace('/signin')
     } else {
-      getSessions(authContext.user.userId).then((response) => {
+      getSessions(authContext.user.token).then((response) => {
         if (typeof response === 'string') {
           setError(response)
         } else {

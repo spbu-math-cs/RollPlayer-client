@@ -20,6 +20,7 @@ let setPassword: Dispatch<SetStateAction<string>>;
 function onSubmit(event: FormEvent) {
   event.preventDefault()
   const user = {
+    "token": "",
     "userId": -1,
     "email": email,
     "login": login,
