@@ -28,12 +28,12 @@ export class Connection extends EventEmitter {
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    const userID = this.connectionProperties.userId
-    const _userToken = this.connectionProperties.userToken
+    const _userID = this.connectionProperties.userId
+    const userToken = this.connectionProperties.userToken
     const sessionId = this.connectionProperties.sessionId
 
     const ws = new WebSocket(
-      `${process.env.NEXT_PUBLIC_SOCKET_URL}/${userID}/${sessionId}`,
+      `${process.env.NEXT_PUBLIC_SOCKET_URL}/user/sessions/${sessionId}/connect`
     )
     console.log(this.connectionProperties)
 
@@ -42,10 +42,11 @@ export class Connection extends EventEmitter {
     ws.onopen = (event) => {
       console.log('Open', event)
       console.log('Open readyState:', ws.readyState)
+      this.ws?.send(userToken)
     }
 
     ws.onerror = (event) => {
-      console.log('Error!', event)
+      console.error('Error!', event)
     }
 
     ws.onclose = (event) => {

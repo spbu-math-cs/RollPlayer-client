@@ -85,7 +85,7 @@ export default function PlayPage() {
 
     const connectionProperties: ConnectionProperties = {
       userId: curUser.userId,
-      userToken: 'kek',
+      userToken: curUser.token,
       sessionId: sessionId,
     }
 
