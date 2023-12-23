@@ -8,6 +8,8 @@ import { Viewport } from '../pixi-viewport-fork/src'
 //! VERY UNSAFE
 export class Board extends (Viewport as unknown as typeof import('pixi-viewport').Viewport) {
   public readonly tiles: Tile[][] = []
+  private selectedTile: [number, number] | undefined = undefined
+
   public readonly characters: Map<number, Character> = new Map()
   private activeCharacter: Character | null = null
 
@@ -36,10 +38,12 @@ export class Board extends (Viewport as unknown as typeof import('pixi-viewport'
     this.window.addEventListener('blur', () => this.deactivateCharacter())
     this.on('pointerup', this.finishCharacterMove.bind(this))
     this.on('pointermove', this.dragCharacter.bind(this))
-    this.on(
-      'pointerdown',
-      (e) => e.button === 0 && this.emit('context:character', null),
-    )
+    this.on('pointerdown', (e) => {
+      if (e.button === 0) {
+        this.consumeSelectedTile()
+        this.emit('context:character', null)
+      }
+    })
 
     this.sortableChildren = true
 
@@ -89,6 +93,22 @@ export class Board extends (Viewport as unknown as typeof import('pixi-viewport'
     const target_y = row * this.info.tileHeight + this.info.tileHeight / 2
 
     return [target_x, target_y]
+  }
+
+  selectTile(row: number, col: number) {
+    this.selectedTile = [row, col]
+    this.tiles[row][col].activateOnSelect()
+  }
+
+  consumeSelectedTile(): [number, number] | undefined {
+    const result = this.selectedTile
+    if (result !== undefined) {
+      const [row, col] = result
+      this.tiles[row][col].deactivateOnSelect()
+    }
+
+    this.selectedTile = undefined
+    return result
   }
 
   initBoard() {

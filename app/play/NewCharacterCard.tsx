@@ -56,7 +56,20 @@ export function NewCharacterCard({ game }: { game: Game }) {
   )
 
   const addCharacter = () => {
-    game.connection.createCharacter(newUsername, basicProperties)
+    const board = game.board
+    if (board === undefined) {
+      console.error('Trying to create character without board initialized')
+      return
+    }
+
+    const tile = board.consumeSelectedTile()
+    if (tile === undefined) {
+      console.error('Trying to create character without tile selected')
+      return
+    }
+
+    const [row, col] = tile
+    game.connection.createCharacter(newUsername, basicProperties, row, col)
   }
 
   const sum = Object.values(basicProperties).reduce((a, b) => a + b, 0)

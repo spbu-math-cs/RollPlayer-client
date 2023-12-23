@@ -187,13 +187,17 @@ export class Connection extends EventEmitter {
     this.emit('character:move', { ...newCharacterInfo })
   }
 
-  public createCharacter(name: string, basicProperties: BasicProperties) {
+  public createCharacter(
+    name: string,
+    basicProperties: BasicProperties,
+    row: number, col: number
+  ) {
     this.send(
       JSON.stringify({
         type: 'character:new',
         name: name,
-        row: 9,
-        col: 16,
+        row: row,
+        col: col,
         basicProperties,
       }),
     )

@@ -93,11 +93,11 @@ export class Character extends PIXI.Graphics {
   }
 
   public drag(x: number, y: number) {
-    this.nearestTile?.deactivate()
+    this.nearestTile?.deactivateOnCharacterDrag()
     this.x = x
     this.y = y
     this.nearestTile = this.board.getNearestTile(this.x, this.y)
-    this.nearestTile.activate()
+    this.nearestTile.activateOnCharacterDrag()
   }
 
   public finishMove() {
@@ -110,7 +110,7 @@ export class Character extends PIXI.Graphics {
 
   public deactivate(moveBack = true) {
     this.alpha = 1.0
-    this.nearestTile?.deactivate()
+    this.nearestTile?.deactivateOnCharacterDrag()
     this.nearestTile = null
 
     if (moveBack) this.moveAnimated(this.info.row, this.info.col)
