@@ -2,9 +2,7 @@ TODO: вставить логотип или просто красивый за�
 
 # What is RollPlayer?
 
-RollPlayer is an online platform for role-playing games.
-
-TODO: что здесь дальше писать? Может, кто-то придумает художественное описание
+It's not just an online platform for role-playing games; it's a symphony of strategy, a canvas of choices, and an epic tale waiting for you to script its next chapter. Are you ready to roll the dice and shape your destiny?
 
 # How to play?
 
