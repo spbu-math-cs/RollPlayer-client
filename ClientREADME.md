@@ -11,3 +11,10 @@ There are cells in the game that either add or subtract health, alter the mana a
 скрин
 
 # What can you do in this game?
+1. You can move your character, but only on your turn.
+2. You can create multiple characters.
+3. You can create and edit maps.
+4. You can attack enemies, but the attack is controlled by distance, and certain attacks from very long distances may not be possible.
+5. You can change characteristics by stepping on specific map cells (increase/decrease health and more).
+6. You can die when your health reaches <= 0 and respawn.
+7. You can track your character's statistics by clicking on them.
