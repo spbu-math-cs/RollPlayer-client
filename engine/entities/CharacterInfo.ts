@@ -13,8 +13,8 @@ export class CharacterInfo extends EventEmitter {
     public readonly id: number,
     public readonly username: string,
     public readonly own: boolean,
-    private canDoAction: boolean,
-    private isDefeated: boolean,
+    private _canDoAction: boolean,
+    private _isDefeated: boolean,
     public basicProperties: Property[],
     public properties: Property[],
     row: number,
@@ -68,10 +68,10 @@ export class CharacterInfo extends EventEmitter {
   }) {
     if (id !== this.id) return
 
-    if (canDoAction !== undefined) this.canDoAction = canDoAction
-    if (isDefeated !== undefined) this.isDefeated = isDefeated
+    if (canDoAction !== undefined) this._canDoAction = canDoAction
+    if (isDefeated !== undefined) this._isDefeated = isDefeated
 
-    this.emit('status', { canDoAction: this.canDoAction, isDefeated: this.isDefeated })
+    this.emit('status', { canDoAction: this._canDoAction, isDefeated: this._isDefeated })
   }
 
   public attack(attackType: AttackType, opponentId: number) {
@@ -92,5 +92,13 @@ export class CharacterInfo extends EventEmitter {
 
   public get col() {
     return this._col
+  }
+
+  public get canDoAction() {
+    return this._canDoAction
+  }
+
+  public get isDefeated() {
+    return this._isDefeated
   }
 }

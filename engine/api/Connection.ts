@@ -180,7 +180,13 @@ export class Connection extends EventEmitter {
     this.emit('character:status', { id, canDoAction, isDefeated })
 
     const character = this.characters.get(id)
-    if (newCharacterInfo === undefined || character === undefined) return
+    if (character === undefined) return
+
+    if (character.isDefeated && character.canDoAction) {
+      this.revive(id)
+    }
+
+    if (newCharacterInfo === undefined) return
 
     character.properties = newCharacterInfo.properties
 
@@ -229,6 +235,13 @@ export class Connection extends EventEmitter {
       attackType,
       id,
       opponentId,
+    }))
+  }
+
+  public revive(id: number) {
+    this.send(JSON.stringify({
+      type: 'character:revive',
+      id,
     }))
   }
 
