@@ -31,7 +31,7 @@ export class Tile extends PIXI.Sprite {
 
     this.position.set(...this.board.calculateTilePosition(info.row, info.col))
 
-    this.interactive = true
+    this.eventMode = 'static'
     this.on('mousedown', this.onTouch)
   }
 

@@ -43,7 +43,7 @@ export class Character extends PIXI.Graphics {
 
     this.zIndex = CHARACTER_Z_INDEX
 
-    this.interactive = true
+    this.eventMode = 'dynamic'
     this.cursor = 'pointer'
 
     this.info.on('move', this.onMove.bind(this))
