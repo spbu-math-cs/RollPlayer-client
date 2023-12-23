@@ -28,7 +28,7 @@ export class Board extends (Viewport as unknown as typeof import('pixi-viewport'
     this.x = (this.screenWidth - this.worldWidth) / 2
     this.y = (this.screenHeight - this.worldHeight) / 2
 
-    this.drag({ mouseButtons: 'right', keyToPress: ['ShiftLeft'] })
+    this.drag({ mouseButtons: 'right', /* keyToPress: ['ShiftLeft'] */ })
       .pinch()
       .wheel({ smooth: 5 })
       .decelerate({ friction: 0.9 })
