@@ -21,9 +21,9 @@ export class Character extends PIXI.Graphics {
   private nearestTile: Tile | null = null
   private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
 
-  private static readonly defaultFilters = []
-  private static readonly canDoActionFilters = [new GlowFilter({ distance: 20, outerStrength: 2 })]
-  private static readonly defeatedFilters = [new DotFilter()]
+  private readonly defaultFilters = []
+  private readonly canDoActionFilters = [new GlowFilter({ distance: 20, outerStrength: 2 })]
+  private readonly defeatedFilters = [new DotFilter()]
 
   constructor(
     private board: Board,
@@ -39,7 +39,7 @@ export class Character extends PIXI.Graphics {
     this.drawCircle(0, 0, Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3)
     this.endFill()
 
-    this.filters = Character.defaultFilters
+    this.filters = this.defaultFilters
 
     this.zIndex = CHARACTER_Z_INDEX
 
@@ -67,23 +67,23 @@ export class Character extends PIXI.Graphics {
     this.zIndex = CHARACTER_Z_INDEX + 1
 
     if (canDoAction && isDefeated) {
-      this.filters = [...Character.canDoActionFilters, ...Character.defeatedFilters]
+      this.filters = [...this.canDoActionFilters, ...this.defeatedFilters]
       return
     }
 
     if (canDoAction) {
-      this.filters = Character.canDoActionFilters
+      this.filters = this.canDoActionFilters
       return
     }
 
     this.zIndex = CHARACTER_Z_INDEX
 
     if (isDefeated) {
-      this.filters = Character.defeatedFilters
+      this.filters = this.defeatedFilters
       return
     }
 
-    this.filters = Character.defaultFilters
+    this.filters = this.defaultFilters
   }
 
   public activate() {

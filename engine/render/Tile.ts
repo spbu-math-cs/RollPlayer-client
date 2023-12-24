@@ -6,8 +6,8 @@ import { ACTIVATED_CELL_SCALE } from '../GlobalParameters'
 import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
 
 export class Tile extends PIXI.Sprite {
-  private static readonly defaultFilters = []
-  private static readonly activatedOnSelectFilters = [new GlowFilter({
+  private readonly defaultFilters = []
+  private readonly activatedOnSelectFilters = [new GlowFilter({
     distance: 10,
     outerStrength: 4,
     innerStrength: 4,
@@ -43,14 +43,14 @@ export class Tile extends PIXI.Sprite {
     this.scale.set(ACTIVATED_CELL_SCALE)
     this.tint = HIGHLIGHT_TINT
     this.zIndex = this.board.info.rows * this.board.info.cols
-    this.filters = Tile.activatedOnSelectFilters
+    this.filters = this.activatedOnSelectFilters
   }
 
   deactivateOnSelect() {
     this.scale.set(1.0)
     this.tint = COMMON_TINT
     this.zIndex = 0
-    this.filters = Tile.defaultFilters
+    this.filters = this.defaultFilters
   }
 
   activateOnCharacterDrag() {
