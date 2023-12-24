@@ -7,6 +7,7 @@ interface UserInfo {
   login?: string,
   email?: string,
   passwordHash?: number,
+  avatarID?: number | null,
 }
 
 export async function signInApi(login: string | null, email: string | null, password: string) {
@@ -42,11 +43,16 @@ export async function signInApi(login: string | null, email: string | null, pass
       info.email = "";
       console.error("got user without e-mail during sign in");
     }
+    if (info.avatarID === undefined) {
+      info.avatarID = null;
+      console.error("got user without avatar id during sign in");
+    }
     return {
       'token': info.token,
       'userId': info.id,
       'login': info.login,
       'email': info.email,
+      'avatarId': info.avatarID,
     };
   } else {
     return getError(responseData.message, response);
@@ -89,7 +95,7 @@ export async function signOutApi(token: string) {
 }
 
 export async function editApi(userData: UserEdit) {
-  const response = await fetch(`/api/user/edit/`, {
+  const response = await fetch('/api/user/edit/', {
     method: 'POST',
     headers: [['Authorization', `Bearer ${userData.token}`]],
     body: JSON.stringify(userData),
@@ -105,13 +111,52 @@ export async function editApi(userData: UserEdit) {
       info.email = "";
       console.error("got user without e-mail during edit");
     }
+    if (info.avatarID === undefined) {
+      info.avatarID = null;
+      console.error("got user without avatar id during edit");
+    }
     return {
       'token': userData.token,
       'userId': info.id,
       'login': info.login,
       'email': info.email,
+      'avatarId': info.avatarID,
     };
   } else {
     return getError(responseData.message, response);
+  }
+}
+
+export async function getAvatar(avatarId: number) {
+  const response = await fetch(`/api/pictures/${avatarId}`, {
+    method: 'GET',
+  });
+  const responseData = await response.blob();
+  if (response.ok) {
+    return responseData;
+  } else {
+    return getError((await response.json() as {'message': string}).message, response);
+  }
+}
+
+export async function postAvatar(image: Blob, token: string, password: string) {
+  const response = await fetch('/api/pictures', {
+    method: 'POST',
+    body: image,
+  });
+  const responseData = await response.json() as {'result': {'id': string}, 'message': string};
+  if (!response.ok) {
+    return getError(responseData.message, response);
+  }
+  const newAvatarId = parseInt(responseData.result.id);
+  const editResponse = await editApi({
+    token: token,
+    password: password,
+    avatarId: newAvatarId,
+  });
+  if (typeof editResponse === 'string') {
+    return editResponse;
+  } else {
+    return newAvatarId;
   }
 }

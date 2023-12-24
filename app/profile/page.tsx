@@ -1,8 +1,9 @@
 'use client'
 
-import React, {useContext, useEffect, useState} from "react";
+import React, {ChangeEvent, ChangeEventHandler, useContext, useEffect, useRef, useState} from "react";
 import AuthContext from "@/context/AuthContext";
 import Link from "next/link";
+import {getAvatar, postAvatar} from "@/engine/api/Auth";
 
 export default function UserProfilePage() {
   const authContext = useContext(AuthContext);
@@ -11,6 +12,26 @@ export default function UserProfilePage() {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatarId, setAvatarId] = useState<number | null>(null);
+  const [avatar, setAvatar] = useState<Blob | null>(null);
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
+  const inputAvatar = useRef<HTMLInputElement | null>(null);
+
+  function downloadAvatar(newAvatarId: number | null) {
+    setAvatarId(newAvatarId);
+    if (newAvatarId === null) {
+      setAvatarLoaded(true);
+      return;
+    }
+    getAvatar(newAvatarId).then(
+      response => {
+        if (typeof response !== 'string') {
+          setAvatar(response);
+        }
+        setAvatarLoaded(true);
+      }
+    );
+  }
 
   useEffect(() => {
     if (!authContext.authReady) {
@@ -19,9 +40,10 @@ export default function UserProfilePage() {
     if (!authContext.user) {
       location.replace("/signin");
     } else {
-      setLogin(authContext.user.login || "None");
-      setEmail(authContext.user.email || "None");
-      setPassword(authContext.user.password || "None");
+      setLogin(authContext.user.login);
+      setEmail(authContext.user.email);
+      setPassword(authContext.user.password);
+      downloadAvatar(authContext.user.avatarId);
       setLoaded(true);
     }
   },[authContext.authReady]);
@@ -39,37 +61,56 @@ export default function UserProfilePage() {
     if (authContext.user?.userId === undefined) {
       return;
     }
-    const updatedUser: {token: string, password: string, email?: string, login?: string} = {
+    const updatedUser: {token: string, password: string, email?: string, login?: string, avatarId?: number} = {
       token: authContext.user.token,
       password: authContext.user.password,
     };
-    if (email !== "None" && email !== authContext.user.email) {
+    if (email !== "" && email !== authContext.user.email) {
       updatedUser.email = email;
     }
-    if (login !== "None" && login !== authContext.user.login) {
+    if (login !== "" && login !== authContext.user.login) {
       updatedUser.login = login;
     }
-    if (password !== "None") {
+    if (password !== "") {
       updatedUser.password = password;
     }
     authContext.edit(updatedUser);
+  }
+
+  function onImageClick() {
+    if (!editMode) {
+      return;
+    }
+    inputAvatar.current?.click();
+  }
+
+  function uploadAvatar(event: ChangeEvent<HTMLInputElement>) {
+    if (event.target.files === null || authContext.user === null) {
+      return;
+    }
+    const newAvatarImage = event.target.files[0];
+    const newAvatar = new Blob([newAvatarImage]);
+    authContext.updateAvatar(newAvatar, authContext.user.token, authContext.user.password);
   }
 
   return (
     <>
       {(
         <section className="container mx-auto h-screen flex items-center justify-center width-700">
+          <input type='file' id='file' ref={inputAvatar} style={{display: 'none'}} onChange={uploadAvatar}/>
           <div className="w-full max-w-xxl ">
             <h2 className="block text-white-300 text-center text-xl mb-8">
               <AuthContext.Consumer>
                 {() => (
                   <div>
                     <div>
-                      <img className="mx-auto"
-                        src={"https://i.pinimg.com/originals/45/73/19/457319eeee8a2028e99293c7b83fa702.jpg"}
+                      <img className={`mx-auto mb-3 ${!editMode ? "" : "hover:brightness-75"}`}
+                        src={!avatarLoaded ? undefined : avatar ? URL.createObjectURL(avatar) :
+                          "https://i.pinimg.com/originals/45/73/19/457319eeee8a2028e99293c7b83fa702.jpg"}
                         width="200" height="200"
                         style={{borderRadius: '50%'}}
                         alt={"User img"}
+                        onClick={onImageClick}
                       />
                     </div>
                       <div>
