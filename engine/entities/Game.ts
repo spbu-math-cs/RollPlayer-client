@@ -3,6 +3,7 @@ import { Connection } from '../api/Connection'
 import { Background } from '../render/Background'
 import { Board } from '../render/Board'
 import * as PIXI from 'pixi.js'
+import { sound } from '@/engine/pixi-sound-fork/src'
 import { BoardInfo } from './BoardInfo'
 import { ConnectionProperties } from '../api/Connection'
 import { CharacterContext } from '@/app/play/page'
@@ -31,6 +32,14 @@ export class Game {
     })
 
     this.loadBackground()
+
+    sound.add('stick', '/assets/attacks/stick.mp3')
+    sound.add('carrot', '/assets/attacks/carrot.mp3')
+    sound.add('lightning', '/assets/attacks/lightning.mp3')
+
+    PIXI.Assets.load('/assets/attacks/stick.png')
+    PIXI.Assets.load('/assets/attacks/carrot.png')
+    PIXI.Assets.load('/assets/attacks/lightning.png')
 
     this.connection = new Connection(connectionProperties)
   }

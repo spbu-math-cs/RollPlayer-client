@@ -1,7 +1,7 @@
 import { BaseTexture, Point, Rectangle, Sprite, Texture } from "pixi.js";
 import { Board } from "./Board";
 import { gsap } from "gsap/gsap-core";
-import { sound } from '@pixi/sound'
+import { sound } from '@/engine/pixi-sound-fork/src'
 
 export abstract class Attack {
   abstract animate(from: Point, to: Point): Promise<void>
