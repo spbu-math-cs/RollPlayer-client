@@ -77,6 +77,11 @@ export class CharacterInfo extends EventEmitter {
   }
 
   public move(row: number, col: number) {
+    if (row == this.row && col == this.col) {
+      this.onReset()
+      return
+    }
+
     this.connection.moveCharacter(this.id, row, col)
   }
 
