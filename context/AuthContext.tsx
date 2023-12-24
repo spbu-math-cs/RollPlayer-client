@@ -30,7 +30,7 @@ export const AuthContext = createContext({
   signUp: (user: User) => {},
   signOut: (token: string | null) => {},
   edit: (user: UserEdit) => {},
-  updateAvatar: (avatarData: Blob, token: string, password: string) => {},
+  updateAvatar: (avatarData: Blob | null, token: string, password: string) => {},
 
   authReady: false,
   error: null as string | null,
@@ -153,7 +153,7 @@ export const AuthContextProvider = ({children}: any) => {
     );
   }
 
-  const updateAvatar = (avatarData: Blob, token: string, password: string) => {
+  const updateAvatar = (avatarData: Blob | null, token: string, password: string) => {
     if (user === null) {
       return;
     }

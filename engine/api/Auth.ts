@@ -139,16 +139,19 @@ export async function getAvatar(avatarId: number) {
   }
 }
 
-export async function postAvatar(image: Blob, token: string, password: string) {
-  const response = await fetch('/api/pictures', {
-    method: 'POST',
-    body: image,
-  });
-  const responseData = await response.json() as {'result': {'id': string}, 'message': string};
-  if (!response.ok) {
-    return getError(responseData.message, response);
+export async function postAvatar(image: Blob | null, token: string, password: string) {
+  let newAvatarId = null;
+  if (image !== null) {
+    const response = await fetch('/api/pictures', {
+      method: 'POST',
+      body: image,
+    });
+    const responseData = await response.json() as {'result': {'id': string}, 'message': string};
+    if (!response.ok) {
+      return getError(responseData.message, response);
+    }
+    newAvatarId = parseInt(responseData.result.id);
   }
-  const newAvatarId = parseInt(responseData.result.id);
   const editResponse = await editApi({
     token: token,
     password: password,

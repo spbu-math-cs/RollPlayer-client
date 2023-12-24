@@ -21,6 +21,7 @@ export default function UserProfilePage() {
     setAvatarId(newAvatarId);
     if (newAvatarId === null) {
       setAvatarLoaded(true);
+      setAvatar(null);
       return;
     }
     getAvatar(newAvatarId).then(
@@ -89,22 +90,35 @@ export default function UserProfilePage() {
       return;
     }
     const newAvatarImage = event.target.files[0];
+    if (newAvatarImage === undefined) {
+      return;
+    }
     const newAvatar = new Blob([newAvatarImage]);
     authContext.updateAvatar(newAvatar, authContext.user.token, authContext.user.password);
+  }
+
+  function deleteAvatar() {
+    if (authContext.user === null) {
+      return;
+    }
+    authContext.updateAvatar(null, authContext.user.token, authContext.user.password);
+    if (inputAvatar.current !== null) {
+      inputAvatar.current.value = "";
+    }
   }
 
   return (
     <>
       {(
         <section className="container mx-auto h-screen flex items-center justify-center width-700">
-          <input type='file' id='file' ref={inputAvatar} style={{display: 'none'}} onChange={uploadAvatar}/>
+          <input type='file' id='file' ref={inputAvatar} style={{display: 'none'}} onInputCapture={uploadAvatar}/>
           <div className="w-full max-w-xxl ">
             <h2 className="block text-white-300 text-center text-xl mb-8">
               <AuthContext.Consumer>
                 {() => (
                   <div>
                     <div>
-                      <img className={`mx-auto mb-3 ${!editMode ? "" : "hover:brightness-75"}`}
+                      <img className={`mx-auto mb-2 ${!editMode ? "" : "hover:brightness-75"}`}
                         src={!avatarLoaded ? undefined : avatar ? URL.createObjectURL(avatar) :
                           "https://i.pinimg.com/originals/45/73/19/457319eeee8a2028e99293c7b83fa702.jpg"}
                         width="200" height="200"
@@ -112,8 +126,15 @@ export default function UserProfilePage() {
                         alt={"User img"}
                         onClick={onImageClick}
                       />
+                      {editMode && (
+                        <button type="button"
+                          className="text-m text-white-200 text-end mb-2"
+                          onClick={deleteAvatar}>
+                          Delete Image
+                        </button>
+                      )}
                     </div>
-                      <div>
+                    <div>
                       {!editMode ? (
                         <h3 className="text-2xl text-orange-400">
                           {login}
@@ -126,8 +147,8 @@ export default function UserProfilePage() {
                           placeholder="Name">
                         </input>
                       )}
-                      </div>
-                      <div>
+                    </div>
+                    <div>
                       {!editMode ? (
                         <p className="text-sm text-gray-500 ">
                           Email: {email}</p>
@@ -139,8 +160,8 @@ export default function UserProfilePage() {
                                placeholder="Email">
                         </input>
                       )}
-                      </div>
-                      <div>
+                    </div>
+                    <div>
                       {editMode && (
                         <input className="text-black-500 outline-none outline-orange-500 rounded-xl"
                                style={{backgroundColor: 'black', color: 'white'}}
@@ -150,9 +171,9 @@ export default function UserProfilePage() {
                                placeholder="Password">
                         </input>
                       )}
-                      </div>
+                    </div>
                       <button type="button"
-                        className="text-m text-white-200  text-end"
+                        className="text-m text-white-200  text-end mt-2"
                         onClick={() => {
                           if (editMode) {
                             saveChanges();
@@ -160,7 +181,7 @@ export default function UserProfilePage() {
                           setEditMode(!editMode);
                       }}>
                         {editMode ? 'Save Changes' : 'Edit Profile'}
-                  </button>
+                      </button>
                     </div>)
                 }
               </AuthContext.Consumer>
