@@ -1,9 +1,9 @@
 'use client'
 
-import React, {ChangeEvent, ChangeEventHandler, useContext, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useContext, useEffect, useRef, useState} from "react";
 import AuthContext from "@/context/AuthContext";
 import Link from "next/link";
-import {getAvatar, postAvatar} from "@/engine/api/Auth";
+import {getAvatar} from "@/engine/api/Auth";
 
 export default function UserProfilePage() {
   const authContext = useContext(AuthContext);
@@ -12,7 +12,7 @@ export default function UserProfilePage() {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [avatarId, setAvatarId] = useState<number | null>(null);
+  const [_, setAvatarId] = useState<number | null>(null);
   const [avatar, setAvatar] = useState<Blob | null>(null);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const inputAvatar = useRef<HTMLInputElement | null>(null);
