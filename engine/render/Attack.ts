@@ -1,8 +1,7 @@
 import { BaseTexture, Point, Rectangle, Sprite, Texture } from "pixi.js";
 import { Board } from "./Board";
 import { gsap } from "gsap/gsap-core";
-import * as PIXI from 'pixi.js'
-import { X509Certificate } from "crypto";
+import { sound } from '@pixi/sound'
 
 export abstract class Attack {
   abstract animate(from: Point, to: Point): Promise<void>
@@ -17,6 +16,9 @@ export class MeleeAttack extends Attack {
   }
 
   async animate(from: Point, to: Point) {
+    if (document.hasFocus())
+      sound.play('stick')
+
     const sprite = new Sprite(this.texture)
 
     this.board.addChild(sprite)
@@ -40,6 +42,9 @@ export class RangedAttack extends Attack {
     this.texture = Texture.from('/assets/attacks/carrot.png')
   }
   async animate(from: Point, to: Point) {
+    if (document.hasFocus())
+      sound.play('carrot')
+
     const sprite = new Sprite(this.texture)
 
     sprite.anchor.set(0.5, 0)
@@ -99,6 +104,9 @@ export class MagicAttack extends Attack {
   }
 
   async animate(from: Point, to: Point) {
+    if (document.hasFocus())
+      sound.play('lightning')
+
     const sprite = new Sprite(this.textures[0])
 
     sprite.anchor.set(0.5, 0)
