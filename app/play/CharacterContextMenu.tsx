@@ -31,8 +31,8 @@ export function CharacterContextMenu({ game }: { game: Game }) {
         character={characterContext.character}
         position={characterContext}
         onClose={() => setCharacterContext(null)}
-      >{characterContext?.character.own === false && buttons}</CharacterCard>
-
+        attackButtons={buttons}
+      >{}</CharacterCard>
     )
   )
 }
