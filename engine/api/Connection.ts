@@ -177,14 +177,14 @@ export class Connection extends EventEmitter {
     canDoAction: boolean | undefined,
     isDefeated: boolean | undefined,
   ) {
-    this.emit('character:status', { id, canDoAction, isDefeated })
-
     const character = this.characters.get(id)
     if (character === undefined) return
 
-    if (character.isDefeated && character.canDoAction) {
+    if (character.isDefeated && !character.canDoAction && canDoAction === true) {
       this.revive(id)
     }
+
+    this.emit('character:status', { id, canDoAction, isDefeated })
 
     if (newCharacterInfo === undefined) return
 
