@@ -47,13 +47,14 @@ export class CharacterInfo extends EventEmitter {
     this.emit('reset')
   }
 
-  private onAttack({ character, opponent }: { character: CharacterInfo, opponent: CharacterInfo }) {
+  private onAttack({ type, character, opponent }: { type: AttackType, character: CharacterInfo, opponent: CharacterInfo }) {
     if (character.id === this.id) {
-      this.emit('attack', opponent)
+      this.emit('attack', { type, opponent })
       return
     }
     if (opponent.id === this.id) {
-      this.emit('attacked', character)
+      this.emit('attacked', { type, character })
+      return
     }
   }
 

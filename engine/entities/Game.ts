@@ -8,6 +8,8 @@ import { ConnectionProperties } from '../api/Connection'
 import { CharacterContext } from '@/app/play/page'
 import { CharacterInfo } from './CharacterInfo'
 
+import '@/engine/setup'
+
 export class Game {
   connection: Connection
   boardApi: BoardApi

@@ -141,7 +141,7 @@ export class Connection extends EventEmitter {
         const character = this.characters.get(characterId)
         const opponent = this.characters.get(opponentId)
 
-        this.emit('character:attack', { character, opponent })
+        this.emit('character:attack', { type: attackType, character, opponent })
 
         break
       }
