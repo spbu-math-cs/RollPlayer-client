@@ -44,7 +44,7 @@ export function CharacterCard({
           X
         </button>
       }
-      <span className="block text-xl">Character {character.username} plss</span>
+      <span className="block text-xl">Character {character.name} plss</span>
       <ul
         className={`overflow-y-auto block box-border ${!position && ' h-0 min-h-[90%] '
           }`}

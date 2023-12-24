@@ -11,7 +11,7 @@ export class CharacterInfo extends EventEmitter {
   constructor(
     private connection: Connection,
     public readonly id: number,
-    public readonly username: string,
+    public readonly name: string,
     public readonly own: boolean,
     private _canDoAction: boolean,
     private _isDefeated: boolean,
