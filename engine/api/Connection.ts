@@ -71,6 +71,7 @@ export class Connection extends EventEmitter {
             value: data.character.basicProperties[key],
           }),
         )
+
         const info = new CharacterInfo(
           this,
           data.character.id,
@@ -83,8 +84,18 @@ export class Connection extends EventEmitter {
           data.character.row,
           data.character.col,
         )
+
         this.characters.set(data.character.id, info)
         this.emit('character:new', info)
+
+        break
+      }
+      case 'character:leave': {
+        const id = data.id
+
+        this.characters.delete(id)
+        this.emit('character:leave', { id })
+
         break
       }
       case 'character:move': {
@@ -98,35 +109,6 @@ export class Connection extends EventEmitter {
         const isDefeated = newCharacterInfo.isDefeated
 
         this.updateCharacterInfo(id, newCharacterInfo, undefined, isDefeated)
-
-        break
-      }
-      case 'character:leave': {
-        const id = data.id
-        this.characters.delete(id)
-        this.emit('character:leave', { id })
-        break
-      }
-      case 'error': {
-        if (data.reason) {
-          swal.fire({
-            title: 'Error',
-            text: data.reason in ERROR_TEXT ? ERROR_TEXT[data.reason as keyof typeof ERROR_TEXT] : 'Unknown error',
-            icon: 'error',
-          })
-        }
-        if (data.on === 'character:move')
-          this.emit('character:reset')
-
-        break
-      }
-      case 'character:status': {
-        const id = data.id
-        const newCharacterInfo = data.character
-        const canDoAction = data.can_do_action
-        const isDefeated = data.is_defeated
-
-        this.updateCharacterInfo(id, newCharacterInfo, canDoAction, isDefeated)
 
         break
       }
@@ -145,8 +127,28 @@ export class Connection extends EventEmitter {
 
         break
       }
-      case 'character:error': {
-        console.info('error:', data)
+      case 'character:status': {
+        const id = data.id
+        const newCharacterInfo = data.character
+        const canDoAction = data.can_do_action
+        const isDefeated = data.is_defeated
+
+        this.updateCharacterInfo(id, newCharacterInfo, canDoAction, isDefeated)
+
+        break
+      }
+      case 'error': {
+        if (data.reason) {
+          swal.fire({
+            title: 'Error',
+            text: data.reason in ERROR_TEXT ? ERROR_TEXT[data.reason as keyof typeof ERROR_TEXT] : 'Unknown error',
+            icon: 'error',
+          })
+        }
+
+        if (data.on === 'character:move')
+          this.emit('character:reset')
+
         break
       }
       case undefined: {

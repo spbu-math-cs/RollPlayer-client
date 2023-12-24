@@ -1,12 +1,12 @@
-import { gsap } from "gsap";
+import { gsap } from 'gsap'
 import { sound } from '@pixi/sound'
 import * as PIXI from 'pixi.js'
 
-import { PixiPlugin } from "gsap/PixiPlugin";
+import { PixiPlugin } from 'gsap/PixiPlugin'
 
-gsap.registerPlugin(PixiPlugin);
+gsap.registerPlugin(PixiPlugin)
 
-PixiPlugin.registerPIXI(PIXI);
+PixiPlugin.registerPIXI(PIXI)
 
 sound.add('stick', '/assets/attacks/stick.mp3')
 sound.add('carrot', '/assets/attacks/carrot.mp3')

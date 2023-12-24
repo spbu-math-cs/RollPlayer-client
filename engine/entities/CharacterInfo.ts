@@ -41,9 +41,6 @@ export class CharacterInfo extends EventEmitter {
   }
 
   private onReset() {
-    // private onReset({ id }: { id: number }) {
-    // if (id !== this.id) return
-
     this.emit('reset')
   }
 
