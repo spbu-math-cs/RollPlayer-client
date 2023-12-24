@@ -1,5 +1,5 @@
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 
 export function CharacterCard({
   character,
@@ -50,8 +50,7 @@ export function CharacterCard({
       {attackButtons}
       <ul>&nbsp;</ul>
       <ul
-        className={`overflow-y-auto block box-border ${!position && ' h-0 min-h-[90%] '
-          }`}
+        className={`overflow-y-auto block box-border ${!position && ' h-0 min-h-[90%] '}`}
       >
         {
           [...character.properties].map(

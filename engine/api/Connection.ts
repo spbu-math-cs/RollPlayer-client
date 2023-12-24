@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 import { CharacterInfo } from '../entities/CharacterInfo'
 import {
   AttackType,
@@ -139,7 +139,7 @@ export class Connection extends EventEmitter {
       }
       case 'error': {
         if (data.reason) {
-          swal.fire({
+          Swal.fire({
             title: 'Error',
             text: data.reason in ERROR_TEXT ? ERROR_TEXT[data.reason as keyof typeof ERROR_TEXT] : 'Unknown error',
             icon: 'error',

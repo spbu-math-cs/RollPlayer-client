@@ -22,7 +22,7 @@ export default function GameScreen({
   }
 
   useEffect(() => {
-    const game = new Game(connectionProperties, canvas.current!, window)
+    const game = new Game(connectionProperties, window, canvas.current!)
 
     game.connection.on('character:new', () =>
       handleCharacterOp(game.connection),

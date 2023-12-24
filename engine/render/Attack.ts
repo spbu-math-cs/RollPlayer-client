@@ -1,6 +1,6 @@
-import { BaseTexture, Point, Rectangle, Sprite, Texture } from "pixi.js";
-import { Board } from "./Board";
-import { gsap } from "gsap/gsap-core";
+import { BaseTexture, Point, Rectangle, Sprite, Texture } from 'pixi.js'
+import { Board } from './Board'
+import { gsap } from 'gsap/gsap-core'
 import { sound } from '@/engine/pixi-sound-fork/src'
 
 export abstract class Attack {

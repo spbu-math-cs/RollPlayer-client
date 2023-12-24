@@ -21,8 +21,8 @@ export class Game {
 
   constructor(
     private connectionProperties: ConnectionProperties,
-    private canvas: HTMLCanvasElement,
     public readonly window: Window,
+    canvas: HTMLCanvasElement,
   ) {
     this.boardApi = new BoardApi()
 
@@ -33,13 +33,13 @@ export class Game {
 
     this.loadBackground()
 
-    sound.add('stick', '/assets/attacks/stick.mp3')
-    sound.add('carrot', '/assets/attacks/carrot.mp3')
-    sound.add('lightning', '/assets/attacks/lightning.mp3')
-
     PIXI.Assets.load('/assets/attacks/stick.png')
     PIXI.Assets.load('/assets/attacks/carrot.png')
     PIXI.Assets.load('/assets/attacks/lightning.png')
+
+    sound.add('stick', '/assets/attacks/stick.mp3')
+    sound.add('carrot', '/assets/attacks/carrot.mp3')
+    sound.add('lightning', '/assets/attacks/lightning.mp3')
 
     this.connection = new Connection(connectionProperties)
   }

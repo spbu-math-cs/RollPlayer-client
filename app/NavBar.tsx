@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
-import {useContext} from "react";
-import AuthContext from "@/context/AuthContext";
+import {useContext} from 'react'
+import AuthContext from '@/context/AuthContext'
 
 export default function NavBar() {
   const authContext = useContext(AuthContext)
@@ -11,7 +11,7 @@ export default function NavBar() {
     '/': 'Home',
     '/play': 'Play',
     '/signin': !authContext.authReady ? 'Loading...' : authContext.user ? null : 'Sign in',
-    '/profile': (!authContext.user || !authContext.authReady) ? null : (authContext.user as {"login": string}).login,
+    '/profile': (!authContext.user || !authContext.authReady) ? null : (authContext.user as {'login': string}).login,
     '/quitSession': (!authContext.user || !authContext.authReady || !authContext.sessionId) ? null : `Quit Session (#${authContext.sessionId})`,
   }
 
