@@ -14,6 +14,7 @@ export function CharacterContextMenu({ game }: { game: Game }) {
 
   const attackWithCurrent = (attackType: AttackType, opponentId: number) => {
     game.selectedCharacter?.attack(attackType, opponentId)
+    setCharacterContext(null)
   };
 
   const buttons = <>

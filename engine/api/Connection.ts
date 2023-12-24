@@ -142,7 +142,7 @@ export class Connection extends EventEmitter {
         const character = this.characters.get(characterId)
         const opponent = this.characters.get(opponentId)
 
-        this.emit('character:attack', { character, opponent })
+        this.emit('character:attack', { type: attackType, character, opponent })
 
         break
       }
@@ -174,15 +174,15 @@ export class Connection extends EventEmitter {
 
   private updateCharacterInfo(
     id: number,
-    newCharacterInfo: CharacterInfo | undefined,
-    canDoAction: boolean | undefined,
-    isDefeated: boolean | undefined,
-    characterJson: any | undefined,
+    newCharacterInfo: CharacterInfo | undefined = undefined,
+    canDoAction: boolean | undefined = undefined,
+    isDefeated: boolean | undefined = undefined,
+    characterJson: any | undefined = undefined,
   ) {
     this.emit('character:status', { id, canDoAction, isDefeated })
 
     if (characterJson && this.characters.has(id)) {
-      this.characters.get(id).properties = characterJson.properties
+      this.characters.get(id)!.properties = characterJson.properties
     }
 
     if (newCharacterInfo === undefined) return

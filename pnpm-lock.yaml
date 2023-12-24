@@ -11,6 +11,9 @@ dependencies:
   '@pixi/filter-glow':
     specifier: ^5.2.1
     version: 5.2.1(@pixi/core@7.3.1)
+  '@pixi/sound':
+    specifier: ^5.2.2
+    version: 5.2.2(@pixi/assets@7.3.1)(@pixi/core@7.3.1)
   '@tweenjs/tween.js':
     specifier: ^21.0.0
     version: 21.0.0
@@ -20,6 +23,9 @@ dependencies:
   events:
     specifier: ^3.3.0
     version: 3.3.0
+  gsap:
+    specifier: ^3.12.4
+    version: 3.12.4
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -44,9 +50,6 @@ dependencies:
   sweetalert2:
     specifier: ^11.10.1
     version: 11.10.1
-  tweenjs:
-    specifier: ^1.0.2
-    version: 1.0.2
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -568,6 +571,16 @@ packages:
       '@pixi/constants': 7.3.1
       '@types/css-font-loading-module': 0.0.7
       ismobilejs: 1.1.1
+    dev: false
+
+  /@pixi/sound@5.2.2(@pixi/assets@7.3.1)(@pixi/core@7.3.1):
+    resolution: {integrity: sha512-WjUDD24nQaAA2+aHbvDbgB/9l/kni3aNlZSmunU99KBGrQ9NfGS/VvAUxA88b7eOLXNvskzW2cvEnGMbltRiFA==}
+    peerDependencies:
+      '@pixi/assets': ^7.0.0
+      '@pixi/core': ^7.0.0
+    dependencies:
+      '@pixi/assets': 7.3.1(@pixi/core@7.3.1)(@pixi/utils@7.3.1)
+      '@pixi/core': 7.3.1
     dev: false
 
   /@pixi/sprite-animated@7.3.1(@pixi/core@7.3.1)(@pixi/sprite@7.3.1):
@@ -1845,6 +1858,10 @@ packages:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
 
+  /gsap@3.12.4:
+    resolution: {integrity: sha512-1ByAq8dD0W4aBZ/JArgaQvc0gyUfkGkP8mgAQa0qZGdpOKlSOhOf+WNXjoLimKaKG3Z4Iu6DKZtnyszqQeyqWQ==}
+    dev: false
+
   /has-bigints@1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
     dev: true
@@ -2993,10 +3010,6 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-    dev: false
-
-  /tweenjs@1.0.2:
-    resolution: {integrity: sha512-WnFozCNkUkmJtLqJyGrToxVojW2Srzudktr8BzFKQijQRVcmlq7Fc+qfo75ccnwIJGiRWbXKfg7qU67Tzbb1bg==}
     dev: false
 
   /type-check@0.4.0:
