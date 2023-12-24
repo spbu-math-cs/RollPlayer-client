@@ -1,6 +1,5 @@
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
-import { useState } from 'react';
-import Swal from 'sweetalert2'
+import { useEffect, useState } from 'react';
 
 export function CharacterCard({
   character,
@@ -15,9 +14,18 @@ export function CharacterCard({
 }) {
   const [_, rerender] = useState()
 
-  character.on('attack', rerender)
-  character.on('attacked', rerender)
-  character.on('status', rerender)
+  useEffect(() => {
+    character.on('attack', rerender)
+    character.on('attacked', rerender)
+    character.on('status', rerender)
+
+    return () => {
+      character.off('attack', rerender)
+      character.off('attacked', rerender)
+      character.off('status', rerender)
+    }
+  }, [character])
+
 
   return (
     <div
