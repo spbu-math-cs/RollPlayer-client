@@ -6,6 +6,7 @@ import {
 } from '@/engine/GlobalParameters'
 import { Game } from '@/engine/entities/Game'
 import { useState } from 'react'
+import Swal from 'sweetalert2'
 
 function PointsSelector({
   range: [rangeMin, rangeMax],
@@ -64,7 +65,11 @@ export function NewCharacterCard({ game }: { game: Game }) {
 
     const tile = board.consumeSelectedTile()
     if (tile === undefined) {
-      console.error('Trying to create character without tile selected')
+      Swal.fire({
+        title: 'Unknown spawn position',
+        text: 'You need to select tile to spawn new character',
+        icon: 'warning',
+      })
       return
     }
 
