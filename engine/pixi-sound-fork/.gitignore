@@ -1,0 +1,8 @@
+node_modules
+/dist
+/docs
+/lib
+/deploy
+.DS_Store
+/example.api.json
+example.api.json.md5

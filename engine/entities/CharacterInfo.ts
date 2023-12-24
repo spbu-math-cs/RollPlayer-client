@@ -11,7 +11,7 @@ export class CharacterInfo extends EventEmitter {
   constructor(
     private connection: Connection,
     public readonly id: number,
-    public readonly username: string,
+    public readonly name: string,
     public readonly own: boolean,
     private _canDoAction: boolean,
     private _isDefeated: boolean,
@@ -41,19 +41,17 @@ export class CharacterInfo extends EventEmitter {
   }
 
   private onReset() {
-    // private onReset({ id }: { id: number }) {
-    // if (id !== this.id) return
-
     this.emit('reset')
   }
 
-  private onAttack({ character, opponent }: { character: CharacterInfo, opponent: CharacterInfo }) {
+  private onAttack({ type, character, opponent }: { type: AttackType, character: CharacterInfo, opponent: CharacterInfo }) {
     if (character.id === this.id) {
-      this.emit('attack', opponent)
+      this.emit('attack', { type, opponent })
       return
     }
     if (opponent.id === this.id) {
-      this.emit('attacked', character)
+      this.emit('attacked', { type, character })
+      return
     }
   }
 

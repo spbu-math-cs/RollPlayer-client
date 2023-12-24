@@ -14,6 +14,7 @@ export function CharacterContextMenu({ game }: { game: Game }) {
 
   const attackWithCurrent = (attackType: AttackType, opponentId: number) => {
     game.selectedCharacter?.attack(attackType, opponentId)
+    setCharacterContext(null)
   };
 
   const buttons = <>
@@ -31,8 +32,8 @@ export function CharacterContextMenu({ game }: { game: Game }) {
         character={characterContext.character}
         position={characterContext}
         onClose={() => setCharacterContext(null)}
-      >{characterContext?.character.own === false && buttons}</CharacterCard>
-
+        attackButtons={buttons}
+      >{}</CharacterCard>
     )
   )
 }

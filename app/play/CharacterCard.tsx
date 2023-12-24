@@ -1,23 +1,33 @@
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
-import { useState } from 'react';
-import Swal from 'sweetalert2'
+import { useEffect, useState } from 'react';
 
 export function CharacterCard({
   character,
   position,
   onClose = () => { },
+  attackButtons,
   children,
 }: {
   character: CharacterInfo
   position?: { x: number; y: number }
   onClose?: () => void
+  attackButtons?: React.ReactNode
   children?: React.ReactNode
 }) {
   const [_, rerender] = useState()
 
-  character.on('attack', rerender)
-  character.on('attacked', rerender)
-  character.on('status', rerender)
+  useEffect(() => {
+    character.on('attack', rerender)
+    character.on('attacked', rerender)
+    character.on('status', rerender)
+
+    return () => {
+      character.off('attack', rerender)
+      character.off('attacked', rerender)
+      character.off('status', rerender)
+    }
+  }, [character])
+
 
   return (
     <div
@@ -36,18 +46,36 @@ export function CharacterCard({
           X
         </button>
       }
-      <span className="block text-xl">Character {character.username} plss</span>
+      <span className="block text-xl">Character {character.name} plss</span>
+      {attackButtons}
+      <ul>&nbsp;</ul>
       <ul
         className={`overflow-y-auto block box-border ${!position && ' h-0 min-h-[90%] '
           }`}
       >
-        {[...character.basicProperties, ...character.properties].map(
-          (property) => (
-            <li key={property.name}>
-              {property.name}: {property.value}
-            </li>
-          ),
-        )}
+        {
+          [...character.properties].map(
+            (property) => (
+              <li key={property.name}>
+                {property.name}: {property.value}
+              </li>
+            ),
+          ).concat(
+            [
+              <li key={'delimeter'}>
+                &nbsp;
+              </li>
+            ]
+          ).concat(
+            [...character.basicProperties].map(
+              (property) => (
+                <li key={property.name}>
+                  <i>{property.name}: {property.value}</i>
+                </li>
+              ),
+            )
+          )
+        }
       </ul>
       {children}
     </div>

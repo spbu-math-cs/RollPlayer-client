@@ -71,6 +71,7 @@ export class Connection extends EventEmitter {
             value: data.character.basicProperties[key],
           }),
         )
+
         const info = new CharacterInfo(
           this,
           data.character.id,
@@ -83,8 +84,18 @@ export class Connection extends EventEmitter {
           data.character.row,
           data.character.col,
         )
+
         this.characters.set(data.character.id, info)
         this.emit('character:new', info)
+
+        break
+      }
+      case 'character:leave': {
+        const id = data.id
+
+        this.characters.delete(id)
+        this.emit('character:leave', { id })
+
         break
       }
       case 'character:move': {
@@ -101,22 +112,18 @@ export class Connection extends EventEmitter {
 
         break
       }
-      case 'character:leave': {
-        const id = data.id
-        this.characters.delete(id)
-        this.emit('character:leave', { id })
-        break
-      }
-      case 'error': {
-        if (data.reason) {
-          swal.fire({
-            title: 'Error',
-            text: data.reason in ERROR_TEXT ? ERROR_TEXT[data.reason as keyof typeof ERROR_TEXT] : 'Unknown error',
-            icon: 'error',
-          })
-        }
-        if (data.on === 'character:move')
-          this.emit('character:reset')
+      case 'character:attack': {
+        const attackType = data.attackType
+        const characterId = data.character.id
+        const opponentId = data.opponent.id
+
+        this.updateCharacterInfo(characterId, data.character, undefined, data.character.isDefeated)
+        this.updateCharacterInfo(opponentId, data.opponent, undefined, data.opponent.isDefeated)
+
+        const character = this.characters.get(characterId)
+        const opponent = this.characters.get(opponentId)
+
+        this.emit('character:attack', { type: attackType, character, opponent })
 
         break
       }
@@ -130,23 +137,18 @@ export class Connection extends EventEmitter {
 
         break
       }
-      case 'character:attack': {
-        const attackType = data.attackType
-        const characterId = data.character.id
-        const opponentId = data.opponent.id
+      case 'error': {
+        if (data.reason) {
+          swal.fire({
+            title: 'Error',
+            text: data.reason in ERROR_TEXT ? ERROR_TEXT[data.reason as keyof typeof ERROR_TEXT] : 'Unknown error',
+            icon: 'error',
+          })
+        }
 
-        this.updateCharacterInfo(characterId, data.character, undefined, data.character.isDefeated)
-        this.updateCharacterInfo(opponentId, data.opponent, undefined, data.opponent.isDefeated)
+        if (data.on === 'character:move')
+          this.emit('character:reset')
 
-        const character = this.characters.get(characterId)
-        const opponent = this.characters.get(opponentId)
-
-        this.emit('character:attack', { character, opponent })
-
-        break
-      }
-      case 'character:error': {
-        console.info('error:', data)
         break
       }
       case undefined: {
@@ -177,14 +179,14 @@ export class Connection extends EventEmitter {
     canDoAction: boolean | undefined,
     isDefeated: boolean | undefined,
   ) {
-    this.emit('character:status', { id, canDoAction, isDefeated })
-
     const character = this.characters.get(id)
     if (character === undefined) return
 
-    if (character.isDefeated && character.canDoAction) {
+    if (character.isDefeated && !character.canDoAction && canDoAction === true) {
       this.revive(id)
     }
+
+    this.emit('character:status', { id, canDoAction, isDefeated })
 
     if (newCharacterInfo === undefined) return
 

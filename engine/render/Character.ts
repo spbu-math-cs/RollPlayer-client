@@ -1,11 +1,12 @@
 import { CharacterInfo } from '../entities/CharacterInfo'
 import * as PIXI from 'pixi.js'
-import * as TWEEN from '@tweenjs/tween.js'
+import { gsap } from 'gsap/gsap-core'
 import { Board } from './Board'
 import { Tile } from './Tile'
 import { GlowFilter } from '@pixi/filter-glow'
 import { DotFilter } from '@pixi/filter-dot'
-import { CHARACTER_Z_INDEX } from '../GlobalParameters'
+import { AttackType, CHARACTER_Z_INDEX } from '../GlobalParameters'
+import { Attack, MagicAttack, MeleeAttack, RangedAttack } from './Attack'
 
 function getCol(id: number, min: number, max: number) {
   id = ((id + 1) * 1_000_000_000) % 57_885_161
@@ -19,11 +20,11 @@ function getCol(id: number, min: number, max: number) {
 
 export class Character extends PIXI.Graphics {
   private nearestTile: Tile | null = null
-  private tween: TWEEN.Tween<{ x: number; y: number }> | null = null
 
   private readonly defaultFilters = []
   private readonly canDoActionFilters = [new GlowFilter({ distance: 20, outerStrength: 2 })]
   private readonly defeatedFilters = [new DotFilter()]
+  private attack: Record<AttackType, Attack>
 
   constructor(
     private board: Board,
@@ -33,6 +34,12 @@ export class Character extends PIXI.Graphics {
 
     const outline_color = this.info.own ? 0xff0000 : 0xffffff
     this.lineStyle(1, outline_color, 1)
+
+    this.attack = {
+      melee: new MeleeAttack(this.board),
+      ranged: new RangedAttack(this.board),
+      magic: new MagicAttack(this.board),
+    }
 
     const character_color = getCol(info.id, 0x00, 0xfb)
     this.beginFill(character_color, 1)
@@ -49,14 +56,46 @@ export class Character extends PIXI.Graphics {
     this.info.on('move', this.onMove.bind(this))
     this.info.on('reset', this.onReset.bind(this))
     this.info.on('status', this.onStatusUpdate.bind(this))
+    this.info.on('attack', this.onAttack.bind(this))
+    this.info.on('attacked', this.onAttacked.bind(this))
 
-    this.moveAnimated(info.row, info.col)
+    this.moveAnimated(info.row, info.col, 'elastic.out(0.8, 0.5)')
+  }
 
-    this.board.app.ticker.add(this.updateTween.bind(this))
+  private onAttack({ type, opponent }: { type: AttackType, opponent: CharacterInfo }) {
+    this.attack[type].animate(this.position, new PIXI.Point(...this.board.calculateTilePosition(opponent.row, opponent.col)))
+  }
+
+  private onAttacked({ type, character }: { type: AttackType, character: CharacterInfo }) {
+    const origX = this.x
+    const origY = this.y
+
+    const obj = { range: 0 }
+    const self = this
+    const delays: Record<AttackType, number> = {
+      melee: 0.1,
+      ranged: 0.6,
+      magic: 0.4
+    }
+    gsap.to(obj, {
+      range: 2,
+      yoyo: true,
+      repeat: 1,
+      duration: 0.2,
+      ease: 'expo.out',
+      onUpdate(this: gsap.core.Tween) {
+        const angle = Math.random() * 2 * Math.PI
+        const dist = obj.range
+        const dx = Math.cos(angle) * dist
+        const dy = Math.sin(angle) * dist
+        self.x = origX + dx
+        self.y = origY + dy
+      }
+    }).delay(delays[type])
   }
 
   private onMove({ row, col }: { row: number; col: number }) {
-    this.moveAnimated(row, col, TWEEN.Easing.Linear.None, 200)
+    this.moveAnimated(row, col, 'sine.inOut', 400)
   }
 
   private onReset() {
@@ -87,8 +126,6 @@ export class Character extends PIXI.Graphics {
   }
 
   public activate() {
-    this.tween?.stop()
-
     this.alpha = 0.75
   }
 
@@ -116,36 +153,15 @@ export class Character extends PIXI.Graphics {
     if (moveBack) this.moveAnimated(this.info.row, this.info.col)
   }
 
-  private updateTween() {
-    if (this.tween?.isPlaying()) this.tween.update()
-  }
-
   private moveAnimated(
     row: number,
     col: number,
-    easing: Parameters<InstanceType<typeof TWEEN.Tween>['easing']>[0] = void 0,
-    timeout = 1000,
+    easing: gsap.EaseFunction | gsap.EaseString | undefined = undefined,
+    timeout = 400,
   ) {
     const target_x = col * this.board.info.tileWidth + this.board.info.tileWidth / 2
     const target_y = row * this.board.info.tileHeight + this.board.info.tileHeight / 2
 
-    if (!easing) {
-      this.x = target_x
-      this.y = target_y
-      return
-    }
-
-    const coords = { x: this.x, y: this.y }
-
-    this.tween?.stop()
-
-    this.tween = new TWEEN.Tween(coords, false)
-      .to({ x: target_x, y: target_y }, timeout)
-      .easing(easing)
-      .onUpdate(() => {
-        this.x = coords.x
-        this.y = coords.y
-      })
-      .start()
+    gsap.to(this, { pixi: { positionX: target_x, positionY: target_y }, ease: easing, duration: timeout / 1000 })
   }
 }

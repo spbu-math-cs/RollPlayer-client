@@ -47,7 +47,7 @@ function PointsSelector({
 }
 
 export function NewCharacterCard({ game }: { game: Game }) {
-  const [newUsername, setNewUsername] = useState('')
+  const [newCharacterName, setNewCharacterName] = useState('')
 
   const [basicProperties, setBasicProperties] = useState(
     Object.fromEntries(
@@ -69,7 +69,7 @@ export function NewCharacterCard({ game }: { game: Game }) {
     }
 
     const [row, col] = tile
-    game.connection.createCharacter(newUsername, basicProperties, row, col)
+    game.connection.createCharacter(newCharacterName, basicProperties, row, col)
   }
 
   const sum = Object.values(basicProperties).reduce((a, b) => a + b, 0)
@@ -117,11 +117,11 @@ export function NewCharacterCard({ game }: { game: Game }) {
     <div className="bg-white text-black rounded-xl p-2 shadow-xl relative flex flex-col items-stretch">
       <input
         type="text"
-        name="username"
-        placeholder="Username"
+        name="characterName"
+        placeholder="Character Name"
         className="block p-2 m-2"
-        value={newUsername}
-        onInput={(e) => setNewUsername((e.target as HTMLInputElement).value)}
+        value={newCharacterName}
+        onInput={(e) => setNewCharacterName((e.target as HTMLInputElement).value)}
       />
       {text}
       {content}
@@ -130,7 +130,7 @@ export function NewCharacterCard({ game }: { game: Game }) {
         disabled={pointsToMin > 0 || pointsToMax < 0}
         onClick={addCharacter}
       >
-        Add character
+        Add Character
       </button>
     </div>
   )
