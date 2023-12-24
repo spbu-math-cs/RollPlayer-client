@@ -186,12 +186,14 @@ export class Connection extends EventEmitter {
       this.revive(id)
     }
 
-    this.emit('character:status', { id, canDoAction, isDefeated })
-
-    if (newCharacterInfo === undefined) return
+    if (newCharacterInfo === undefined) {
+      this.emit('character:status', { id, canDoAction, isDefeated })
+      return
+    }
 
     character.properties = newCharacterInfo.properties
 
+    this.emit('character:status', { id, canDoAction, isDefeated })
     this.emit('character:move', { ...newCharacterInfo })
   }
 
