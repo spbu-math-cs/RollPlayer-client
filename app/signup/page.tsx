@@ -25,6 +25,7 @@ function onSubmit(event: FormEvent) {
     "email": email,
     "login": login,
     "password": password,
+    "avatarId": null,
   }
   authContext.signUp(user);
 }
