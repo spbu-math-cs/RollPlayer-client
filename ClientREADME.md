@@ -1,4 +1,4 @@
-TODO: вставить логотип или просто красивый заголовок
+RollPlayer
 
 # What is RollPlayer?
 
@@ -20,11 +20,8 @@ The game features three types of attacks: Melee, Ranged, and Magic. To attack, c
 
 When a character's health becomes lower than zero, it gets defeated. This means that it can neither move nor attack. On its turn it may come back to life with some probability. You can also delete any of your characters by clicking X in the top-right corner of the character description on the character panel.
 
-TODO: вставить скрин
-
 There are cells in the game that either add or subtract health, alter the mana amount for magical attacks, and influence other characteristics. To monitor these changes, click on your character with the right mouse button.
 
-TODO: скрин
 
 
 # пока просто оставим (для скринов)
