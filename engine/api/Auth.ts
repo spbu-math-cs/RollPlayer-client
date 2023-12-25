@@ -135,7 +135,7 @@ export async function getAvatar(avatarId: number) {
   if (response.ok) {
     return responseData;
   } else {
-    return getError((await response.json() as {'message': string}).message, response);
+    return getError((JSON.parse(await responseData.text()) as {'message': string}).message, response);
   }
 }
 
