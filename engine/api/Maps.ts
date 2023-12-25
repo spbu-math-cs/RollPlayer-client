@@ -12,7 +12,7 @@ export async function getMaps() {
   const responseData = await response.json() as {'result': MapInfo[]};
   console.log(responseData)
   if (response.ok) {
-    return responseData.result;
+    return responseData.result.toSorted((a, b) => a.id - b.id);
   } else {
     return getError('Could not get maps', response);
   }

@@ -1,13 +1,14 @@
 'use client'
 
 import React, {createContext, SetStateAction, useEffect, useState} from 'react';
-import {editApi, signInApi, signOutApi, signUpApi} from "@/engine/api/Auth";
+import {editApi, postAvatar, signInApi, signOutApi, signUpApi} from "@/engine/api/Auth";
 
 export interface User {
   token: string,
   userId: number,
-  email: string,
   login: string,
+  email: string,
+  avatarId: number | null,
   password: string,
 }
 
@@ -16,6 +17,7 @@ export interface UserEdit {
   password: string,
   login?: string,
   email?: string,
+  avatarId?: number | null,
 }
 
 export const AuthContext = createContext({
@@ -28,6 +30,7 @@ export const AuthContext = createContext({
   signUp: (user: User) => {},
   signOut: (token: string | null) => {},
   edit: (user: UserEdit) => {},
+  updateAvatar: (avatarData: Blob | null, token: string, password: string) => {},
 
   authReady: false,
   error: null as string | null,
@@ -150,8 +153,30 @@ export const AuthContextProvider = ({children}: any) => {
     );
   }
 
+  const updateAvatar = (avatarData: Blob | null, token: string, password: string) => {
+    if (user === null) {
+      return;
+    }
+    setAuthReady(false);
+    postAvatar(avatarData, token, password).then(
+      response => {
+        if (typeof response === 'string') {
+          setError(response);
+        } else {
+          let newUser = {...user, avatarId: response};
+          setUser(newUser);
+        }
+        setAuthReady(true);
+      },
+      _ => {
+        setError(`Error 500: Unexpected problems occurred`);
+        setAuthReady(true);
+      }
+    );
+  }
+
   return (
-    <AuthContext.Provider value={{user, sessionId, setSessionId, signIn, signUp, signOut, edit, authReady, error}}>
+    <AuthContext.Provider value={{user, sessionId, setSessionId, signIn, signUp, signOut, edit, updateAvatar, authReady, error}}>
       {children}
     </AuthContext.Provider>
   )

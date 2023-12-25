@@ -103,42 +103,42 @@ export default function PlayPage() {
   return (
     <>
       <section className="container mx-auto w-screen h-[95%] flex-row-reverse items-center justify-center overflow-y-scroll">
-        {sessions.map((session) => (
-          <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
+        <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
+          {sessions.map((session) => (
+            <div className="w-2/3 h-1/3 mb-2 justify-center align-middle relative left-[17%]">
+              <button
+                className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"
+                onClick={(_) => chooseSession(session.id)}
+              >
+                <p>Session {session.id}</p>
+              </button>
+            </div>
+          ))}
+          <div className="w-2/3 h-1/3 mb-2 justify-center align-middle relative left-[17%]">
             <button
               className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"
-              onClick={(_) => chooseSession(session.id)}
+              onClick={(_) => location.replace('/newsession')}
             >
-              <p>Session {session.id}</p>
+              New Session
             </button>
           </div>
-        ))}
-        <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
-          <button
-            className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"
-            onClick={(_) => location.replace('/newsession')}
-          >
-            New Session
-          </button>
-        </div>
-        <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
           <div className="w-2/3 h-1/3 mb-2 justify-center align-middle relative left-[17%]">
             <input
-              className="w-full h-full text-black-500 outline-none outline-orange-500 rounded-2xl text-center text-xl relative"
+              className="w-[49%] h-full text-black-500 outline-none outline-orange-500 rounded-2xl text-center text-xl relative"
               style={{ backgroundColor: 'black', color: 'white' }}
               value={chosenSession ? chosenSession : ''}
               onChange={(e) => setChosenSession(parseInt(e.target.value))}
               inputMode="numeric"
               placeholder="SESSION ID"
             ></input>
+            <button
+              type="button"
+              className="h-full w-[49%] bg-orange-500 text-white text-2xl font-bold rounded-2xl relative left-[2%]"
+              onClick={() => chooseSession(chosenSession)}
+            >
+              Connect
+            </button>
           </div>
-          <button
-            type="button"
-            className="h-1/3 w-2/3 bg-orange-500 text-white text-2xl font-bold rounded-2xl relative left-[17%]"
-            onClick={() => chooseSession(chosenSession)}
-          >
-            Connect
-          </button>
         </div>
       </section>
     </>

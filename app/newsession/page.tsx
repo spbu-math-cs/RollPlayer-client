@@ -75,23 +75,29 @@ export default function NewSessionPage() {
   return (
     <>
       <section className="container mx-auto w-screen h-[95%] flex-row-reverse items-center justify-center overflow-y-scroll">
-        {
-          maps.map(mapInfo =>
-            <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
-              <button
-                className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"
-                onClick={_ => chooseMap(mapInfo.id)}>
-                <p>Map {mapInfo.id}: {mapInfo.filepath}</p>
-              </button>
-            </div>
-          )
-        }
-        <Link
-          href="/play"
-          className="text-xl text-center text-white block bg-orange-500 p-3 rounded-2xl"
-        >
-          Back
-        </Link>
+        <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
+          {
+            maps.map(mapInfo =>
+              <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
+                <button
+                  className="w-full h-full bg-orange-500 text-white text-2xl font-bold rounded-2xl relative"
+                  onClick={_ => chooseMap(mapInfo.id)}>
+                  <p>
+                    Map {mapInfo.id}: {mapInfo.filepath.replace(/^.*[\\/]/, '').split('.')[0]}
+                  </p>
+                </button>
+              </div>
+            )
+          }
+          <div className="mb-4 w-2/3 h-1/3 align-middle justify-center left-[17%] relative">
+            <Link
+              href="/play"
+              className="text-xl text-center text-white block bg-orange-500 p-3 rounded-2xl"
+            >
+              Back
+            </Link>
+          </div>
+        </div>
       </section>
     </>
   )
