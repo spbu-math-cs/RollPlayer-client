@@ -1,10 +1,10 @@
-RollPlayer
+# RollPlayer
 
-# What is RollPlayer?
+## What is RollPlayer?
 
 It's not just an online platform for role-playing games; it's a symphony of strategy, a canvas of choices, and an epic tale waiting for you to script its next chapter. Are you ready to roll the dice and shape your destiny?
 
-# How to play?
+## How to play?
 
 First, you need to create a session or join an existing one. When you create a session, you should choose a map for it, then tell your friends the ID of your session (shown at the top: Quit Session (#ID)) so they can join.
 
