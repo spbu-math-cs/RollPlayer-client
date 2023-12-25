@@ -1,5 +1,6 @@
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { min } from "lodash";
 
 export function CharacterCard({
   character,
@@ -7,12 +8,16 @@ export function CharacterCard({
   onClose = () => { },
   attackButtons,
   children,
+  avatar,
+  avatarLoaded,
 }: {
   character: CharacterInfo
   position?: { x: number; y: number }
   onClose?: () => void
   attackButtons?: React.ReactNode
   children?: React.ReactNode
+  avatar?: Blob | null
+  avatarLoaded?: boolean
 }) {
   const [_, rerender] = useState()
 
@@ -35,11 +40,11 @@ export function CharacterCard({
         position && {
           position: 'absolute',
           left: position.x + 24,
-          top: position.y + 24,
+          top: min([position.y + 24, window.innerHeight - 780]),
           opacity: 0.8,
         }
       }
-      className="bg-white text-black rounded-xl p-6 shadow-xl relative"
+      className="overflow-y-scroll max-h-[760px] bg-white text-black rounded-xl p-6 shadow-xl relative"
     >
       {
         <button className="top-2 right-2 absolute" onClick={onClose}>
@@ -47,6 +52,12 @@ export function CharacterCard({
         </button>
       }
       <span className="block text-xl">Character {character.name} plss</span>
+      <img className={"mx-auto mb-2"}
+           src={!avatarLoaded ? undefined : avatar ? URL.createObjectURL(avatar) :
+             "https://i.pinimg.com/originals/45/73/19/457319eeee8a2028e99293c7b83fa702.jpg"}
+           width="100" height="100"
+           alt={"Char img"}
+      />
       {attackButtons}
       <ul>&nbsp;</ul>
       <ul
