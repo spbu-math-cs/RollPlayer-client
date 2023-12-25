@@ -9,7 +9,7 @@ export function CharacterCard({
   attackButtons,
   children,
   avatar,
-  avatarLoaded,
+  avatarLoaded = false,
 }: {
   character: CharacterInfo
   position?: { x: number; y: number }
@@ -52,12 +52,14 @@ export function CharacterCard({
         </button>
       }
       <span className="block text-xl">Character {character.name} plss</span>
-      <img className={"mx-auto mb-2"}
-           src={!avatarLoaded ? undefined : avatar ? URL.createObjectURL(avatar) :
+      {avatarLoaded &&
+        <img className={"mx-auto mb-2"}
+           src={avatar ? URL.createObjectURL(avatar) :
              "https://i.pinimg.com/originals/45/73/19/457319eeee8a2028e99293c7b83fa702.jpg"}
            width="100" height="100"
            alt={"Char img"}
-      />
+        />
+      }
       {attackButtons}
       <ul>&nbsp;</ul>
       <ul

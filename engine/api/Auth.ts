@@ -10,23 +10,7 @@ interface UserInfo {
   avatarID?: number | null,
 }
 
-export async function signInApi(login: string | null, email: string | null, password: string) {
-  const userData: {'login'?: string, 'email'?: string, 'password': string} = {password};
-  if (login !== null) {
-    userData['login'] = login;
-  }
-  if (email !== null) {
-    userData['email'] = email;
-  }
-  const loginResponse = await fetch('/api/login', {
-    method: 'POST',
-    body: JSON.stringify(userData),
-  });
-  const loginResponseData = await loginResponse.json() as {'result': string, 'message': string};
-  if (!loginResponse.ok) {
-    return getError(loginResponseData.message, loginResponse);
-  }
-  const token = loginResponseData.result
+export async function loadUser(token: string) {
   const response = await fetch('/api/user', {
     method: 'GET',
     headers: [['Authorization', `Bearer ${token}`]],
@@ -57,6 +41,26 @@ export async function signInApi(login: string | null, email: string | null, pass
   } else {
     return getError(responseData.message, response);
   }
+}
+
+export async function signInApi(login: string | null, email: string | null, password: string) {
+  const userData: {'login'?: string, 'email'?: string, 'password': string} = {password};
+  if (login !== null) {
+    userData['login'] = login;
+  }
+  if (email !== null) {
+    userData['email'] = email;
+  }
+  const response = await fetch('/api/login', {
+    method: 'POST',
+    body: JSON.stringify(userData),
+  });
+  const responseData = await response.json() as {'result': string, 'message': string};
+  if (!response.ok) {
+    return getError(responseData.message, response);
+  }
+  const token = responseData.result;
+  return loadUser(token);
 }
 
 export async function signUpApi(user: User) {
