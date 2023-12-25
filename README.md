@@ -87,3 +87,5 @@ The map itself is stored in `"data"` field. If the value is `0` then this tile i
 ```
 
 If we have only one tile in this tileset then we can render file stored in `"image"` field as a texture, otherwise we need to get the corresponding tile from the file. In that case the picture from specified file is divided into tiles with specified height and width and tiles' ids ascending from left to right, from top to bottom starting with `"firstgid"` and needed tile is selected.
+
+You can create custom maps using the popular map editor Tiled (https://www.mapeditor.org/). For more information please see [here](TiledDoc.md).
