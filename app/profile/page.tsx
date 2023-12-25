@@ -17,7 +17,10 @@ export default function UserProfilePage() {
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const inputAvatar = useRef<HTMLInputElement | null>(null);
 
-  function downloadAvatar(newAvatarId: number | null) {
+  function downloadAvatar(newAvatarId: number | null | undefined) {
+    if (newAvatarId === undefined) {
+      newAvatarId = null;
+    }
     setAvatarId(newAvatarId);
     if (newAvatarId === null) {
       setAvatarLoaded(true);

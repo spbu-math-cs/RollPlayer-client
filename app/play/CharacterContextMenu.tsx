@@ -18,7 +18,7 @@ export function CharacterContextMenu({ game }: { game: Game }) {
       setAvatarLoaded(false);
       return;
     }
-    if (authContext.user.avatarId === null) {
+    if (!authContext.user.avatarId) {
       setAvatar(null);
       setAvatarLoaded(true);
       return;

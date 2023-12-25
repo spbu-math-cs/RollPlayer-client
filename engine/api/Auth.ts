@@ -60,6 +60,9 @@ export async function signInApi(login: string | null, email: string | null, pass
 }
 
 export async function signUpApi(user: User) {
+  if (user.avatarId === null) {
+    delete user.avatarId;
+  }
   const response = await fetch('/api/register', {
     method: 'POST',
     body: JSON.stringify(user),

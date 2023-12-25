@@ -8,7 +8,7 @@ export interface User {
   userId: number,
   login: string,
   email: string,
-  avatarId: number | null,
+  avatarId?: number | null,
   password: string,
 }
 
