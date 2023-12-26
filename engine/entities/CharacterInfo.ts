@@ -12,6 +12,7 @@ export class CharacterInfo extends EventEmitter {
     private connection: Connection,
     public readonly id: number,
     public readonly name: string,
+    public readonly avatarId: number | undefined,
     public readonly own: boolean,
     private _canDoAction: boolean,
     private _isDefeated: boolean,

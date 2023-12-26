@@ -10,8 +10,11 @@ import {
 } from '../GlobalParameters'
 
 export interface ConnectionProperties {
-  userId: number
-  userToken: string
+  userInfo: {
+    userId: number
+    userToken: string
+    avatarId: number | undefined
+  }
   sessionId: number
 }
 
@@ -28,8 +31,8 @@ export class Connection extends EventEmitter {
     if (!process.env.NEXT_PUBLIC_SOCKET_URL)
       throw new Error('Could not find server url in env')
 
-    const _userID = this.connectionProperties.userId
-    const userToken = this.connectionProperties.userToken
+    const _userID = this.connectionProperties.userInfo.userId
+    const userToken = this.connectionProperties.userInfo.userToken
     const sessionId = this.connectionProperties.sessionId
 
     const ws = new WebSocket(
@@ -76,6 +79,7 @@ export class Connection extends EventEmitter {
           this,
           data.character.id,
           data.character.name,
+          (data.character.avatarId === null) ? undefined : data.character.avatarId,
           data.own,
           false, // canDoAction
           data.character.isDefeated,
@@ -209,6 +213,7 @@ export class Connection extends EventEmitter {
         row: row,
         col: col,
         basicProperties,
+        avatarId: this.connectionProperties.userInfo.avatarId,
       }),
     )
   }

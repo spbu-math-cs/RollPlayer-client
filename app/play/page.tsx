@@ -84,8 +84,11 @@ export default function PlayPage() {
     }
 
     const connectionProperties: ConnectionProperties = {
-      userId: curUser.userId,
-      userToken: curUser.token,
+      userInfo: {
+        userId: curUser.userId,
+        userToken: curUser.token,
+        avatarId: (curUser.avatarId === null) ? undefined : curUser.avatarId,
+      },
       sessionId: sessionId,
     }
 

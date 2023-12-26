@@ -54,16 +54,32 @@ export class Character extends PIXI.Graphics {
       }
     }
 
-    const outlineColor = this.info.own ? 0xff0000 : 0xffffff
-    this.lineStyle(1, outlineColor, 1)
-
-    const characterColor = getCol(info.id, 0x00, 0xfb)
     this.characterSize = Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3
 
-    this.beginFill(characterColor, 1)
+    const characterColor = getCol(info.id, 0x00, 0xfb)
+    const innerCharacterColor = this.info.own ? 0x8080ff : 0xff8080
+    this.lineStyle(this.characterSize / 5, characterColor, 1)
+
+    this.beginFill(innerCharacterColor, 1)
     this.drawCircle(0, 0, this.characterSize)
     this.endFill()
-    this.lineStyle(0, outlineColor, 1)
+    this.lineStyle(0, characterColor, 1)
+
+    if (this.info.avatarId !== undefined) {
+      const avatar = PIXI.Sprite.from(`${process.env.NEXT_PUBLIC_API_URL}/pictures/${this.info.avatarId}`)
+      avatar.anchor.set(0.5)
+      avatar.width = this.characterSize * 2
+      avatar.height = this.characterSize * 2
+
+      const mask = new PIXI.Graphics()
+      mask.beginFill(0xffffff, 1)
+      mask.drawCircle(0, 0, this.characterSize * 9 / 10)
+      mask.endFill()
+
+      avatar.mask = mask
+      this.addChild(mask)
+      this.addChild(avatar)
+    }
 
     this.filters = this.defaultFilters
 

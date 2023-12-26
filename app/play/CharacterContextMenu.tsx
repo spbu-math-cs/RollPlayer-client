@@ -3,35 +3,35 @@ import { useContext, useEffect, useState } from 'react'
 import { CharacterCard } from './CharacterCard'
 import { CharacterContext } from './page'
 import { ATTACK_NAMES, AttackType } from '@/engine/GlobalParameters'
-import AuthContext from "@/context/AuthContext";
-import { getAvatar } from "@/engine/api/Auth";
+import AuthContext from '@/context/AuthContext'
+import { getAvatar } from '@/engine/api/Auth'
 
 export function CharacterContextMenu({ game }: { game: Game }) {
   const [characterContext, setCharacterContext] =
     useState<CharacterContext | null>(null)
-  const authContext = useContext(AuthContext);
-  const [avatarLoaded, setAvatarLoaded] = useState(false);
-  const [avatar, setAvatar] = useState<Blob | null>(null);
+  const authContext = useContext(AuthContext)
+  const [avatarLoaded, setAvatarLoaded] = useState(false)
+  const [avatar, setAvatar] = useState<Blob | null>(null)
 
   useEffect(() => {
     if (!authContext.authReady || authContext.user === null) {
-      setAvatarLoaded(false);
-      return;
+      setAvatarLoaded(false)
+      return
     }
-    if (!authContext.user.avatarId) {
-      setAvatar(null);
-      setAvatarLoaded(true);
-      return;
+    if (authContext.user.avatarId === undefined || authContext.user.avatarId === null) {
+      setAvatar(null)
+      setAvatarLoaded(true)
+      return
     }
     getAvatar(authContext.user.avatarId).then(
       response => {
         if (typeof response !== 'string') {
-          setAvatar(response);
+          setAvatar(response)
         }
-        setAvatarLoaded(true);
+        setAvatarLoaded(true)
       }
     );
-  }, [authContext]);
+  }, [authContext])
 
   game.onCharacterContext = (context) => setCharacterContext(context)
 
