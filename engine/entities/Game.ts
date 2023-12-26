@@ -33,13 +33,13 @@ export class Game {
 
     this.loadBackground()
 
-    PIXI.Assets.load('/assets/attacks/stick.png')
-    PIXI.Assets.load('/assets/attacks/carrot.png')
+    PIXI.Assets.load('/assets/attacks/sword.png')
+    PIXI.Assets.load('/assets/attacks/arrow.png')
     PIXI.Assets.load('/assets/attacks/lightning.png')
 
-    sound.add('stick', '/assets/attacks/stick.mp3')
-    sound.add('carrot', '/assets/attacks/carrot.mp3')
-    sound.add('lightning', '/assets/attacks/lightning.mp3')
+    sound.add('melee', '/assets/attacks/sword.mp3')
+    sound.add('ranged', '/assets/attacks/arrow.mp3')
+    sound.add('magic', '/assets/attacks/lightning.mp3')
 
     this.connection = new Connection(connectionProperties)
   }

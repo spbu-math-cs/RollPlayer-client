@@ -12,19 +12,20 @@ export class MeleeAttack extends Attack {
 
   constructor(private board: Board) {
     super()
-    this.texture = Texture.from('/assets/attacks/stick.png')
+    this.texture = Texture.from('/assets/attacks/sword.png')
   }
 
   async animate(from: Point, to: Point) {
     if (document.hasFocus())
-      sound.play('stick')
+      sound.play('melee')
 
     const sprite = new Sprite(this.texture)
+    const tileSize = Math.min(this.board.info.tileWidth, this.board.info.tileHeight)
 
     this.board.addChild(sprite)
 
     sprite.anchor.set(0.5, 0)
-    sprite.scale.set(0.1)
+    sprite.scale.set(tileSize * 0.001)
     sprite.zIndex = Infinity
     sprite.position = from
 
@@ -39,16 +40,17 @@ export class RangedAttack extends Attack {
   private texture: Texture
   constructor(private board: Board) {
     super()
-    this.texture = Texture.from('/assets/attacks/carrot.png')
+    this.texture = Texture.from('/assets/attacks/arrow.png')
   }
   async animate(from: Point, to: Point) {
     if (document.hasFocus())
-      sound.play('carrot')
+      sound.play('ranged')
 
     const sprite = new Sprite(this.texture)
+    const tileSize = Math.min(this.board.info.tileWidth, this.board.info.tileHeight)
 
     sprite.anchor.set(0.5, 0)
-    sprite.scale.set(0.1)
+    sprite.scale.set(tileSize * 0.001)
     sprite.zIndex = Infinity
     sprite.position = from
 
@@ -105,12 +107,13 @@ export class MagicAttack extends Attack {
 
   async animate(from: Point, to: Point) {
     if (document.hasFocus())
-      sound.play('lightning')
+      sound.play('magic')
 
     const sprite = new Sprite(this.textures[0])
+    const tileSize = Math.min(this.board.info.tileWidth, this.board.info.tileHeight)
 
     sprite.anchor.set(0.5, 0)
-    sprite.scale.set(0.1)
+    sprite.scale.set(tileSize * 0.005)
     sprite.zIndex = Infinity
     this.board.addChild(sprite)
 
