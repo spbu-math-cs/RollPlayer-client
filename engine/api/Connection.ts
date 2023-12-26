@@ -38,13 +38,10 @@ export class Connection extends EventEmitter {
     const ws = new WebSocket(
       `${process.env.NEXT_PUBLIC_SOCKET_URL}/user/sessions/${sessionId}/connect`
     )
-    console.log(this.connectionProperties)
 
     this.ws = ws
 
     ws.onopen = (event) => {
-      console.log('Open', event)
-      console.log('Open readyState:', ws.readyState)
       this.ws?.send(userToken)
     }
 
@@ -52,17 +49,14 @@ export class Connection extends EventEmitter {
       console.error('Error!', event)
     }
 
-    ws.onclose = (event) => {
-      console.log('Close.', event)
-    }
+    ws.onclose = (event) => {}
 
     ws.onmessage = (event) => {
-      console.log('Message:', event)
-      console.log('data:', JSON.parse(event.data))
+      // console.log('Message:', event)
+      // console.log('data:', JSON.parse(event.data))
+
       this.onMessage(JSON.parse(event.data))
     }
-
-    console.log('readyState:', ws.readyState)
   }
 
   private onMessage(data: any) {
@@ -172,7 +166,7 @@ export class Connection extends EventEmitter {
       return
     }
 
-    console.log('Sending message: ', JSON.parse(message))
+    // console.log('Sending message: ', JSON.parse(message))
 
     this.ws.send(message)
   }

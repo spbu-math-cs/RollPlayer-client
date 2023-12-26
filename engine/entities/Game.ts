@@ -94,10 +94,10 @@ export class Game {
 
   cleanUp() {
     this.invalid = true
-
-    console.log('Clean Up.')
     this.connection.close()
+
     if (this.board) this.app.stage.removeChild(this.board)
+
     this.app.stop()
   }
 }

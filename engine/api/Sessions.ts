@@ -12,7 +12,6 @@ export async function getSessions(token: string) {
     headers: [['Authorization', `Bearer ${token}`]],
   });
   const responseData = await response.json() as {'result': SessionInfo[]};
-  console.log(responseData)
   if (response.ok) {
     return responseData.result;
   } else {
@@ -25,7 +24,6 @@ export async function createSession(mapId: number) {
     method: 'POST',
   });
   const responseData = await response.json() as {'result': SessionInfo, 'message': string};
-  console.log(responseData)
   if (response.ok) {
     return responseData.result;
   } else {
