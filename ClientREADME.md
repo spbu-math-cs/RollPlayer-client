@@ -9,7 +9,7 @@ It's not just an online platform for role-playing games; it's a symphony of stra
 First, you need to create a session or join an existing one. When you create a session, you should choose a map for it, then tell your friends the ID of your session (shown at the top: Quit Session (#ID)) so they can join.
 <div align="center" markdown="1">
 
-![img.png](img_1.png)
+![img.png](img.png)
 
 </div>
 
