@@ -39,12 +39,12 @@ The game features three types of attacks: Melee, Ranged, and Magic. To attack, c
 </div>
 
 There are cells in the game that either add or subtract health, alter the mana amount for magical attacks, and influence other characteristics. To monitor these changes, click on your character with the right mouse button.
+
+When a character's health becomes lower than zero, it gets defeated. This means that it can neither move nor attack. On its turn it may come back to life with some probability.
 <div align="center" markdown="1">
 
 ![img_7.png](img_7.png)
 
 </div>
-
-When a character's health becomes lower than zero, it gets defeated. This means that it can neither move nor attack. On its turn it may come back to life with some probability. 
 
 You can also delete any of your characters by clicking X in the top-right corner of the character description on the character panel.
