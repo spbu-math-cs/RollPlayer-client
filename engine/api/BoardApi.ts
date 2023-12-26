@@ -1,5 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import * as PIXI from 'pixi.js'
+import Swal from 'sweetalert2'
 import {
   MapData,
   TilesetData,
@@ -22,8 +23,12 @@ export class BoardApi {
 
   constructor() {}
 
-  async getMapId(sessionId: number): Promise<string> {
-    const response = await this.axios.get(`/game/${sessionId}/mapId`)
+  async getMapId(sessionId: number): Promise<string | undefined> {
+    const response = await this.axios.get(`/game/${sessionId}/mapId`).catch((_: AxiosError) => undefined)
+    if (response === undefined) {
+      return undefined
+    }
+
     const mapId = response.data.result
     return mapId
   }
@@ -150,6 +155,11 @@ export class BoardApi {
 
   async getBoard(sessionId: number) {
     const mapId = await this.getMapId(sessionId)
+    if (mapId === undefined) {
+      Swal.fire('Wrong session id', `Session with id ${sessionId} doesn't exist`, 'error')
+      return
+    }
+
     const mapData = await this.getMap(mapId)
     const rows = mapData.height
     const cols = mapData.width

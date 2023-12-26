@@ -7,6 +7,7 @@ import { RuntimeError } from 'next/dist/client/components/react-dev-overlay/inte
 import { SetStateAction, useContext, useEffect, useState } from 'react'
 import { ConnectionProperties } from '@/engine/api/Connection'
 import GameScreen from './GameScreen'
+import Axios, { AxiosError, AxiosInstance } from 'axios'
 
 let authContext: {
   user: User | null
@@ -25,6 +26,11 @@ function chooseSession(sessionId: number | null) {
   authContext.setSessionId(sessionId)
 }
 
+async function sessionIdIsValid(axios: AxiosInstance, sessionId: number): Promise<boolean> {
+  const response = await axios.get(`/game/${sessionId}/mapId`).catch((_: AxiosError) => undefined)
+  return response !== undefined
+}
+
 export type CharacterContext = {
   character: CharacterInfo
   x: number
@@ -38,10 +44,13 @@ export default function PlayPage() {
   const [error, setError] = useState<string | null>(null)
   const [loaded, setLoaded] = useState(false)
 
+  const axios = Axios.create({ baseURL: process.env.NEXT_PUBLIC_API_URL })
+
   useEffect(() => {
     if (!authContext.authReady) {
       return
     }
+
     if (authContext.user?.userId === undefined) {
       location.replace('/signin')
     } else {
@@ -54,6 +63,18 @@ export default function PlayPage() {
         setLoaded(true)
       })
     }
+
+    const sessionId = authContext?.sessionId
+    if (sessionId === null) return
+
+    const checkSessionIdIsValid = async () => {
+      const isValid = await sessionIdIsValid(axios, sessionId)
+      if (!isValid) {
+        authContext.setSessionId(null)
+      }
+    }
+
+    checkSessionIdIsValid()
   }, [authContext])
 
   if (!loaded) {
