@@ -1,10 +1,10 @@
 
 export const ACTIVATED_TILE_SCALE = 1.5
 
-export const COMMON_TINT = 0xb0b0b0
+export const COMMON_TINT = 0xd0d0d0
 export const HIGHLIGHTED_TILE_TINT = 0xffffff
 
-export const BACKGROUND_SCALE = 1.35
+export const BACKGROUND_SCALE = 1.2
 
 export const CHARACTER_Z_INDEX = 1_000_000_000
 

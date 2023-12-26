@@ -13,7 +13,7 @@ export class Background extends PIXI.Sprite {
     this.x = app.screen.width / 2
     this.y = app.screen.height / 2
     this.scale.set(BACKGROUND_SCALE)
-    this.tint = COMMON_TINT
+    this.tint = 0xa0a0a0
     this.zIndex = -1
   }
 }

@@ -12,7 +12,7 @@ export class MeleeAttack extends Attack {
 
   constructor(private board: Board) {
     super()
-    this.texture = Texture.from('/assets/attacks/sword.png')
+    this.texture = Texture.from('/assets/attacks/stick.png')
   }
 
   async animate(from: Point, to: Point) {
@@ -25,7 +25,7 @@ export class MeleeAttack extends Attack {
     this.board.addChild(sprite)
 
     sprite.anchor.set(0.5, 0)
-    sprite.scale.set(tileSize * 0.001)
+    sprite.scale.set(tileSize * 0.005)
     sprite.zIndex = Infinity
     sprite.position = from
 
@@ -40,7 +40,7 @@ export class RangedAttack extends Attack {
   private texture: Texture
   constructor(private board: Board) {
     super()
-    this.texture = Texture.from('/assets/attacks/arrow.png')
+    this.texture = Texture.from('/assets/attacks/carrot.png')
   }
   async animate(from: Point, to: Point) {
     if (document.hasFocus())
@@ -50,7 +50,7 @@ export class RangedAttack extends Attack {
     const tileSize = Math.min(this.board.info.tileWidth, this.board.info.tileHeight)
 
     sprite.anchor.set(0.5, 0)
-    sprite.scale.set(tileSize * 0.001)
+    sprite.scale.set(tileSize * 0.005)
     sprite.zIndex = Infinity
     sprite.position = from
 

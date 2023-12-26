@@ -33,14 +33,14 @@ export class Game {
 
     this.loadBackground()
 
-    PIXI.Assets.load('/assets/attacks/sword.png')
-    PIXI.Assets.load('/assets/attacks/arrow.png')
+    PIXI.Assets.load('/assets/attacks/stick.png')
+    PIXI.Assets.load('/assets/attacks/carrot.png')
     PIXI.Assets.load('/assets/attacks/lightning.png')
 
     if (!sound.exists('melee'))
-      sound.add('melee', '/assets/attacks/sword.mp3')
+      sound.add('melee', '/assets/attacks/stick.mp3')
     if (!sound.exists('ranged'))
-      sound.add('ranged', '/assets/attacks/arrow.mp3')
+      sound.add('ranged', '/assets/attacks/carrot.mp3')
     if (!sound.exists('magic'))
       sound.add('magic', '/assets/attacks/lightning.mp3')
 
