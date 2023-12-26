@@ -55,10 +55,13 @@ export class Character extends PIXI.Graphics {
     }
 
     this.characterSize = Math.min(this.board.info.tileWidth, this.board.info.tileHeight) / 3
+    if (this.info.id == 1) {
+      this.characterSize *= 2
+    }
 
     const characterColor = getCol(info.id, 0x00, 0xfb)
     const innerCharacterColor = this.info.own ? 0x8080ff : 0xff8080
-    this.lineStyle(this.characterSize / 5, characterColor, 1)
+    // this.lineStyle(this.characterSize / 5, characterColor, 1)
 
     this.beginFill(innerCharacterColor, 1)
     this.drawCircle(0, 0, this.characterSize)
