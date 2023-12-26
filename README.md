@@ -1,42 +1,58 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# RollPlayer
 
-First, run the development server:
+## What is RollPlayer?
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+It's not just an online platform for role-playing games; it's a symphony of strategy, a canvas of choices, and an epic tale waiting for you to script its next chapter. Are you ready to roll the dice and shape your destiny?
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How to play?
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+First, you need to create a session or join an existing one. When you create a session, you should choose a map for it, then tell your friends the ID of your session (shown at the top: Quit Session (#ID)) so they can join.
+<div align="center" markdown="1">
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+![img.png](readme-assets/img.png)
 
-## Learn More
+</div>
 
-To learn more about Next.js, take a look at the following resources:
+Then you and others need to create their characters. To create a character, first place your cursor on the white bar at the bottom to open up character creation panel. In there, you must choose the name for your character and configure the values for its Basic Properties.
+The game has six Basic Properties: Charisma, Constitution, Dexterity, Intelligence, Strength, and Wisdom. All other properties (e.g. max HP, attack damage, etc.) are calculated based on these. You can only set them up once. The sum of all the Basic Properties has to be from 6 to 8 to prevent you from creating a too strong or too weak character. Once you're done, click "Add character".
+Everyone can create a character whenever he or she wants; we recommend agreeing on the character creation rules in the game yourself.
+<div align="center" markdown="1">
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![img_1.png](readme-assets/img_1.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+</div>
 
-## Deploy on Vercel
+To view all the properties of a character (basic properties, HP, MP, speed, etc.), right-click on it. You can also view them in the panel that you used to create the characters. Moreover, you can see the amount of mana and health in the form of two stripes above your character.
+<div align="center" markdown="1">
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+![img_3.png](readme-assets/img_3.png);
+![img_5.png](readme-assets/img_5.png)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+</div>
+
+Then the characters make turns in the order based on their initiative (a value depending on the Basic Properties). To make a move, click on your character and drag it to the desired square. The character whose turn it is to move will be marked with white halo. You move to a cell that's farther than your character's speed. Also, obstacles like trees, water, bad ground can restrict your movement. Instead of making a move, you can attack a character of another player on your turn.
+The game features three types of attacks: Melee, Ranged, and Magic. To attack, click on your target with the right mouse button, and you'll see three buttons: Melee, Ranged and Magic. You can only attack a character that's in the range of your attack (see the 'Ranged/Magic attack distance' properties). Additionally, you can only perform Melee attack on a character that's directly next to your character. Distance plays a crucial role, regulating the attacks and emphasizing the strategic aspect. Magic attack will also cost your character mana.
+<div align="center" markdown="1">
+
+![img_4.png](readme-assets/img_4.png)
+
+</div>
+
+There are cells in the game that either add or subtract health, alter the mana amount for magical attacks, and influence other characteristics. To monitor these changes, click on your character with the right mouse button.
+
+When a character's health becomes lower than zero, it gets defeated. This means that it can neither move nor attack. On its turn it may come back to life with some probability.
+<div align="center" markdown="1">
+
+![img_7.png](readme-assets/img_7.png)
+
+</div>
+
+You can also delete any of your characters by clicking X in the top-right corner of the character description on the character panel.
+
 
 ## Map format
-To store maps we use [Tiled](https://doc.mapeditor.org/en/stable/reference/json-map-format/) json map format. For each map we have a corresponding json (`.tmj`) file, it looks something like:
+Our app supports various custom maps to play on. To store these maps we use [Tiled](https://doc.mapeditor.org/en/stable/reference/json-map-format/) json map format. For each map we have a corresponding json (`.tmj`) file, it looks something like:
 
 ```json
 {

@@ -1,6 +1,6 @@
 import { CharacterInfo } from '@/engine/entities/CharacterInfo'
 import React, { useEffect, useState } from 'react'
-import { min } from "lodash";
+import {max, min} from "lodash";
 
 export function CharacterCard({
   character,
@@ -40,7 +40,7 @@ export function CharacterCard({
         position && {
           position: 'absolute',
           left: position.x + 24,
-          top: min([position.y + 24, window.innerHeight - 780]),
+          top: max([min([position.y + 24, window.innerHeight - 780]), 0]),
           opacity: 0.8,
         }
       }
