@@ -1,0 +1,83 @@
+{
+  "name": "@pixi/sound",
+  "version": "5.2.2",
+  "description": "WebAudio API playback library with filters",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "xs test",
+    "clean": "xs clean",
+    "start": "xs serve",
+    "watch": "xs watch",
+    "lint": "xs lint",
+    "lint:fix": "xs lint --fix",
+    "types": "xs types",
+    "build": "xs build",
+    "docs": "xs docs",
+    "deploy:ci": "xs build,docs",
+    "postdeploy:ci": "mkdirp deploy && copyfiles \"{dist,examples,docs}/**\" deploy && copyfiles -f dist/* deploy",
+    "deploy": "xs deploy",
+    "release": "xs release"
+  },
+  "extensionConfig": {
+    "lint": [
+      "test",
+      "src",
+      "examples/client"
+    ],
+    "bundleSource": "src/browser.ts",
+    "bundleExports": "default",
+    "docsName": "PixiJS Sound",
+    "docsCopyright": "PIXI Copyright &copy; 2017 - 2021 Matt Karl.",
+    "docsGoogleAnalytics": "UA-103772589-1",
+    "docsTitle": "PixiJS Sound API Documentation",
+    "docsDescription": "Documentation for PixiJS Sound library",
+    "docsKeyword": "docs, documentation, pixi, pixijs, webaudio, html5, audio, javascript, jsdoc"
+  },
+  "engines": {
+    "node": ">=16",
+    "yarn": "please-use-npm",
+    "npm": ">=8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixijs/sound.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/",
+    "lib/",
+    "global.d.ts"
+  ],
+  "keywords": [
+    "webaudio",
+    "sound",
+    "pixi"
+  ],
+  "author": "Matt Karl @bigtimebuddy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pixijs/sound/issues"
+  },
+  "homepage": "https://github.com/pixijs/sound#readme",
+  "devDependencies": {
+    "@pixi/extension-scripts": "^1.8.1",
+    "copyfiles": "^2.4.1",
+    "mkdirp": "^1.0.4",
+    "pixi.js": "^7.0.0"
+  },
+  "peerDependencies": {
+    "@pixi/assets": "^7.0.0",
+    "@pixi/core": "^7.0.0"
+  }
+}

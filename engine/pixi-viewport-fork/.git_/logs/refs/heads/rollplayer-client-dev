@@ -1,0 +1,3 @@
+0000000000000000000000000000000000000000 439d6704dde8c2ec1c737d2f8c112db3a76086d6 Stephen Ostapenko <stepanos2002@gmail.com> 1701793612 +0300	branch: Created from HEAD
+439d6704dde8c2ec1c737d2f8c112db3a76086d6 b8e0e5f37fbc72b40b1c12fb573ffa15499d93b3 Stephen Ostapenko <stepanos2002@gmail.com> 1701793617 +0300	commit: fix viewport
+b8e0e5f37fbc72b40b1c12fb573ffa15499d93b3 e70c1ba0f0ed3828376cd2731915fc4bf0f818cc Stephen Ostapenko <stepanos2002@gmail.com> 1701794163 +0300	commit: remove unnecessary staff

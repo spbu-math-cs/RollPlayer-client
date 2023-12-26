@@ -1,0 +1,41 @@
+{
+  "name": "rollplayer-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@pixi/filter-dot": "^5.1.1",
+    "@pixi/filter-glow": "^5.2.1",
+    "@pixi/sound": "^5.2.2",
+    "@tweenjs/tween.js": "^21.0.0",
+    "axios": "^1.6.1",
+    "events": "^3.3.0",
+    "gsap": "^3.12.4",
+    "lodash": "^4.17.21",
+    "next": "latest",
+    "penner": "^0.1.3",
+    "pixi-viewport": "^5.0.2",
+    "pixi.js": "^7.3.1",
+    "react": "latest",
+    "react-dom": "latest",
+    "sweetalert2": "^11.10.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.200",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  }
+}
