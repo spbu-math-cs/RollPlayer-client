@@ -37,9 +37,12 @@ export class Game {
     PIXI.Assets.load('/assets/attacks/arrow.png')
     PIXI.Assets.load('/assets/attacks/lightning.png')
 
-    sound.add('melee', '/assets/attacks/sword.mp3')
-    sound.add('ranged', '/assets/attacks/arrow.mp3')
-    sound.add('magic', '/assets/attacks/lightning.mp3')
+    if (!sound.exists('melee'))
+      sound.add('melee', '/assets/attacks/sword.mp3')
+    if (!sound.exists('ranged'))
+      sound.add('ranged', '/assets/attacks/arrow.mp3')
+    if (!sound.exists('magic'))
+      sound.add('magic', '/assets/attacks/lightning.mp3')
 
     this.connection = new Connection(connectionProperties)
   }
