@@ -1,8 +1,8 @@
 
-export const ACTIVATED_CELL_SCALE = 1.5
+export const ACTIVATED_TILE_SCALE = 1.5
 
 export const COMMON_TINT = 0xb0b0b0
-export const HIGHLIGHT_TINT = 0xffffff
+export const HIGHLIGHTED_TILE_TINT = 0xffffff
 
 export const BACKGROUND_SCALE = 1.35
 

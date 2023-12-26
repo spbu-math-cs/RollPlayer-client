@@ -2,8 +2,8 @@ import * as PIXI from 'pixi.js'
 import { GlowFilter } from '@pixi/filter-glow'
 import { Board } from './Board'
 import { TileInfo } from '../entities/TileInfo'
-import { ACTIVATED_CELL_SCALE } from '../GlobalParameters'
-import { COMMON_TINT, HIGHLIGHT_TINT } from '../GlobalParameters'
+import { ACTIVATED_TILE_SCALE } from '../GlobalParameters'
+import { COMMON_TINT, HIGHLIGHTED_TILE_TINT } from '../GlobalParameters'
 
 export class Tile extends PIXI.Sprite {
   private readonly defaultFilters = []
@@ -40,8 +40,8 @@ export class Tile extends PIXI.Sprite {
   }
 
   activateOnSelect() {
-    this.scale.set(ACTIVATED_CELL_SCALE)
-    this.tint = HIGHLIGHT_TINT
+    this.scale.set(ACTIVATED_TILE_SCALE)
+    this.tint = HIGHLIGHTED_TILE_TINT
     this.zIndex = this.board.info.rows * this.board.info.cols
     this.filters = this.activatedOnSelectFilters
   }
@@ -54,8 +54,8 @@ export class Tile extends PIXI.Sprite {
   }
 
   activateOnCharacterDrag() {
-    this.scale.set(ACTIVATED_CELL_SCALE)
-    this.tint = HIGHLIGHT_TINT
+    this.scale.set(ACTIVATED_TILE_SCALE)
+    this.tint = HIGHLIGHTED_TILE_TINT
     this.zIndex = this.board.info.rows * this.board.info.cols
   }
 
